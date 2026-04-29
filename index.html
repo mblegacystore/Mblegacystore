@@ -1,48 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>MB LEGACY STORE</title>
+    <title>MBL STORE</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
-<body style="text-align:center; padding-top:100px; background:#000; color:#fff; font-family:sans-serif;">
-
-    <h1 style="color:gold;">MB LEGACY STORE</h1>
-    <p id="st" style="color:cyan;">[ STATUS: READY ]</p>
-
-    <button onclick="connectPi()" style="padding:20px; width:80%; background:green; color:white; font-weight:bold; border-radius:10px; border:none;">
+<body style="text-align:center; padding-top:100px; font-family:sans-serif;">
+    <h1>MB LEGACY STORE</h1>
+    <div id="st">Ready</div>
+    <br>
+    <button onclick="login()" style="padding:20px; width:80%; background:green; color:white; border-radius:10px;">
         1. CONNECT PI ACCOUNT
     </button>
-    
     <br><br>
-    
-    <button onclick="payPi()" style="padding:20px; width:80%; background:purple; color:white; font-weight:bold; border-radius:10px; border:none;">
+    <button onclick="pay()" style="padding:20px; width:80%; background:purple; color:white; border-radius:10px;">
         2. PAY 1.0 PI
     </button>
 
     <script>
-        // Init SDK
         Pi.init({ version: "2.0", sandbox: false });
 
-        function connectPi() {
-            document.getElementById('st').innerText = "CONNECTING...";
-            Pi.authenticate(['payments'], function(auth) {
-                document.getElementById('st').innerText = "CONNECTED: " + auth.user.username;
+        function login() {
+            document.getElementById('st').innerText = "Connecting...";
+            Pi.authenticate(['payments'], function(a) {
+                document.getElementById('st').innerText = "Logged in: " + a.user.username;
                 alert("Login Success!");
-            }, function(err) {
-                alert("Auth Error: " + err.message);
-                document.getElementById('st').innerText = "ERROR: TRY REFRESH";
+            }, function(e) {
+                alert("Error: " + e.message);
+                document.getElementById('st').innerText = "Try Again";
             });
         }
 
-        function payPi() {
+        function pay() {
             Pi.createPayment({
                 amount: 1.0,
-                memo: "Verification MB Legacy Store",
-                metadata: { orderId: "101" }
+                memo: "Step 10 Final",
+                metadata: { id: "101" }
             }, {
                 onReadyForServerApproval: (id) => { console.log(id); },
-                onReadyForServerCompletion: (id, tx) => { alert("SUCCESS! TX: " + tx); },
+                onReadyForServerCompletion: (id, tx) => { alert("Success! TX: " + tx); },
                 onCancel: (id) => { alert("Cancelled"); },
                 onError: (e) => { alert("Error: " + e.message); }
             });
