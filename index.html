@@ -1,22 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Test</title>
+    <title>Pi Test</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
 <body>
-    <h1>Pi SDK Test</h1>
-    <button onclick="test()">Login Test</button>
-    <p id="msg"></p>
+    <h1>Pi Auth Test</h1>
+    <button id="auth-btn" onclick="startAuth()">Login</button>
+    <p id="status"></p>
+
     <script>
-        Pi.init({ version: "2.0", sandbox: true });
-        function test() {
-            document.getElementById('msg').innerText = "Loading...";
-            Pi.authenticate(['username'], function(auth) {
-                document.getElementById('msg').innerText = "✅ OK: " + auth.user.username;
-            }, function(err) {
-                document.getElementById('msg').innerText = "❌ Error: " + err.message;
-            });
+        // Tunggu sehingga seluruh laman dimuatkan sepenuhnya
+        window.onload = function() {
+            // Pastikan Pi SDK wujud
+            if (typeof Pi === 'undefined') {
+                document.getElementById('status').innerText = "SDK gagal dimuatkan.";
+                return;
+            }
+            
+            // Inisialisasi SDK
+            Pi.init({ version: "2.0", sandbox: true });
+            document.getElementById('status').innerText = "SDK sedia. Sila klik Login.";
+            document.getElementById('auth-btn').disabled = false;
+        };
+
+        // Fungsi trigger secara manual oleh klik butang
+        async function startAuth() {
+            const statusElem = document.getElementById('status');
+            const authBtn = document.getElementById('auth-btn');
+            
+            statusElem.innerText = "Proses pengesahan...";
+            authBtn.disabled = true;
+
+            try {
+                // Panggil authenticate dengan Promise
+                const scopes = ['username', 'payments'];
+                const authResult = await Pi.authenticate(scopes, onIncompletePaymentFound);
+                
+                // Kejayaan
+                console.log('Auth result:', authResult);
+                statusElem.innerText = 'Berjaya! User: ' + authResult.user.username;
+                alert('Berjaya! User: ' + authResult.user.username);
+                
+            } catch (error) {
+                // Kegagalan
+                console.error('Auth Error:', error);
+                statusElem.innerText = 'Gagal: ' + error.message;
+                alert('Gagal: ' + error.message);
+            } finally {
+                authBtn.disabled = false;
+            }
+        }
+
+        // Callback wajib untuk pembayaran tertunda
+        function onIncompletePaymentFound(payment) {
+            console.log('Pembayaran tertunda:', payment);
+            // Anda boleh biarkan ini kosong buat masa ini
         }
     </script>
 </body>
