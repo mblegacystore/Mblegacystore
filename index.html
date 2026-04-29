@@ -4,41 +4,30 @@
     <title>MBL STORE</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
-<body style="text-align:center; padding-top:100px; font-family:sans-serif;">
+<body style="text-align:center; padding-top:100px;">
     <h1>MB LEGACY STORE</h1>
-    <div id="st">Ready</div>
+    <p id="st">Status: Ready</p>
     <br>
-    <button onclick="login()" style="padding:20px; width:80%; background:green; color:white; border-radius:10px;">
-        1. CONNECT PI ACCOUNT
-    </button>
+    <button onclick="login()" style="padding:20px; width:80%;">1. CONNECT ACCOUNT</button>
     <br><br>
-    <button onclick="pay()" style="padding:20px; width:80%; background:purple; color:white; border-radius:10px;">
-        2. PAY 1.0 PI
-    </button>
+    <button onclick="pay()" style="padding:20px; width:80%;">2. PAY 1.0 PI</button>
 
     <script>
         Pi.init({ version: "2.0", sandbox: false });
-
         function login() {
             document.getElementById('st').innerText = "Connecting...";
             Pi.authenticate(['payments'], function(a) {
-                document.getElementById('st').innerText = "Logged in: " + a.user.username;
-                alert("Login Success!");
-            }, function(e) {
-                alert("Error: " + e.message);
-                document.getElementById('st').innerText = "Try Again";
-            });
+                document.getElementById('st').innerText = "User: " + a.user.username;
+                alert("Success!");
+            }, function(e) { alert("Error: " + e.message); });
         }
-
         function pay() {
             Pi.createPayment({
-                amount: 1.0,
-                memo: "Step 10 Final",
-                metadata: { id: "101" }
+                amount: 1.0, memo: "Final Test", metadata: { id: "10" }
             }, {
                 onReadyForServerApproval: (id) => { console.log(id); },
-                onReadyForServerCompletion: (id, tx) => { alert("Success! TX: " + tx); },
-                onCancel: (id) => { alert("Cancelled"); },
+                onReadyForServerCompletion: (id, tx) => { alert("Done: " + tx); },
+                onCancel: (id) => { alert("Cancel"); },
                 onError: (e) => { alert("Error: " + e.message); }
             });
         }
