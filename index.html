@@ -1,41 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>MBL STORE</title>
+    <meta charset="UTF-8">
+    <title>MB LEGACY STORE | PRO</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
-<body style="text-align:center; padding-top:100px; background:#fff; color:#000;">
+<body style="text-align:center; padding-top:100px; background:#000; color:#fff; font-family:sans-serif;">
 
-    <h1>MB LEGACY STORE</h1>
-    <p id="st">Ready...</p>
+    <h1 style="color:gold;">MB LEGACY STORE</h1>
+    <p id="status" style="color:cyan;">[ SYSTEM STANDBY ]</p>
 
-    <button onclick="login()" style="padding:20px; width:200px;">1. LOGIN</button>
+    <button onclick="startConnect()" style="padding:20px; width:80%; background:green; color:white; font-weight:bold; border-radius:10px;">
+        1. START AUTHENTICATION
+    </button>
+    
     <br><br>
-    <button onclick="pay()" style="padding:20px; width:200px; background:purple; color:white;">2. PAY 1.0 PI</button>
+    
+    <button onclick="startPay()" style="padding:20px; width:80%; background:purple; color:white; font-weight:bold; border-radius:10px;">
+        2. PAY 1.0 PI
+    </button>
 
     <script>
         // Init SDK
         Pi.init({ version: "2.0", sandbox: false });
 
-        function login() {
-            document.getElementById('st').innerText = "Connecting...";
-            Pi.authenticate(['payments'], function(a) {
-                document.getElementById('st').innerText = "Logged in: " + a.user.username;
+        function startConnect() {
+            document.getElementById('status').innerText = "CONNECTING TO PI NETWORK...";
+            
+            Pi.authenticate(['payments'], function(auth) {
+                document.getElementById('status').innerText = "CONNECTED: " + auth.user.username;
                 alert("Login Success!");
-            }, function(e) {
-                alert("Auth Error: " + e.message);
+            }, function(err) {
+                document.getElementById('status').innerText = "ERROR: " + err.message;
+                alert("Please Refresh and Try Again");
             });
         }
 
-        function pay() {
+        function startPay() {
             Pi.createPayment({
                 amount: 1.0,
-                memo: "Step 10 Verification",
-                metadata: { id: "101" }
+                memo: "Mainnet Verification",
+                metadata: { orderId: "mbl-final-1" }
             }, {
                 onReadyForServerApproval: (id) => { console.log(id); },
-                onReadyForServerCompletion: (id, tx) => { alert("Done! TXID: " + tx); },
-                onCancel: (id) => { alert("Cancelled"); },
+                onReadyForServerCompletion: (id, tx) => { alert("SUCCESS! TX: " + tx); },
+                onCancel: (id) => { alert("Payment Cancelled"); },
                 onError: (e) => { alert("Error: " + e.message); }
             });
         }
