@@ -35,7 +35,6 @@
 
     <script>
         function onIncompletePaymentFound(payment) {
-            console.log("Pembayaran tertunda:", payment);
             document.getElementById('st').innerText = "⚠️ Ada pembayaran belum selesai.";
             document.getElementById('btn-pay').disabled = false;
             document.getElementById('btn-pay').style.opacity = "1";
@@ -43,10 +42,9 @@
 
         window.onload = async function() {
             if (typeof Pi === 'undefined') {
-                document.getElementById('st').innerText = "❌ Gagal memuatkan Pi SDK. Pastikan guna Pi Browser.";
+                document.getElementById('st').innerText = "❌ Gagal memuatkan Pi SDK.";
                 return;
             }
-
             Pi.init({ version: "2.0", sandbox: true });
             document.getElementById('st').innerText = "✅ Status: Sedia. Sila sambungkan akaun.";
             document.getElementById('btn-login').disabled = false;
@@ -56,7 +54,6 @@
             document.getElementById('st').innerText = "🔄 Menyambung...";
             this.disabled = true;
             this.style.opacity = "0.6";
-
             try {
                 const auth = await Pi.authenticate(['username', 'payments'], onIncompletePaymentFound);
                 document.getElementById('st').innerText = "👤 User: " + auth.user.username;
@@ -65,10 +62,9 @@
                 document.getElementById('btn-pay').disabled = false;
                 alert("✅ Berjaya! Selamat datang, " + auth.user.username);
             } catch (error) {
-                document.getElementById('st').innerText = "❌ Status: Gagal sambung. Cuba lagi.";
+                document.getElementById('st').innerText = "❌ Gagal sambung.";
                 this.disabled = false;
                 this.style.opacity = "1";
-                alert("❌ Ralat: " + error.message);
             }
         });
 
@@ -76,32 +72,34 @@
             document.getElementById('st').innerText = "💰 Memproses pembayaran...";
             this.disabled = true;
             this.style.opacity = "0.6";
-
             Pi.createPayment({
                 amount: 1.0,
-                memo: "Final Test - MBL Store",
+                memo: "MBL Store Payment",
                 metadata: { id: "10" }
             }, {
                 onReadyForServerApproval: function(paymentId) {
-                    document.getElementById('st').innerText = "⏳ Menunggu kelulusan...";
+                    document.getElementById('st').innerText = "⏳ Meluluskan...";
+                    fetch('/api/approve', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ paymentId: paymentId })
+                    });
                 },
                 onReadyForServerCompletion: function(paymentId, txid) {
-                    document.getElementById('st').innerText = "✅ Pembayaran berjaya! TX: " + txid;
+                    document.getElementById('st').innerText = "✅ Bayaran berjaya!";
                     document.getElementById('btn-pay').disabled = false;
                     document.getElementById('btn-pay').style.opacity = "1";
-                    alert("🎉 Pembayaran berjaya! ID Transaksi: " + txid);
+                    alert("🎉 Berjaya! TX: " + txid);
                 },
-                onCancel: function(paymentId) {
-                    document.getElementById('st').innerText = "❌ Pembayaran dibatalkan.";
+                onCancel: function() {
+                    document.getElementById('st').innerText = "❌ Dibatalkan.";
                     document.getElementById('btn-pay').disabled = false;
                     document.getElementById('btn-pay').style.opacity = "1";
-                    alert("❌ Pembayaran dibatalkan.");
                 },
                 onError: function(error) {
-                    document.getElementById('st').innerText = "❌ Status: Ralat pembayaran.";
+                    document.getElementById('st').innerText = "❌ Ralat.";
                     document.getElementById('btn-pay').disabled = false;
                     document.getElementById('btn-pay').style.opacity = "1";
-                    alert("❌ Ralat: " + error.message);
                 },
                 onIncompletePaymentFound: onIncompletePaymentFound
             });
