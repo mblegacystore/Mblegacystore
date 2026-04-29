@@ -13,22 +13,42 @@
     <button onclick="pay()" style="padding:20px; width:80%;">2. PAY 1.0 PI</button>
 
     <script>
-        Pi.init({ version: "2.0", sandbox: false });
+        // ✅ Guna sandbox untuk ujian
+        Pi.init({ version: "2.0", sandbox: true });
+
         function login() {
             document.getElementById('st').innerText = "Connecting...";
             Pi.authenticate(['payments'], function(a) {
                 document.getElementById('st').innerText = "User: " + a.user.username;
                 alert("Success!");
-            }, function(e) { alert("Error: " + e.message); });
+            }, function(e) {
+                alert("Error: " + e.message);
+                document.getElementById('st').innerText = "Status: Login Failed";
+            });
         }
+
         function pay() {
             Pi.createPayment({
-                amount: 1.0, memo: "Final Test", metadata: { id: "10" }
+                amount: 1.0,
+                memo: "Final Test",
+                metadata: { id: "10" }
             }, {
-                onReadyForServerApproval: (id) => { console.log(id); },
-                onReadyForServerCompletion: (id, tx) => { alert("Done: " + tx); },
-                onCancel: (id) => { alert("Cancel"); },
-                onError: (e) => { alert("Error: " + e.message); }
+                onReadyForServerApproval: (id) => {
+                    console.log("Payment ID ready:", id);
+                },
+                onReadyForServerCompletion: (id, tx) => {
+                    alert("Done: " + tx);
+                },
+                onCancel: (id) => {
+                    alert("Cancel");
+                },
+                onError: (e) => {
+                    alert("Error: " + e.message);
+                },
+                // ✅ Tambah ni untuk elak stuck
+                onIncompletePaymentFound: (payment) => {
+                    alert("Pembayaran sebelum ini belum selesai: " + payment.identifier);
+                }
             });
         }
     </script>
