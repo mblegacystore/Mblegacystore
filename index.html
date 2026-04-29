@@ -1,30 +1,43 @@
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>MB Legacy Store</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-    <script>Pi.init({ version: "2.0", sandbox: true });</script>
+    <script>
+        Pi.init({ version: "2.0", sandbox: true });
+    </script>
 </head>
-<body>
-    <h1>Selamat Datang ke MB Legacy Store</h1>
-    <p>Sila tekan butang di bawah untuk test payment (Langkah 10).</p>
-    <button onclick="makePayment()">BAYAR 1 PI (TEST)</button>
+<body style="text-align: center; padding-top: 50px; font-family: sans-serif;">
+    <h1>MB Legacy Store</h1>
+    <p>Tahap 10: Ujian Transaksi</p>
+    <button onclick="buatBayaran()" style="padding: 15px 30px; background-color: gold; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">
+        BAYAR 1 TEST PI
+    </button>
 
     <script>
-        async function makePayment() {
+        async function buatBayaran() {
             try {
                 const payment = await Pi.createPayment({
                     amount: 1,
-                    memo: "Test Payment MB Legacy Store",
-                    metadata: { orderId: 123 }
+                    memo: "Test Transaction Tahap 10",
+                    metadata: { orderId: "mbl-001" }
                 }, {
-                    onReadyForServerApproval: (paymentId) => { console.log(paymentId); },
-                    onReadyForServerCompletion: (paymentId, txid) => { console.log(txid); },
-                    onCancel: (paymentId) => { alert("Payment Batal"); },
-                    onError: (error, payment) => { alert("Error: " + error.message); }
+                    onReadyForServerApproval: (paymentId) => {
+                        console.log("Menunggu pengesahan:", paymentId);
+                    },
+                    onReadyForServerCompletion: (paymentId, txid) => {
+                        alert("Bayaran Berjaya! TXID: " + txid);
+                    },
+                    onCancel: (paymentId) => {
+                        console.log("Bayaran dibatalkan.");
+                    },
+                    onError: (error, payment) => {
+                        alert("Ralat: " + error.message);
+                    }
                 });
             } catch (err) {
-                alert(err.message);
+                alert("Sistem error: " + err.message);
             }
         }
     </script>
