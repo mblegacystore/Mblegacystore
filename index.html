@@ -1,55 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MB LEGACY STORE</title>
+    <title>MBL STORE</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
-<body style="text-align: center; padding-top: 50px; background-color: #0b0e11; color: white; font-family: sans-serif;">
+<body style="text-align:center; padding-top:100px; background:#fff; color:#000;">
 
-    <h1 style="color: #f3ba2f;">MB LEGACY STORE</h1>
-    <p id="msg" style="color: #00e676;">[ READY TO CONNECT ]</p>
-    <br>
+    <h1>MB LEGACY STORE</h1>
+    <p id="st">Ready...</p>
 
-    <button onclick="startLogin()" style="padding: 20px; width: 280px; background: #4CAF50; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px;">
-        1. AUTHORIZE PI ACCOUNT
-    </button>
-    
+    <button onclick="login()" style="padding:20px; width:200px;">1. LOGIN</button>
     <br><br>
-
-    <button onclick="startPayment()" style="padding: 20px; width: 280px; background: #673ab7; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px;">
-        2. PAY 1.0 PI NOW
-    </button>
+    <button onclick="pay()" style="padding:20px; width:200px; background:purple; color:white;">2. PAY 1.0 PI</button>
 
     <script>
         // Init SDK
-        try {
-            Pi.init({ version: "2.0", sandbox: false });
-        } catch (e) { 
-            alert("Open this in Pi Browser!"); 
-        }
+        Pi.init({ version: "2.0", sandbox: false });
 
-        function startLogin() {
-            document.getElementById('msg').innerText = "WAITING FOR PI POP-UP...";
-            Pi.authenticate(['payments'], function(auth) {
-                document.getElementById('msg').innerText = "SUCCESS: " + auth.user.username;
-                alert("Login Success for " + auth.user.username);
-            }, function(err) {
-                alert("Login Error: " + err.message);
-                document.getElementById('msg').innerText = "RETRY LOGIN";
+        function login() {
+            document.getElementById('st').innerText = "Connecting...";
+            Pi.authenticate(['payments'], function(a) {
+                document.getElementById('st').innerText = "Logged in: " + a.user.username;
+                alert("Login Success!");
+            }, function(e) {
+                alert("Auth Error: " + e.message);
             });
         }
 
-        function startPayment() {
+        function pay() {
             Pi.createPayment({
                 amount: 1.0,
-                memo: "Mainnet Verification MB Legacy Store",
-                metadata: { orderId: "MBL-10" }
+                memo: "Step 10 Verification",
+                metadata: { id: "101" }
             }, {
                 onReadyForServerApproval: (id) => { console.log(id); },
-                onReadyForServerCompletion: (id, tx) => { alert("SUCCESS! TX: " + tx); },
-                onCancel: (id) => { alert("Payment Cancelled"); },
+                onReadyForServerCompletion: (id, tx) => { alert("Done! TXID: " + tx); },
+                onCancel: (id) => { alert("Cancelled"); },
                 onError: (e) => { alert("Error: " + e.message); }
             });
         }
