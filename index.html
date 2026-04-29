@@ -1,28 +1,35 @@
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>MB Legacy Store</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-    <script>Pi.init({ version: "2.0", sandbox: true });</script>
+    <script>Pi.init({ version: "2.0", sandbox: false });</script>
 </head>
-<body style="text-align: center; padding-top: 50px;">
-    <h2>MB Legacy Store - Tahap 10</h2>
-    <button onclick="Pi.authenticate(['payments'], (p)=>{}) .then((a)=>alert('Login Berjaya'))" style="padding: 15px; background: gold;">1. LOGIN DULU</button>
-    <br><br>
-    <button onclick="bayar()" style="padding: 15px; background: orange;">2. BAYAR 0.01 PI</button>
+<body style="text-align: center; padding-top: 50px; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+    <h1>MB Legacy Store</h1>
+    <p>Sahkan Pembayaran Tahap 10 Mainnet</p>
+    
+    <button onclick="Pi.authenticate(['payments'], (p)=>alert('Login Berjaya!'))" style="padding: 12px 25px; margin-bottom: 20px; cursor: pointer;">
+        1. LOGIN TO PI
+    </button>
+    <br>
+    <button onclick="bayar()" style="padding: 15px 30px; background-color: #673ab7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+        2. PAY 1.0 PI NOW
+    </button>
 
     <script>
-        function bayar() {
+        function pay() {
             Pi.createPayment({
-                amount: 0.01,
-                memo: "Final Test",
-                metadata: { orderId: "mbl-1" }
+                amount: 1.0,
+                memo: "Final Test Tahap 10 MB Legacy Store",
+                metadata: { orderId: "mbl-mainnet-10" }
             }, {
-                onReadyForServerApproval: (id) => { console.log(id); },
-                onReadyForServerCompletion: (id, txid) => { alert('SUKSES! TXID: ' + txid); },
-                onCancel: (id) => { alert('Batal'); },
-                onError: (e) => { alert('Ralat: ' + e.message); }
+                onReadyForServerApproval: (id) => { console.log("Approved ID:", id); },
+                onReadyForServerCompletion: (id, txid) => { 
+                    alert('BERJAYA! Sila semak Checklist Tahap 10 bos. TXID: ' + txid); 
+                },
+                onCancel: (id) => { alert('Bayaran dibatalkan bos'); },
+                onError: (e) => { alert('Ada ralat: ' + e.message); }
             });
         }
     </script>
