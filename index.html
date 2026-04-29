@@ -3,75 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MB LEGACY STORE | Mainnet</title>
+    <title>MB LEGACY STORE</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
-<body style="text-align: center; padding-top: 80px; font-family: 'Segoe UI', Arial, sans-serif; background-color: #0b0e11; color: #ffffff;">
+<body style="text-align: center; padding-top: 50px; background-color: #0b0e11; color: white; font-family: sans-serif;">
 
-    <h1 style="color: #f3ba2f; letter-spacing: 2px;">MB LEGACY STORE</h1>
-    <div id="status-box" style="margin: 20px auto; padding: 15px; width: 80%; border-radius: 10px; background-color: #1e2329; border: 1px solid #474d57;">
-        <p id="status-text" style="color: #eaecef; font-weight: bold;">INITIALIZING SYSTEM...</p>
-    </div>
+    <h1 style="color: #f3ba2f;">MB LEGACY STORE</h1>
+    <p id="msg" style="color: #00e676;">[ READY TO CONNECT ]</p>
+    <br>
 
-    <div id="action-area" style="display: none;">
-        <p style="color: #00ff00;">✓ Authentication Successful</p>
-        <br>
-        <button onclick="transferPi()" style="padding: 20px 40px; font-size: 18px; font-weight: bold; cursor: pointer; border-radius: 12px; border: none; background: linear-gradient(45deg, #673ab7, #9c27b0); color: white; box-shadow: 0 4px 15px rgba(103, 58, 183, 0.4);">
-            PAY 1.0 PI NOW
-        </button>
-    </div>
+    <button onclick="startLogin()" style="padding: 20px; width: 280px; background: #4CAF50; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px;">
+        1. AUTHORIZE PI ACCOUNT
+    </button>
+    
+    <br><br>
 
-    <button onclick="window.location.reload()" style="margin-top: 50px; background: none; border: 1px solid #474d57; color: #848e9c; padding: 10px 20px; cursor: pointer; border-radius: 5px;">
-        REFRESH PAGE
+    <button onclick="startPayment()" style="padding: 20px; width: 280px; background: #673ab7; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px;">
+        2. PAY 1.0 PI NOW
     </button>
 
     <script>
-        // Initialize Pi SDK
+        // Init SDK
         try {
             Pi.init({ version: "2.0", sandbox: false });
-            
-            // Auto-Authenticate on load
-            setTimeout(() => {
-                authenticateUser();
-            }, 1500);
-
-        } catch (err) {
-            document.getElementById('status-text').innerText = "ERROR: PLEASE OPEN IN PI BROWSER";
-            document.getElementById('status-text').style.color = "#ff4d4d";
+        } catch (e) { 
+            alert("Open this in Pi Browser!"); 
         }
 
-        function authenticateUser() {
-            document.getElementById('status-text').innerText = "AUTHENTICATING...";
-            
+        function startLogin() {
+            document.getElementById('msg').innerText = "WAITING FOR PI POP-UP...";
             Pi.authenticate(['payments'], function(auth) {
-                document.getElementById('status-text').innerText = "WELCOME, " + auth.user.username.toUpperCase();
-                document.getElementById('status-text').style.color = "#f3ba2f";
-                document.getElementById('action-area').style.display = "block";
-            }, function(error) {
-                document.getElementById('status-text').innerText = "AUTH FAILED: " + error.message;
-                document.getElementById('status-text').style.color = "#ff4d4d";
+                document.getElementById('msg').innerText = "SUCCESS: " + auth.user.username;
+                alert("Login Success for " + auth.user.username);
+            }, function(err) {
+                alert("Login Error: " + err.message);
+                document.getElementById('msg').innerText = "RETRY LOGIN";
             });
         }
 
-        function transferPi() {
+        function startPayment() {
             Pi.createPayment({
                 amount: 1.0,
-                memo: "Mainnet Verification - MB Legacy Store",
-                metadata: { orderId: "MBL-MAIN-10" }
+                memo: "Mainnet Verification MB Legacy Store",
+                metadata: { orderId: "MBL-10" }
             }, {
-                onReadyForServerApproval: function(paymentId) { 
-                    console.log("Payment Pending Approval:", paymentId); 
-                },
-                onReadyForServerCompletion: function(paymentId, txid) {
-                    alert("TRANSACTION SUCCESSFUL!\nTXID: " + txid);
-                    document.getElementById('status-text').innerText = "VERIFICATION COMPLETE";
-                },
-                onCancel: function(paymentId) { 
-                    alert("Payment Cancelled by User"); 
-                },
-                onError: function(error) { 
-                    alert("Payment Error: " + error.message); 
-                }
+                onReadyForServerApproval: (id) => { console.log(id); },
+                onReadyForServerCompletion: (id, tx) => { alert("SUCCESS! TX: " + tx); },
+                onCancel: (id) => { alert("Payment Cancelled"); },
+                onError: (e) => { alert("Error: " + e.message); }
             });
         }
     </script>
