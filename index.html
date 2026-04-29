@@ -1,53 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MB Legacy Store</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
-<body style="text-align: center; padding-top: 50px; font-family: sans-serif; background-color: #f9f9f9;">
-    <h2 style="color: #673ab7;">MB LEGACY STORE</h2>
-    <div id="status" style="color: red; font-weight: bold; margin-bottom: 20px;">Menunggu SDK...</div>
+<body style="text-align: center; padding-top: 50px; font-family: Arial, sans-serif;">
+    <h1>MB LEGACY STORE</h1>
+    <p>Status: <span id="st" style="color: blue;">Memulakan...</span></p>
     
-    <button onclick="login()" style="padding: 15px; width: 220px; font-size: 16px; cursor: pointer;">
-        1. LOGIN PI NETWORK
-    </button>
-    <br><br>
-    <button onclick="bayar()" style="padding: 15px; width: 220px; font-size: 16px; background: #673ab7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
-        2. BAYAR 1.0 PI
-    </button>
+    <button onclick="login()" style="padding: 15px 30px; margin: 10px;">1. LOGIN</button>
+    <br>
+    <button onclick="bayar()" style="padding: 15px 30px; background: #673ab7; color: white; border: none; border-radius: 8px;">2. BAYAR 1.0 PI</button>
 
     <script>
-        // Inisialisasi Pi SDK
         try {
             Pi.init({ version: "2.0", sandbox: false });
-            document.getElementById('status').innerHTML = "Sistem SEDIA! (Mainnet Mode)";
-            document.getElementById('status').style.color = "green";
-        } catch (err) {
-            document.getElementById('status').innerHTML = "SDK Gagal Load. Sila guna Pi Browser!";
+            document.getElementById('st').innerText = "SEDIA (Mainnet)";
+            document.getElementById('st').style.color = "green";
+        } catch (e) {
+            document.getElementById('st').innerText = "Ralat SDK!";
         }
 
         function login() {
-            Pi.authenticate(['payments'], (p) => {
-                alert("Selamat Datang " + p.user.username + "!");
-            }, (e) => alert("Ralat Login: " + e.message));
+            Pi.authenticate(['payments'], function(p) {
+                alert("Berjaya Login: " + p.user.username);
+            }, function(e) { alert("Ralat: " + e.message); });
         }
 
         function bayar() {
             Pi.createPayment({
                 amount: 1.0,
-                memo: "Pembayaran MB Legacy Store - Tahap 10",
-                metadata: { orderId: "mbl-main-100" }
+                memo: "Settle Tahap 10",
+                metadata: { orderId: "mbl-final" }
             }, {
-                onReadyForServerApproval: (id) => {
-                    console.log("Payment Approved:", id);
-                },
-                onReadyForServerCompletion: (id, txid) => {
-                    alert("ALHAMDULILLAH! Bayaran 1.0 Pi Berjaya. TXID: " + txid);
-                },
-                onCancel: (id) => alert("Bayaran Dibatalkan"),
-                onError: (e) => alert("Error: " + e.message)
+                onReadyForServerApproval: function(id) { console.log(id); },
+                onReadyForServerCompletion: function(id, tx) { alert("Berjaya! TX: " + tx); },
+                onCancel: function(id) { alert("Batal"); },
+                onError: function(e) { alert("Ralat: " + e.message); }
             });
         }
     </script>
