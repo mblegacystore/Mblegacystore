@@ -1,49 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MBL PRO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MB LEGACY STORE | Mainnet</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
-<body style="text-align:center; padding-top:100px; background:#111; color:#fff;">
-    <h2>MB LEGACY STORE</h2>
-    <div id="st" style="color:yellow;">Checking SDK...</div>
-    <br>
-    <button onclick="loginUser()" style="padding:20px; width:250px; font-weight:bold;">1. PENGESAHAN LOGIN</button>
-    <br><br>
-    <button onclick="bayarPi()" style="padding:20px; width:250px; background:purple; color:white;">2. BAYAR 1.0 PI</button>
+<body style="text-align: center; padding-top: 80px; font-family: 'Segoe UI', Arial, sans-serif; background-color: #0b0e11; color: #ffffff;">
+
+    <h1 style="color: #f3ba2f; letter-spacing: 2px;">MB LEGACY STORE</h1>
+    <div id="status-box" style="margin: 20px auto; padding: 15px; width: 80%; border-radius: 10px; background-color: #1e2329; border: 1px solid #474d57;">
+        <p id="status-text" style="color: #eaecef; font-weight: bold;">INITIALIZING SYSTEM...</p>
+    </div>
+
+    <div id="action-area" style="display: none;">
+        <p style="color: #00ff00;">✓ Authentication Successful</p>
+        <br>
+        <button onclick="transferPi()" style="padding: 20px 40px; font-size: 18px; font-weight: bold; cursor: pointer; border-radius: 12px; border: none; background: linear-gradient(45deg, #673ab7, #9c27b0); color: white; box-shadow: 0 4px 15px rgba(103, 58, 183, 0.4);">
+            PAY 1.0 PI NOW
+        </button>
+    </div>
+
+    <button onclick="window.location.reload()" style="margin-top: 50px; background: none; border: 1px solid #474d57; color: #848e9c; padding: 10px 20px; cursor: pointer; border-radius: 5px;">
+        REFRESH PAGE
+    </button>
 
     <script>
-        // Inisialisasi awal
-        window.onload = function() {
-            try {
-                Pi.init({ version: "2.0", sandbox: false });
-                document.getElementById('st').innerText = "SYSTEM CONNECTED";
-                document.getElementById('st').style.color = "lime";
-            } catch (e) {
-                document.getElementById('st').innerText = "SDK ERROR: Guna Pi Browser!";
-            }
+        // Initialize Pi SDK
+        try {
+            Pi.init({ version: "2.0", sandbox: false });
+            
+            // Auto-Authenticate on load
+            setTimeout(() => {
+                authenticateUser();
+            }, 1500);
+
+        } catch (err) {
+            document.getElementById('status-text').innerText = "ERROR: PLEASE OPEN IN PI BROWSER";
+            document.getElementById('status-text').style.color = "#ff4d4d";
         }
 
-        function loginUser() {
+        function authenticateUser() {
+            document.getElementById('status-text').innerText = "AUTHENTICATING...";
+            
             Pi.authenticate(['payments'], function(auth) {
-                alert("Login Berjaya: " + auth.user.username);
-                document.getElementById('st').innerText = "USER: " + auth.user.username;
-            }, function(err) {
-                alert("Ralat Login: " + err.message);
+                document.getElementById('status-text').innerText = "WELCOME, " + auth.user.username.toUpperCase();
+                document.getElementById('status-text').style.color = "#f3ba2f";
+                document.getElementById('action-area').style.display = "block";
+            }, function(error) {
+                document.getElementById('status-text').innerText = "AUTH FAILED: " + error.message;
+                document.getElementById('status-text').style.color = "#ff4d4d";
             });
         }
 
-        function bayarPi() {
+        function transferPi() {
             Pi.createPayment({
                 amount: 1.0,
-                memo: "Mainnet Verification Step 10",
-                metadata: { orderId: "MBL-10-FINAL" }
+                memo: "Mainnet Verification - MB Legacy Store",
+                metadata: { orderId: "MBL-MAIN-10" }
             }, {
-                onReadyForServerApproval: (id) => { console.log(id); },
-                onReadyForServerCompletion: (id, tx) => { alert("BAYARAN BERJAYA! TXID: " + tx); },
-                onCancel: (id) => { alert("Batal"); },
-                onError: (e) => { alert("Ralat: " + e.message); }
+                onReadyForServerApproval: function(paymentId) { 
+                    console.log("Payment Pending Approval:", paymentId); 
+                },
+                onReadyForServerCompletion: function(paymentId, txid) {
+                    alert("TRANSACTION SUCCESSFUL!\nTXID: " + txid);
+                    document.getElementById('status-text').innerText = "VERIFICATION COMPLETE";
+                },
+                onCancel: function(paymentId) { 
+                    alert("Payment Cancelled by User"); 
+                },
+                onError: function(error) { 
+                    alert("Payment Error: " + error.message); 
+                }
             });
         }
     </script>
