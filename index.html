@@ -1,61 +1,165 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pi Test</title>
+    <title>MBL STORE</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
-<body>
-    <h1>Pi Auth Test</h1>
-    <button id="auth-btn" onclick="startAuth()">Login</button>
-    <p id="status"></p>
+<body style="text-align:center; padding:40px 20px; font-family: Arial, sans-serif; background: #0d0d0d; color: white; min-height: 100vh;">
+
+    <!-- LOGO / TAJUK -->
+    <h1 style="color: #f5c542; font-size: 36px; margin-bottom: 5px;">🔥 MB LEGACY STORE 🔥</h1>
+    <p style="color: #aaa; margin-bottom: 30px;">Perlombongan & Perdagangan Pi Network</p>
+
+    <!-- KAD STATUS -->
+    <div style="background: #1a1a1a; border-radius: 12px; padding: 20px; margin-bottom: 30px; max-width: 400px; margin-left: auto; margin-right: auto;">
+        <p id="st" style="font-size: 16px; margin: 0; color: #ccc;">⏳ Tunggu sebentar...</p>
+    </div>
+
+    <!-- BUTANG LOGIN -->
+    <button id="btn-login" onclick="login()" 
+        style="
+            padding: 18px; 
+            width: 85%; 
+            max-width: 400px;
+            font-size: 18px; 
+            font-weight: bold;
+            background: linear-gradient(135deg, #6c3ce0, #9b59ff); 
+            color: white; 
+            border: none; 
+            border-radius: 30px; 
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(108, 60, 224, 0.4);
+            margin-bottom: 15px;
+            transition: 0.3s;
+        " 
+        disabled>
+        🔐 CONNECT ACCOUNT
+    </button>
+
+    <br>
+
+    <!-- BUTANG BAYAR -->
+    <button id="btn-pay" onclick="pay()" 
+        style="
+            padding: 18px; 
+            width: 85%; 
+            max-width: 400px;
+            font-size: 18px; 
+            font-weight: bold;
+            background: linear-gradient(135deg, #f5a623, #f7c948); 
+            color: #000; 
+            border: none; 
+            border-radius: 30px; 
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(245, 166, 35, 0.5);
+            transition: 0.3s;
+        " 
+        disabled>
+        💰 PAY 1.0 PI
+    </button>
+
+    <br><br>
+
+    <!-- FOOTER -->
+    <p style="color: #555; font-size: 12px; margin-top: 40px;">Powered by Pi Network • MBL STORE © 2025</p>
 
     <script>
-        // Tunggu sehingga seluruh laman dimuatkan sepenuhnya
+        // ========== TUNGGU HALAMAN SIAP ==========
         window.onload = function() {
-            // Pastikan Pi SDK wujud
+
             if (typeof Pi === 'undefined') {
-                document.getElementById('status').innerText = "SDK gagal dimuatkan.";
+                document.getElementById('st').innerText = "❌ Gagal memuatkan Pi SDK. Pastikan guna Pi Browser.";
                 return;
             }
-            
-            // Inisialisasi SDK
+
             Pi.init({ version: "2.0", sandbox: true });
-            document.getElementById('status').innerText = "SDK sedia. Sila klik Login.";
-            document.getElementById('auth-btn').disabled = false;
+
+            document.getElementById('st').innerText = "✅ Status: Sedia. Sila sambungkan akaun.";
+            document.getElementById('btn-login').disabled = false;
+
+            // Aktifkan kesan hover untuk butang login
+            const btnLogin = document.getElementById('btn-login');
+            btnLogin.onmouseover = function() {
+                this.style.transform = "scale(1.03)";
+                this.style.boxShadow = "0 6px 20px rgba(108, 60, 224, 0.6)";
+            };
+            btnLogin.onmouseout = function() {
+                this.style.transform = "scale(1)";
+                this.style.boxShadow = "0 4px 15px rgba(108, 60, 224, 0.4)";
+            };
+
+            // Aktifkan kesan hover untuk butang bayar
+            const btnPay = document.getElementById('btn-pay');
+            btnPay.onmouseover = function() {
+                this.style.transform = "scale(1.03)";
+                this.style.boxShadow = "0 6px 20px rgba(245, 166, 35, 0.7)";
+            };
+            btnPay.onmouseout = function() {
+                this.style.transform = "scale(1)";
+                this.style.boxShadow = "0 4px 15px rgba(245, 166, 35, 0.5)";
+            };
         };
 
-        // Fungsi trigger secara manual oleh klik butang
-        async function startAuth() {
-            const statusElem = document.getElementById('status');
-            const authBtn = document.getElementById('auth-btn');
-            
-            statusElem.innerText = "Proses pengesahan...";
-            authBtn.disabled = true;
+        // ========== FUNGSI LOGIN ==========
+        function login() {
+            document.getElementById('st').innerText = "🔄 Menyambung...";
+            document.getElementById('btn-login').disabled = true;
+            document.getElementById('btn-login').style.opacity = "0.6";
 
-            try {
-                // Panggil authenticate dengan Promise
-                const scopes = ['username', 'payments'];
-                const authResult = await Pi.authenticate(scopes, onIncompletePaymentFound);
-                
-                // Kejayaan
-                console.log('Auth result:', authResult);
-                statusElem.innerText = 'Berjaya! User: ' + authResult.user.username;
-                alert('Berjaya! User: ' + authResult.user.username);
-                
-            } catch (error) {
-                // Kegagalan
-                console.error('Auth Error:', error);
-                statusElem.innerText = 'Gagal: ' + error.message;
-                alert('Gagal: ' + error.message);
-            } finally {
-                authBtn.disabled = false;
-            }
+            Pi.authenticate(['username', 'payments'], function(auth) {
+                document.getElementById('st').innerText = "👤 User: " + auth.user.username;
+                document.getElementById('btn-login').disabled = false;
+                document.getElementById('btn-login').style.opacity = "1";
+                document.getElementById('btn-pay').disabled = false;
+                alert("✅ Berjaya! Selamat datang, " + auth.user.username);
+            }, function(error) {
+                document.getElementById('st').innerText = "❌ Status: Gagal sambung. Cuba lagi.";
+                document.getElementById('btn-login').disabled = false;
+                document.getElementById('btn-login').style.opacity = "1";
+                alert("❌ Ralat: " + error.message);
+            });
         }
 
-        // Callback wajib untuk pembayaran tertunda
-        function onIncompletePaymentFound(payment) {
-            console.log('Pembayaran tertunda:', payment);
-            // Anda boleh biarkan ini kosong buat masa ini
+        // ========== FUNGSI PEMBAYARAN ==========
+        function pay() {
+            document.getElementById('st').innerText = "💰 Memproses pembayaran...";
+            document.getElementById('btn-pay').disabled = true;
+            document.getElementById('btn-pay').style.opacity = "0.6";
+
+            Pi.createPayment({
+                amount: 1.0,
+                memo: "Final Test - MBL Store",
+                metadata: { id: "10" }
+            }, {
+                onReadyForServerApproval: function(paymentId) {
+                    console.log("ID Pembayaran: " + paymentId);
+                    document.getElementById('st').innerText = "⏳ Menunggu kelulusan...";
+                },
+                onReadyForServerCompletion: function(paymentId, txid) {
+                    document.getElementById('st').innerText = "✅ Pembayaran berjaya! TX: " + txid;
+                    document.getElementById('btn-pay').disabled = false;
+                    document.getElementById('btn-pay').style.opacity = "1";
+                    alert("🎉 Pembayaran berjaya! ID Transaksi: " + txid);
+                },
+                onCancel: function(paymentId) {
+                    document.getElementById('st').innerText = "❌ Pembayaran dibatalkan.";
+                    document.getElementById('btn-pay').disabled = false;
+                    document.getElementById('btn-pay').style.opacity = "1";
+                    alert("❌ Pembayaran dibatalkan.");
+                },
+                onError: function(error) {
+                    document.getElementById('st').innerText = "❌ Status: Ralat pembayaran.";
+                    document.getElementById('btn-pay').disabled = false;
+                    document.getElementById('btn-pay').style.opacity = "1";
+                    alert("❌ Ralat: " + error.message);
+                },
+                onIncompletePaymentFound: function(payment) {
+                    document.getElementById('st').innerText = "⚠️ Ada pembayaran belum selesai.";
+                    document.getElementById('btn-pay').disabled = false;
+                    document.getElementById('btn-pay').style.opacity = "1";
+                    alert("⚠️ Anda ada pembayaran tertunda. ID: " + payment.identifier);
+                }
+            });
         }
     </script>
 </body>
