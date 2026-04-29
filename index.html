@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,22 +6,22 @@
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <script>Pi.init({ version: "2.0", sandbox: true });</script>
 </head>
-<body style="text-align: center; padding-top: 50px; font-family: Arial;">
-    <h2>MB Legacy Store</h2>
-    <button onclick="Pi.authenticate(['payments'], (p)=>{}) .then((a)=>alert('Login OK'))" style="padding: 15px; background: yellow;">STEP 1: LOGIN</button>
+<body style="text-align: center; padding-top: 50px;">
+    <h2>MB Legacy Store - Tahap 10</h2>
+    <button onclick="Pi.authenticate(['payments'], (p)=>{}) .then((a)=>alert('Login Berjaya'))" style="padding: 15px; background: gold;">1. LOGIN DULU</button>
     <br><br>
-    <button onclick="bayar()" style="padding: 15px; background: orange;">STEP 2: BAYAR 0.1 PI</button>
+    <button onclick="bayar()" style="padding: 15px; background: orange;">2. BAYAR 0.01 PI</button>
 
     <script>
         function bayar() {
             Pi.createPayment({
-                amount: 0.1,
-                memo: "Test",
-                metadata: { orderId: "1" }
+                amount: 0.01,
+                memo: "Final Test",
+                metadata: { orderId: "mbl-1" }
             }, {
                 onReadyForServerApproval: (id) => { console.log(id); },
-                onReadyForServerCompletion: (id, txid) => { alert('SETTLE! TXID: ' + txid); },
-                onCancel: (id) => {},
+                onReadyForServerCompletion: (id, txid) => { alert('SUKSES! TXID: ' + txid); },
+                onCancel: (id) => { alert('Batal'); },
                 onError: (e) => { alert('Ralat: ' + e.message); }
             });
         }
