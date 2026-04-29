@@ -38,7 +38,36 @@
             document.getElementById('st').innerText = "⚠️ Ada pembayaran belum selesai.";
             document.getElementById('btn-pay').disabled = false;
             document.getElementById('btn-pay').style.opacity = "1";
-        }
+        }    // ========== CANCEL PAYMENT ==========
+    document.getElementById('btn-cancel').addEventListener('click', function() {
+        const paymentId = prompt("Masukkan Payment ID untuk dibatalkan:");
+        if (!paymentId) return;
+
+        document.getElementById('st').innerText = "🗑️ Membatalkan pembayaran...";
+        document.getElementById('btn-cancel').disabled = true;
+
+        fetch('/api/cancel', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentId: paymentId })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('st').innerText = "✅ Pembayaran dibatalkan!";
+                alert("✅ Berjaya dibatalkan!");
+            } else {
+                document.getElementById('st').innerText = "❌ Gagal batal.";
+                alert("❌ Gagal: " + JSON.stringify(data));
+            }
+            document.getElementById('btn-cancel').disabled = false;
+        })
+        .catch(err => {
+            document.getElementById('st').innerText = "❌ Ralat server.";
+            document.getElementById('btn-cancel').disabled = false;
+        });
+    });
+</script>
 
         window.onload = async function() {
             if (typeof Pi === 'undefined') {
