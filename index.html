@@ -1,44 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MB Legacy Store</title>
+    <title>MB LEGACY</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
-<body style="text-align: center; padding-top: 50px; font-family: Arial, sans-serif;">
+<body style="text-align:center; padding-top:50px;">
     <h1>MB LEGACY STORE</h1>
-    <p>Status: <span id="st" style="color: blue;">Memulakan...</span></p>
-    
-    <button onclick="login()" style="padding: 15px 30px; margin: 10px;">1. LOGIN</button>
-    <br>
-    <button onclick="bayar()" style="padding: 15px 30px; background: #673ab7; color: white; border: none; border-radius: 8px;">2. BAYAR 1.0 PI</button>
+    <button onclick="Pi.init({version:'2.0',sandbox:false}); alert('Sistem Sedia!')">
+        Langkah 1: AKTIFKAN SISTEM
+    </button>
+    <br><br>
+    <button onclick="Pi.authenticate(['payments'], (p)=>alert('Login: '+p.user.username))">
+        Langkah 2: LOGIN
+    </button>
+    <br><br>
+    <button onclick="bayar()" style="background:purple; color:white; padding:15px;">
+        Langkah 3: BAYAR 1 PI
+    </button>
 
     <script>
-        try {
-            Pi.init({ version: "2.0", sandbox: false });
-            document.getElementById('st').innerText = "SEDIA (Mainnet)";
-            document.getElementById('st').style.color = "green";
-        } catch (e) {
-            document.getElementById('st').innerText = "Ralat SDK!";
-        }
-
-        function login() {
-            Pi.authenticate(['payments'], function(p) {
-                alert("Berjaya Login: " + p.user.username);
-            }, function(e) { alert("Ralat: " + e.message); });
-        }
-
         function bayar() {
             Pi.createPayment({
                 amount: 1.0,
                 memo: "Settle Tahap 10",
-                metadata: { orderId: "mbl-final" }
+                metadata: { orderId: "101" }
             }, {
-                onReadyForServerApproval: function(id) { console.log(id); },
-                onReadyForServerCompletion: function(id, tx) { alert("Berjaya! TX: " + tx); },
-                onCancel: function(id) { alert("Batal"); },
-                onError: function(e) { alert("Ralat: " + e.message); }
+                onReadyForServerApproval: (id) => console.log(id),
+                onReadyForServerCompletion: (id, tx) => alert("Berjaya! TX: " + tx),
+                onCancel: (id) => alert("Batal"),
+                onError: (e) => alert("Ralat: " + e.message)
             });
         }
     </script>
