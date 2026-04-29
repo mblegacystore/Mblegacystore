@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MB Legacy Store</title>
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <script>Pi.init({ version: "2.0", sandbox: true });</script>
+</head>
+<body>
+    <h1>Selamat Datang ke MB Legacy Store</h1>
+    <p>Sila tekan butang di bawah untuk test payment (Langkah 10).</p>
+    <button onclick="makePayment()">BAYAR 1 PI (TEST)</button>
+
+    <script>
+        async function makePayment() {
+            try {
+                const payment = await Pi.createPayment({
+                    amount: 1,
+                    memo: "Test Payment MB Legacy Store",
+                    metadata: { orderId: 123 }
+                }, {
+                    onReadyForServerApproval: (paymentId) => { console.log(paymentId); },
+                    onReadyForServerCompletion: (paymentId, txid) => { console.log(txid); },
+                    onCancel: (paymentId) => { alert("Payment Batal"); },
+                    onError: (error, payment) => { alert("Error: " + error.message); }
+                });
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+    </script>
+</body>
+</html>
