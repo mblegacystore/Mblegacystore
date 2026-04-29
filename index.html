@@ -1,56 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MB LEGACY STORE | Pro</title>
+    <title>MBL PRO</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
-<body style="text-align: center; padding-top: 80px; font-family: sans-serif; background-color: #0f0f0f; color: #ffffff;">
-
-    <h1 style="color: #fbc02d;">MB LEGACY STORE</h1>
-    <div id="status" style="margin-bottom: 20px; font-weight: bold; color: #00e676;">[ CHECKING CONNECTION... ]</div>
-    
-    <div id="main-ui">
-        <button onclick="login()" style="width: 250px; padding: 15px; margin: 10px; background: #388e3c; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">
-            1. AUTHENTICATE USER
-        </button>
-        <br>
-        <button onclick="pay()" style="width: 250px; padding: 15px; margin: 10px; background: #6a1b9a; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">
-            2. PAY 1.0 PI (MAINNET)
-        </button>
-    </div>
+<body style="text-align:center; padding-top:100px; background:#111; color:#fff;">
+    <h2>MB LEGACY STORE</h2>
+    <div id="st" style="color:yellow;">Checking SDK...</div>
+    <br>
+    <button onclick="loginUser()" style="padding:20px; width:250px; font-weight:bold;">1. PENGESAHAN LOGIN</button>
+    <br><br>
+    <button onclick="bayarPi()" style="padding:20px; width:250px; background:purple; color:white;">2. BAYAR 1.0 PI</button>
 
     <script>
-        // Force Initialize
-        Pi.init({ version: "2.0", sandbox: false });
-        document.getElementById('status').innerText = "[ STATUS: CONNECTED TO MAINNET ]";
+        // Inisialisasi awal
+        window.onload = function() {
+            try {
+                Pi.init({ version: "2.0", sandbox: false });
+                document.getElementById('st').innerText = "SYSTEM CONNECTED";
+                document.getElementById('st').style.color = "lime";
+            } catch (e) {
+                document.getElementById('st').innerText = "SDK ERROR: Guna Pi Browser!";
+            }
+        }
 
-        function login() {
-            console.log("Login Clicked");
+        function loginUser() {
             Pi.authenticate(['payments'], function(auth) {
-                alert("Success! Authenticated as: " + auth.user.username);
-                document.getElementById('status').innerText = "[ AUTH: " + auth.user.username + " ]";
-            }, function(error) {
-                alert("Auth Error: " + error.message);
+                alert("Login Berjaya: " + auth.user.username);
+                document.getElementById('st').innerText = "USER: " + auth.user.username;
+            }, function(err) {
+                alert("Ralat Login: " + err.message);
             });
         }
 
-        function pay() {
-            console.log("Pay Clicked");
+        function bayarPi() {
             Pi.createPayment({
                 amount: 1.0,
-                memo: "MB Legacy Store Verification",
-                metadata: { orderId: "MBL-FINAL-MAIN" }
+                memo: "Mainnet Verification Step 10",
+                metadata: { orderId: "MBL-10-FINAL" }
             }, {
-                onReadyForServerApproval: function(id) { 
-                    console.log("Approved ID:", id); 
-                },
-                onReadyForServerCompletion: function(id, txid) {
-                    alert("CONGRATULATIONS! Payment Done. TXID: " + txid);
-                },
-                onCancel: function(id) { alert("Payment Cancelled."); },
-                onError: function(error) { alert("Payment Error: " + error.message); }
+                onReadyForServerApproval: (id) => { console.log(id); },
+                onReadyForServerCompletion: (id, tx) => { alert("BAYARAN BERJAYA! TXID: " + tx); },
+                onCancel: (id) => { alert("Batal"); },
+                onError: (e) => { alert("Ralat: " + e.message); }
             });
         }
     </script>
