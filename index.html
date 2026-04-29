@@ -2,56 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MB LEGACY STORE | PRO</title>
+    <title>MB LEGACY STORE</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
-<body style="text-align:center; padding-top:80px; background:#000; color:#fff; font-family:sans-serif;">
+<body style="text-align:center; padding-top:100px; background:#000; color:#fff; font-family:sans-serif;">
 
-    <h1 style="color:gold; font-size: 28px;">MB LEGACY STORE</h1>
-    <hr style="width: 80%; border: 0.5px solid #333;">
-    
-    <div id="status" style="margin: 20px; color:cyan; font-weight:bold;">[ SYSTEM READY ]</div>
+    <h1 style="color:gold;">MB LEGACY STORE</h1>
+    <p id="st" style="color:cyan;">[ STATUS: READY ]</p>
 
-    <button onclick="startAuth()" style="padding:20px; width:85%; background:#1db954; color:white; font-weight:bold; border-radius:12px; border:none; font-size:16px;">
-        1. START AUTHENTICATION
+    <button onclick="connectPi()" style="padding:20px; width:80%; background:green; color:white; font-weight:bold; border-radius:10px; border:none;">
+        1. CONNECT PI ACCOUNT
     </button>
     
     <br><br>
     
-    <button onclick="startPay()" style="padding:20px; width:85%; background:#673ab7; color:white; font-weight:bold; border-radius:12px; border:none; font-size:16px;">
+    <button onclick="payPi()" style="padding:20px; width:80%; background:purple; color:white; font-weight:bold; border-radius:10px; border:none;">
         2. PAY 1.0 PI
     </button>
 
     <script>
-        // Inisialisasi Segera
+        // Init SDK
         Pi.init({ version: "2.0", sandbox: false });
 
-        function startAuth() {
-            document.getElementById('status').innerText = "CONNECTING... PLEASE WAIT";
-            console.log("Auth started...");
-            
+        function connectPi() {
+            document.getElementById('st').innerText = "CONNECTING...";
             Pi.authenticate(['payments'], function(auth) {
-                document.getElementById('status').innerText = "CONNECTED: " + auth.user.username.toUpperCase();
-                document.getElementById('status').style.color = "#00ff00";
-                alert("Login Success! You are now verified.");
+                document.getElementById('st').innerText = "CONNECTED: " + auth.user.username;
+                alert("Login Success!");
             }, function(err) {
-                document.getElementById('status').innerText = "AUTH ERROR: " + err.message;
-                alert("Auth Error: " + err.message + "\n\nTry refreshing the page.");
+                alert("Auth Error: " + err.message);
+                document.getElementById('st').innerText = "ERROR: TRY REFRESH";
             });
         }
 
-        function startPay() {
-            document.getElementById('status').innerText = "OPENING PI WALLET...";
+        function payPi() {
             Pi.createPayment({
                 amount: 1.0,
-                memo: "MB Legacy Store Verification",
-                metadata: { orderId: "MBL-FINAL-10" }
+                memo: "Verification MB Legacy Store",
+                metadata: { orderId: "101" }
             }, {
-                onReadyForServerApproval: (id) => { console.log("Approved ID:", id); },
-                onReadyForServerCompletion: (id, tx) => { alert("PAYMENT SUCCESS!\nTXID: " + tx); },
-                onCancel: (id) => { document.getElementById('status').innerText = "PAYMENT CANCELLED"; },
-                onError: (e) => { alert("Payment Error: " + e.message); }
+                onReadyForServerApproval: (id) => { console.log(id); },
+                onReadyForServerCompletion: (id, tx) => { alert("SUCCESS! TX: " + tx); },
+                onCancel: (id) => { alert("Cancelled"); },
+                onError: (e) => { alert("Error: " + e.message); }
             });
         }
     </script>
