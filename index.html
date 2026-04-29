@@ -8,37 +8,36 @@
         Pi.init({ version: "2.0", sandbox: true });
     </script>
 </head>
-<body style="text-align: center; padding-top: 50px; font-family: sans-serif;">
+<body style="text-align: center; padding-top: 50px;">
     <h1>MB Legacy Store</h1>
-    <p>Tahap 10: Ujian Transaksi</p>
-    <button onclick="buatBayaran()" style="padding: 15px 30px; background-color: gold; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">
-        BAYAR 1 TEST PI
-    </button>
+    <button onclick="authPi()" style="padding: 20px; background: gold;">1. KLIK UNTUK LOGIN PI</button>
+    <br><br>
+    <button onclick="buatBayaran()" style="padding: 20px; background: orange;">2. KLIK UNTUK BAYAR</button>
 
     <script>
+        function authPi() {
+            Pi.authenticate(['payments'], onIncompletePaymentFound).then(function(auth) {
+                alert("Login Berjaya: " + auth.user.username);
+            });
+        }
+
+        function onIncompletePaymentFound(payment) {
+            console.log("Ada payment sangkut");
+        }
+
         async function buatBayaran() {
             try {
-                const payment = await Pi.createPayment({
-                    amount: 1,
-                    memo: "Test Transaction Tahap 10",
-                    metadata: { orderId: "mbl-001" }
+                await Pi.createPayment({
+                    amount: 0.1,
+                    memo: "Test Tahap 10",
+                    metadata: { orderId: "123" }
                 }, {
-                    onReadyForServerApproval: (paymentId) => {
-                        console.log("Menunggu pengesahan:", paymentId);
-                    },
-                    onReadyForServerCompletion: (paymentId, txid) => {
-                        alert("Bayaran Berjaya! TXID: " + txid);
-                    },
-                    onCancel: (paymentId) => {
-                        console.log("Bayaran dibatalkan.");
-                    },
-                    onError: (error, payment) => {
-                        alert("Ralat: " + error.message);
-                    }
+                    onReadyForServerApproval: (id) => alert("Dah sedia! ID: " + id),
+                    onReadyForServerCompletion: (id, txid) => alert("Selesai! TXID: " + txid),
+                    onCancel: (id) => alert("Batal"),
+                    onError: (err) => alert("Masih error scope? Tekan Login dulu kat atas.")
                 });
-            } catch (err) {
-                alert("Sistem error: " + err.message);
-            }
+            } catch (e) { alert(e.message); }
         }
     </script>
 </body>
