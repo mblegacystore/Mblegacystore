@@ -1,13 +1,13 @@
 export default async function handler(req, res) {
-    // 1. Hanya benarkan POST request
+    // 1. Only accept POST requests
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Guna POST sahaja' });
+        return res.status(405).json({ error: 'Method not allowed. Use POST only.' });
     }
 
     const { paymentId } = req.body;
 
     if (!paymentId) {
-        return res.status(400).json({ error: 'paymentId diperlukan' });
+        return res.status(400).json({ error: 'Payment ID is required.' });
     }
 
     const headers = {
@@ -16,8 +16,8 @@ export default async function handler(req, res) {
     };
 
     try {
-        // Langkah 1: LULUSKAN pembayaran (Approve)
-        console.log('Meluluskan pembayaran:', paymentId);
+        // Step 1: Approve the payment
+        console.log('Approving payment:', paymentId);
         const approveRes = await fetch(
             `https://api.minepi.com/v2/payments/${paymentId}/approve`,
             { method: 'POST', headers: headers }
@@ -25,37 +25,38 @@ export default async function handler(req, res) {
         const approveData = await approveRes.json();
 
         if (!approveRes.ok) {
-            console.error('Gagal approve:', approveData);
-            return res.status(500).json({ error: 'Gagal approve', detail: approveData });
+            console.error('Approval failed:', approveData);
+            return res.status(500).json({ error: 'Failed to approve payment.', detail: approveData });
         }
 
-        // Langkah 2: TUNGGU sebentar untuk transaksi diproses
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        // Step 2: WAIT for blockchain confirmation (CRITICAL!)
+        console.log('Waiting 5 seconds for transaction to be processed...');
+        await new Promise(resolve => setTimeout(resolve, 5000));
 
-        // Langkah 3: SAHKAN & MUKTAMADKAN pembayaran (Complete)
-        console.log('Melengkapkan pembayaran:', paymentId);
+        // Step 3: Complete and finalize the payment
+        console.log('Completing payment:', paymentId);
         const completeRes = await fetch(
             `https://api.minepi.com/v2/payments/${paymentId}/complete`,
             {
                 method: 'POST',
                 headers: headers,
-                // txid dibiarkan kosong untuk memberitahu Pi Network
-                body: JSON.stringify({ txid: null }) 
+                // Sending txid as null signals to Pi Network that the transaction is finalized
+                body: JSON.stringify({ txid: null })
             }
         );
         const completeData = await completeRes.json();
 
         if (!completeRes.ok) {
-            console.error('Gagal complete:', completeData);
-            return res.status(500).json({ error: 'Gagal complete', detail: completeData });
+            console.error('Completion failed:', completeData);
+            return res.status(500).json({ error: 'Failed to complete payment.', detail: completeData });
         }
 
-        // Berjaya!
-        console.log('Pembayaran selesai sepenuhnya:', paymentId);
+        // Success!
+        console.log('Payment successfully finalized:', paymentId);
         return res.status(200).json({ success: true, approved: approveData, completed: completeData });
 
     } catch (error) {
-        console.error('Ralat server:', error);
-        return res.status(500).json({ error: error.message });
+        console.error('Server error:', error);
+        return res.status(500).json({ error: 'Internal server error.', detail: error.message });
     }
 }
