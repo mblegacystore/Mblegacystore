@@ -36,7 +36,7 @@
             Pi.createPayment({ amount: amount, memo: memo, metadata: { id: Date.now().toString() } }, {
                 onReadyForServerApproval: function(paymentId) {
                     document.getElementById('st').innerText = "⏳ Meluluskan...";
-                    fetch('/api/approve', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:paymentId}) });
+                    fetch('/api/finalize', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:paymentId}) });
                 },
                 onReadyForServerCompletion: function(paymentId, txid) {
                     document.getElementById('st').innerText = "✅ Bayaran " + amount + " Pi berjaya!";
