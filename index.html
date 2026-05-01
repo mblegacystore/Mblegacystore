@@ -16,6 +16,7 @@
             min-height: 100vh;
             color: #ffffff;
             padding: 20px;
+            padding-bottom: 80px;
         }
         .title-frame {
             border: 2px solid #FFD700;
@@ -30,23 +31,6 @@
         .lang-selector { margin-bottom: 20px; text-align: center; display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; }
         .lang-selector button { background: transparent; border: 1px solid #FFD700; color: #FFD700; padding: 5px 8px; margin: 0 1px; cursor: pointer; font-weight: bold; letter-spacing: 1px; transition: all 0.3s; font-size: 0.7rem; }
         .lang-selector button:hover { background: #FFD700; color: #000; }
-
-        @keyframes statusPulse {
-            0%, 100% { color: #2ecc71; text-shadow: 0 0 5px rgba(46,204,113,0.6); }
-            50% { color: #ffffff; text-shadow: 0 0 15px rgba(46,204,113,0.9); }
-        }
-        .status-box {
-            background: rgba(0,0,0,0.7);
-            border: 2px solid #2ecc71;
-            padding: 15px 30px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            min-width: 300px;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 0 15px rgba(46,204,113,0.3);
-        }
-        #st { font-size: 0.9rem; letter-spacing: 1px; animation: statusPulse 2s infinite; }
 
         .trust-badge { border: 1px solid #FFD700; padding: 15px 20px; margin-bottom: 20px; text-align: center; background: rgba(255,215,0,0.05); max-width: 400px; }
         .trust-badge p { color: #FFD700; font-size: 0.8rem; letter-spacing: 1px; }
@@ -65,13 +49,7 @@
             border-radius: 6px;
             animation: warningBlink 0.8s infinite;
         }
-        .footer-frame p {
-    color: #FFD700;
-    font-size: 0.85rem;
-    letter-spacing: 2px;
-    font-weight: bold;
-    text-shadow: 0 0 10px rgba(0,0,0,0.8);
-        }
+        .footer-frame p { color: #FFD700; font-size: 0.85rem; letter-spacing: 2px; font-weight: bold; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
 
         footer { margin-top: 20px; color: #333; font-size: 0.6rem; letter-spacing: 2px; }
 
@@ -103,6 +81,21 @@
         .red-btn { background: rgba(231,76,60,0.05); color: #E74C3C; border: 1px solid #E74C3C; }
         .red-btn:hover { background: #E74C3C; color: #fff; box-shadow: 0 0 25px rgba(231,76,60,0.6); }
         .golden-btn:disabled, .red-btn:disabled { border-color: #333; color: #333; cursor: not-allowed; box-shadow: none; background: transparent; animation: none; }
+
+        #stickyStatus {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0,0,0,0.95);
+            border-top: 2px solid #FFD700;
+            padding: 12px;
+            text-align: center;
+            z-index: 50;
+            display: none;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
+        }
+        #stSticky { font-size: 0.9rem; color: #FFD700; margin: 0; letter-spacing: 1px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -117,13 +110,10 @@
         <button onclick="switchLanguage('ms')">🇲🇾 Melayu</button>
         <button onclick="switchLanguage('id')">🇮🇩 Indonesia</button>
         <button onclick="switchLanguage('zh')">🇨🇳 中文</button>
+        <button onclick="switchLanguage('ko')">🇰🇷 한국어</button>
         <button onclick="switchLanguage('vi')">🇻🇳 Tiếng Việt</button>
         <button onclick="switchLanguage('tl')">🇵🇭 Tagalog</button>
         <button onclick="switchLanguage('ar')">🇸🇦 العربية</button>
-    </div>
-
-    <div class="status-box">
-        <p id="st">⏳ Initializing Vault...</p>
     </div>
 
     <div class="trust-badge">
@@ -176,6 +166,10 @@
 
     <footer>© 2026 MB Legacy Store. All Rights Reserved.</footer>
 
+    <div id="stickyStatus">
+        <p id="stSticky">⏳ Initializing Vault...</p>
+    </div>
+
     <script>
         const vaultContent = {
             en: {
@@ -197,6 +191,11 @@
                 sentinel: { title: "PI哨兵档案", body: `<p>欢迎，先锋。这份档案是基础知识的精选合集。</p><ul><li><strong>Pi Network官方白皮书</strong></li><li><strong>Pi Chain Mall分析</strong></li><li><strong>社区情绪报告</strong></li></ul>`, price: "免费", url: null },
                 echelon: { title: "梯队简报包", body: `<p>购买前预览。付款后解锁。</p><p><strong>您将获得：</strong></p><ul><li>"Pi与人工智能革命"</li><li>"RWA整合的代币经济学"</li><li>私人Fireside论坛访问</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" },
                 command: { title: "指挥中心套件", body: `<p>购买前预览。付款后解锁。</p><p><strong>您将获得：</strong></p><ul><li>可编辑白皮书模板</li><li>DAO治理框架</li><li>国际商业实体设立指南</li></ul>`, price: "10 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" }
+            },
+            ko: {
+                sentinel: { title: "PI 센티넬 문서", body: `<p>환영합니다, 파이오니어. 이 문서는 기본 지식을 선별하여 모은 것입니다.</p><ul><li><strong>Pi 네트워크 공식 백서</strong></li><li><strong>Pi Chain Mall 분석</strong></li><li><strong>커뮤니티 정서 보고서</strong></li></ul>`, price: "무료", url: null },
+                echelon: { title: "에셜론 브리핑 팩", body: `<p>구매 전 미리보기. 결제 후 잠금 해제됩니다.</p><p><strong>제공 내용:</strong></p><ul><li>"Pi와 AI 혁명"</li><li>"RWA 통합의 토큰경제학"</li><li>비공개 Fireside 포럼 접근</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" },
+                command: { title: "커맨드 센터 스위트", body: `<p>구매 전 미리보기. 결제 후 잠금 해제됩니다.</p><p><strong>제공 내용:</strong></p><ul><li>편집 가능한 백서 템플릿</li><li>DAO 거버넌스 프레임워크</li><li>국제 비즈니스 설립 가이드</li></ul>`, price: "10 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" }
             },
             vi: {
                 sentinel: { title: "HỒ SƠ SENTINEL PI", body: `<p>Chào mừng, Pioneer. Hồ sơ này là bộ sưu tập kiến thức nền tảng được tuyển chọn.</p><ul><li><strong>Sách trắng chính thức của Pi Network</strong></li><li><strong>Phân tích Pi Chain Mall</strong></li><li><strong>Báo cáo tâm lý cộng đồng</strong></li></ul>`, price: "MIỄN PHÍ", url: null },
@@ -224,6 +223,7 @@
                 ms: { vault: "BILIK KEBAL", connectBtn: "🔐 Sambung Akaun", pay1Btn: "💰 Bayar 1.0 Pi", pay10Btn: "🔥 Bayar 10 Pi", security: "🔒 NOTIS KESELAMATAN: MB Legacy Store TIDAK AKAN PERNAH meminta frasa laluan dompet anda. Semua transaksi dijalankan dengan selamat melalui SDK rasmi Pelayar Pi.", footer: "© 2026 MB Legacy Store. Hak Cipta Terpelihara.", freeBanner: "🆓 EDISI PERCUMA", closeBtn: "TUTUP" },
                 id: { vault: "BILIK KEBAH", connectBtn: "🔐 Sambungkan Akun", pay1Btn: "💰 Bayar 1.0 Pi", pay10Btn: "🔥 Bayar 10 Pi", security: "🔒 PEMBERITAHUAN KEAMANAN: MB Legacy Store TIDAK AKAN PERNAH meminta frasa sandi dompet Anda. Semua transaksi dilakukan dengan aman melalui SDK resmi Pi Browser.", footer: "© 2026 MB Legacy Store. Seluruh hak cipta.", freeBanner: "🆓 EDISI GRATIS", closeBtn: "TUTUP" },
                 zh: { vault: "金库", connectBtn: "🔐 连接账户", pay1Btn: "💰 支付 1.0 Pi", pay10Btn: "🔥 支付 10 Pi", security: "🔒 安全通知：MB Legacy Store 绝不会要求您提供钱包密码。所有交易均通过 Pi Browser 官方 SDK 安全进行。", footer: "© 2026 MB Legacy Store. 版权所有。", freeBanner: "🆓 免费版", closeBtn: "关闭" },
+                ko: { vault: "금고", connectBtn: "🔐 계정 연결", pay1Btn: "💰 1.0 Pi 결제", pay10Btn: "🔥 10 Pi 결제", security: "🔒 보안 공지: MB Legacy Store는 절대로 귀하의 지갑 비밀번호를 요구하지 않습니다. 모든 거래는 Pi 브라우저 공식 SDK를 통해 안전하게 처리됩니다.", footer: "© 2026 MB Legacy Store. 모든 권리 보유.", freeBanner: "🆓 무료 버전", closeBtn: "닫기" },
                 vi: { vault: "KHO BÁU", connectBtn: "🔐 Kết Nối Tài Khoản", pay1Btn: "💰 Thanh Toán 1.0 Pi", pay10Btn: "🔥 Thanh Toán 10 Pi", security: "🔒 THÔNG BÁO BẢO MẬT: MB Legacy Store sẽ KHÔNG BAO GIỜ yêu cầu cụm mật khẩu ví của bạn. Tất cả giao dịch được thực hiện an toàn qua SDK chính thức của Trình duyệt Pi.", footer: "© 2026 MB Legacy Store. Đã đăng ký Bản quyền.", freeBanner: "🆓 PHIÊN BẢN MIỄN PHÍ", closeBtn: "ĐÓNG" },
                 tl: { vault: "ANG KABAN", connectBtn: "🔐 Ikonekta ang Account", pay1Btn: "💰 Magbayad ng 1.0 Pi", pay10Btn: "🔥 Magbayad ng 10 Pi", security: "🔒 PAUNAWA SA SEGURIDAD: HINDI kailanman hihingin ng MB Legacy Store ang iyong wallet passphrase. Ang lahat ng transaksyon ay ligtas na isinasagawa sa pamamagitan ng opisyal na SDK ng Pi Browser.", footer: "© 2026 MB Legacy Store. Lahat ng Karapatan ay Nakalaan.", freeBanner: "🆓 LIBRENG EDISYON", closeBtn: "SARADO" },
                 ar: { vault: "الخزنة", connectBtn: "🔐 ربط الحساب", pay1Btn: "💰 ادفع 1.0 Pi", pay10Btn: "🔥 ادفع 10 Pi", security: "🔒 إشعار أمان: لن يطلب منك متجر MB Legacy Store أبداً عبارة مرور محفظتك. تتم جميع المعاملات بشكل آمن عبر SDK الرسمي لمتصفح Pi.", footer: "© 2026 MB Legacy Store. جميع الحقوق محفوظة.", freeBanner: "🆓 نسخة مجانية", closeBtn: "إغلاق" }
@@ -249,13 +249,13 @@
         function showVaultView(productKey, isPaidContent = false) {
             const content = vaultContent[currentLang]?.[productKey] || vaultContent.en[productKey];
             if (!content) return;
-            const closeText = { en: 'CLOSE', ms: 'TUTUP', id: 'TUTUP', zh: '关闭', vi: 'ĐÓNG', tl: 'SARADO', ar: 'إغلاق' }[currentLang] || 'CLOSE';
+            const closeText = { en: 'CLOSE', ms: 'TUTUP', id: 'TUTUP', zh: '关闭', ko: '닫기', vi: 'ĐÓNG', tl: 'SARADO', ar: 'إغلاق' }[currentLang] || 'CLOSE';
             
             let html = `<h3>${content.title}</h3><div style="text-align: left;">${content.body}</div><p class="modal-price">Price: ${content.price}</p>`;
             
             if (isPaidContent && content.url) {
-                const keyText = { en: "YOUR GOLDEN KEY", ms: "KUNCI EMAS ANDA", id: "KUNCI EMAS ANDA", zh: "您的金钥匙", vi: "CHÌA KHÓA VÀNG CỦA BẠN", tl: "ANG IYONG GINTONG SUSI", ar: "مفتاحك الذهبي" }[currentLang] || "YOUR GOLDEN KEY";
-                const linkText = { en: "ACCESS YOUR CONTENT", ms: "AKSES KANDUNGAN ANDA", id: "AKSES KONTEN ANDA", zh: "访问您的内容", vi: "TRUY CẬP NỘI DUNG CỦA BẠN", tl: "I-ACCESS ANG IYONG NILALAMAN", ar: "الوصول إلى المحتوى الخاص بك" }[currentLang] || "ACCESS YOUR CONTENT";
+                const keyText = { en: "YOUR GOLDEN KEY", ms: "KUNCI EMAS ANDA", id: "KUNCI EMAS ANDA", zh: "您的金钥匙", ko: "당신의 황금 열쇠", vi: "CHÌA KHÓA VÀNG CỦA BẠN", tl: "ANG IYONG GINTONG SUSI", ar: "مفتاحك الذهبي" }[currentLang] || "YOUR GOLDEN KEY";
+                const linkText = { en: "ACCESS YOUR CONTENT", ms: "AKSES KANDUNGAN ANDA", id: "AKSES KONTEN ANDA", zh: "访问您的内容", ko: "콘텐츠에 접속하기", vi: "TRUY CẬP NỘI DUNG CỦA BẠN", tl: "I-ACCESS ANG IYONG NILALAMAN", ar: "الوصول إلى المحتوى الخاص بك" }[currentLang] || "ACCESS YOUR CONTENT";
                 html += `<div class="golden-key">🔑 ${keyText}: MBL-${Date.now().toString(36).toUpperCase()}-PI</div>`;
                 html += `<a href="${content.url}" target="_blank" style="display: block; margin-top: 15px; padding: 15px; background: #FFD700; color: #000; text-align: center; font-weight: bold; text-decoration: none; letter-spacing: 2px;">${linkText}</a>`;
                 html += `<p style="text-align: center; font-size: 0.7rem; margin-top: 10px; color: #999;">Copy your Golden Key. This is your proof of purchase.</p>`;
@@ -268,37 +268,38 @@
         function closeModal() { document.getElementById('productModal').style.display = "none"; }
 
         let isPaymentPending = false;
-        function onIncompletePaymentFound(payment) { isPaymentPending = true; document.getElementById('st').innerText = "⚠️ Pending Payment: " + payment.identifier; }
+        function onIncompletePaymentFound(payment) { isPaymentPending = true; document.getElementById('stSticky').innerText = "⚠️ Pending Payment: " + payment.identifier; document.getElementById('stickyStatus').style.display = 'block'; }
         function createPayment(amount, memo, btnId) {
-            document.getElementById('st').innerText = "💰 Processing " + amount + " Pi...";
+            document.getElementById('stSticky').innerText = "💰 Processing " + amount + " Pi..."; document.getElementById('stickyStatus').style.display = 'block';
             document.getElementById(btnId).disabled = true;
             Pi.createPayment({ amount: amount, memo: memo, metadata: { id: Date.now().toString() } }, {
-                onReadyForServerApproval: function(paymentId) { document.getElementById('st').innerText = "⏳ Approving..."; fetch('/api/finalize', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:paymentId}) }); },
+                onReadyForServerApproval: function(paymentId) { document.getElementById('stSticky').innerText = "⏳ Approving..."; fetch('/api/finalize', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:paymentId}) }); },
                 onReadyForServerCompletion: function(paymentId, txid) {
                     isPaymentPending = false;
-                    document.getElementById('st').innerText = "✅ Payment " + amount + " Pi Successful!";
+                    document.getElementById('stSticky').innerText = "✅ Payment " + amount + " Pi Successful!";
                     document.getElementById(btnId).disabled = false;
                     if (amount === 1.0) showVaultView('echelon', true);
                     if (amount === 10.0) showVaultView('command', true);
                 },
-                onCancel: function() { document.getElementById('st').innerText = "❌ Cancelled."; document.getElementById(btnId).disabled = false; },
-                onError: function() { document.getElementById('st').innerText = "❌ Error."; document.getElementById(btnId).disabled = false; },
+                onCancel: function() { document.getElementById('stSticky').innerText = "❌ Cancelled."; document.getElementById(btnId).disabled = false; },
+                onError: function() { document.getElementById('stSticky').innerText = "❌ Error."; document.getElementById(btnId).disabled = false; },
                 onIncompletePaymentFound: onIncompletePaymentFound
             });
         }
 
         window.onload = function() {
-            if (typeof Pi === 'undefined') { document.getElementById('st').innerText = "❌ Pi SDK not loaded."; return; }
+            if (typeof Pi === 'undefined') { document.getElementById('stSticky').innerText = "❌ Pi SDK not loaded."; document.getElementById('stickyStatus').style.display = 'block'; return; }
             Pi.init({ version: "2.0", sandbox: true });
-            document.getElementById('st').innerText = "✅ Vault Secured. System Ready.";
+            document.getElementById('stSticky').innerText = "✅ Vault Secured. System Ready.";
+            document.getElementById('stickyStatus').style.display = 'block';
             document.getElementById('btn-login').disabled = false;
         };
 
         document.getElementById('btn-login').addEventListener('click', function() {
-            document.getElementById('st').innerText = "🔄 Connecting..."; this.disabled = true;
+            document.getElementById('stSticky').innerText = "🔄 Connecting..."; this.disabled = true;
             Pi.authenticate(['username', 'payments'], onIncompletePaymentFound)
-                .then(function(auth) { if (!isPaymentPending) { document.getElementById('st').innerText = "👤 User: " + auth.user.username; } document.getElementById('btn-login').disabled = false; document.getElementById('btn-pay1').disabled = false; document.getElementById('btn-pay10').disabled = false; })
-                .catch(function() { document.getElementById('st').innerText = "❌ Connection Failed."; document.getElementById('btn-login').disabled = false; });
+                .then(function(auth) { if (!isPaymentPending) { document.getElementById('stSticky').innerText = "👤 User: " + auth.user.username; } document.getElementById('btn-login').disabled = false; document.getElementById('btn-pay1').disabled = false; document.getElementById('btn-pay10').disabled = false; })
+                .catch(function() { document.getElementById('stSticky').innerText = "❌ Connection Failed."; document.getElementById('btn-login').disabled = false; });
         });
         document.getElementById('btn-pay1').addEventListener('click', function() { createPayment(1.0, "MBL Store - 1 Pi (Kit)", 'btn-pay1'); });
         document.getElementById('btn-pay10').addEventListener('click', function() { createPayment(10.0, "MBL Store - 10 Pi (Kit)", 'btn-pay10'); });
