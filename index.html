@@ -146,7 +146,6 @@
             font-size: 1.1rem;
             font-weight: bold;
         }
-        /* --- MODAL ('BILIK KEBAL PERIBADI') --- */
         .modal {
             display: none;
             position: fixed;
@@ -172,10 +171,7 @@
         .modal-price { font-size: 1.5rem; font-weight: bold; color: #FFD700; margin-bottom: 20px; text-align: center; }
         .modal-close-btn { padding: 12px 25px; background: transparent; border: 1px solid #E74C3C; color: #E74C3C; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: all 0.3s; display: block; margin: 20px auto 0; text-align: center; }
         .modal-close-btn:hover { background: #E74C3C; color: #fff; }
-        .golden-key {
-            background: #FFD700; color: #000; padding: 15px; margin-top: 15px; text-align: center; font-weight: bold; letter-spacing: 2px; word-break: break-all;
-        }
-        /* --- END MODAL --- */
+        .golden-key { background: #FFD700; color: #000; padding: 15px; margin-top: 15px; text-align: center; font-weight: bold; letter-spacing: 2px; word-break: break-all; }
         .golden-btn, .red-btn {
             display: block; width: 85%; max-width: 400px; margin: 0 auto 12px auto; padding: 14px;
             font-size: 1rem; font-weight: bold; letter-spacing: 3px; text-transform: uppercase;
@@ -206,6 +202,9 @@
         <button onclick="switchLanguage('ms')">🇲🇾 Melayu</button>
         <button onclick="switchLanguage('id')">🇮🇩 Indonesia</button>
         <button onclick="switchLanguage('zh')">🇨🇳 中文</button>
+        <button onclick="switchLanguage('vi')">🇻🇳 Tiếng Việt</button>
+        <button onclick="switchLanguage('tl')">🇵🇭 Tagalog</button>
+        <button onclick="switchLanguage('ar')">🇸🇦 العربية</button>
     </div>
 
     <div class="status-box">
@@ -263,27 +262,41 @@
     <footer>© 2026 MB Legacy Store. All Rights Reserved.</footer>
 
     <script>
-        // --- KHASANAH KANDUNGAN 4 BAHASA (RINGKASAN PRATONTON) ---
         const vaultContent = {
             en: {
-                sentinel: { title: "THE PI SENTINEL DOSSIER", body: `<p>Welcome, Pioneer. This dossier is a curated collection of foundational knowledge, designed to give you a strategic edge in the Pi ecosystem.</p><ul><li><strong>Official Pi Network Whitepaper:</strong> The core foundational document.</li><li><strong>Pi Chain Mall Analysis:</strong> A case study on the first major utility app.</li><li><strong>Community Sentiment Report:</strong> Key insights from global Pioneer communities.</li></ul><p>Consider this your first briefcase for the mission ahead.</p>`, price: "FREE", url: null },
-                echelon: { title: "THE ECHELON BRIEFING PACK", body: `<p>This is the pre-purchase preview. Unlock the full briefing after payment.</p><p><strong>What you will get:</strong></p><ul><li>Deep-dive analysis: "Pi and the AI Revolution".</li><li>Exclusive report: "Tokenomics of RWA Integration on Pi".</li><li>Access link to a private Fireside Forum discussion.</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" },
-                command: { title: "THE COMMAND CENTER SUITE", body: `<p>This is the pre-purchase preview. Unlock the full suite after payment.</p><p><strong>What you will get:</strong></p><ul><li>Editable Whitepaper Template for your own project.</li><li>DAO Governance Framework and voting guidelines.</li><li>International Business Entity Setup Guide.</li></ul>`, price: "10 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" }
+                sentinel: { title: "THE PI SENTINEL DOSSIER", body: `<p>Welcome, Pioneer. This dossier is a curated collection of foundational knowledge.</p><ul><li><strong>Official Pi Network Whitepaper</strong></li><li><strong>Pi Chain Mall Analysis</strong></li><li><strong>Community Sentiment Report</strong></li></ul>`, price: "FREE", url: null },
+                echelon: { title: "THE ECHELON BRIEFING PACK", body: `<p>Pre-purchase preview. Unlock after payment.</p><p><strong>What you get:</strong></p><ul><li>"Pi and the AI Revolution"</li><li>"Tokenomics of RWA Integration"</li><li>Private Fireside access</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" },
+                command: { title: "THE COMMAND CENTER SUITE", body: `<p>Pre-purchase preview. Unlock after payment.</p><p><strong>What you get:</strong></p><ul><li>Editable Whitepaper Template</li><li>DAO Governance Framework</li><li>International Business Guide</li></ul>`, price: "10 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" }
             },
             ms: {
-                sentinel: { title: "DOSSIER SENTINEL PI", body: `<p>Selamat datang, Pioneer. Dossier ini adalah koleksi kurasi pengetahuan asas, direka untuk memberi anda kelebihan strategik dalam ekosistem Pi.</p><ul><li><strong>Kertas Putih Rasmi Pi Network:</strong> Dokumen asas yang penting.</li><li><strong>Analisis Pi Chain Mall:</strong> Kajian kes tentang aplikasi utiliti utama pertama.</li><li><strong>Laporan Sentimen Komuniti:</strong> Pandangan utama dari komuniti Pioneer global.</li></ul><p>Anggap ini sebagai beg bimbit pertama anda untuk misi yang akan datang.</p>`, price: "PERCUMA", url: null },
-                echelon: { title: "PEK TAKLIMAT ECHELON", body: `<p>Ini adalah pratonton pra-pembelian. Buka kunci taklimat penuh selepas pembayaran.</p><p><strong>Apa yang anda akan dapat:</strong></p><ul><li>Analisis mendalam: "Pi dan Revolusi AI".</li><li>Laporan eksklusif: "Tokenomik Integrasi RWA di Pi".</li><li>Pautan akses ke perbincangan peribadi Forum Fireside.</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" },
-                command: { title: "SUIT PUSAT KAWALAN", body: `<p>Ini adalah pratonton pra-pembelian. Buka kunci suit penuh selepas pembayaran.</p><p><strong>Apa yang anda akan dapat:</strong></p><ul><li>Templat Kertas Putih yang boleh diedit untuk projek anda sendiri.</li><li>Rangka Kerja Tadbir Urus DAO dan garis panduan pengundian.</li><li>Panduan Penubuhan Entiti Perniagaan Antarabangsa.</li></ul>`, price: "10 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" }
+                sentinel: { title: "DOSSIER SENTINEL PI", body: `<p>Selamat datang, Pioneer. Dossier ini adalah koleksi kurasi pengetahuan asas.</p><ul><li><strong>Kertas Putih Rasmi Pi Network</strong></li><li><strong>Analisis Pi Chain Mall</strong></li><li><strong>Laporan Sentimen Komuniti</strong></li></ul>`, price: "PERCUMA", url: null },
+                echelon: { title: "PEK TAKLIMAT ECHELON", body: `<p>Pratonton pra-pembelian. Buka selepas bayaran.</p><p><strong>Apa yang anda dapat:</strong></p><ul><li>"Pi dan Revolusi AI"</li><li>"Tokenomik Integrasi RWA"</li><li>Akses peribadi Fireside</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" },
+                command: { title: "SUIT PUSAT KAWALAN", body: `<p>Pratonton pra-pembelian. Buka selepas bayaran.</p><p><strong>Apa yang anda dapat:</strong></p><ul><li>Templat Kertas Putih</li><li>Rangka Kerja Tadbir Urus DAO</li><li>Panduan Perniagaan Antarabangsa</li></ul>`, price: "10 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" }
             },
             id: {
-                sentinel: { title: "DOSSIER SENTINEL PI", body: `<p>Selamat datang, Pioneer. Dossier ini adalah koleksi kurasi pengetahuan asas, direka untuk memberi anda kelebihan strategik dalam ekosistem Pi.</p><ul><li><strong>Whitepaper Resmi Pi Network:</strong> Dokumen asas yang penting.</li><li><strong>Analisis Pi Chain Mall:</strong> Studi kasus tentang aplikasi utiliti utama pertama.</li><li><strong>Laporan Sentimen Komuniti:</strong> Wawasan utama dari komuniti Pioneer global.</li></ul><p>Anggap ini sebagai tas kerja pertama anda untuk misi yang akan datang.</p>`, price: "GRATIS", url: null },
-                echelon: { title: "PAKET PENGARAHAN ECHELON", body: `<p>Ini adalah pratonton pra-pembelian. Buka kunci taklimat penuh selepas pembayaran.</p><p><strong>Apa yang anda akan dapatkan:</strong></p><ul><li>Analisis mendalam: "Pi dan Revolusi AI".</li><li>Laporan eksklusif: "Tokenomik Integrasi RWA di Pi".</li><li>Tautan akses ke diskusi peribadi Forum Fireside.</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" },
-                command: { title: "SUITE PUSAT KOMANDO", body: `<p>Ini adalah pratonton pra-pembelian. Buka kunci suite penuh selepas pembayaran.</p><p><strong>Apa yang anda akan dapatkan:</strong></p><ul><li>Templat Whitepaper yang dapat diedit untuk projek anda sendiri.</li><li>Kerangka Tata Kelola DAO dan pedoman pemungutan suara.</li><li>Panduan Pendirian Entiti Bisnis Internasional.</li></ul>`, price: "10 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" }
+                sentinel: { title: "DOSSIER SENTINEL PI", body: `<p>Selamat datang, Pioneer. Dossier ini adalah koleksi kurasi pengetahuan asas.</p><ul><li><strong>Whitepaper Resmi Pi Network</strong></li><li><strong>Analisis Pi Chain Mall</strong></li><li><strong>Laporan Sentimen Komunitas</strong></li></ul>`, price: "GRATIS", url: null },
+                echelon: { title: "PAKET PENGARAHAN ECHELON", body: `<p>Pratinjau pra-pembelian. Buka setelah pembayaran.</p><p><strong>Apa yang Anda dapatkan:</strong></p><ul><li>"Pi dan Revolusi AI"</li><li>"Tokenomik Integrasi RWA"</li><li>Akses pribadi Fireside</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" },
+                command: { title: "SUITE PUSAT KOMANDO", body: `<p>Pratinjau pra-pembelian. Buka setelah pembayaran.</p><p><strong>Apa yang Anda dapatkan:</strong></p><ul><li>Templat Whitepaper yang Dapat Diedit</li><li>Kerangka Tata Kelola DAO</li><li>Panduan Bisnis Internasional</li></ul>`, price: "10 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" }
             },
             zh: {
-                sentinel: { title: "PI哨兵档案", body: `<p>欢迎，先锋。这份档案是基础知识的精选合集，旨在为您在Pi生态系统中提供战略优势。</p><ul><li><strong>Pi Network官方白皮书：</strong> 核心基础文件。</li><li><strong>Pi Chain Mall分析：</strong> 关于首个主要实用应用程序的案例研究。</li><li><strong>社区情绪报告：</strong> 来自全球先锋社区的关键见解。</li></ul><p>将此视为您执行未来任务的第一个公文包。</p>`, price: "免费", url: null },
-                echelon: { title: "梯队简报包", body: `<p>这是购买前的预览。付款后解锁完整简报。</p><p><strong>您将获得：</strong></p><ul><li>深度分析：“Pi与人工智能革命”。</li><li>独家报告：“Pi上RWA整合的代币经济学”。</li><li>私人Fireside论坛讨论的访问链接。</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" },
-                command: { title: "指挥中心套件", body: `<p>这是购买前的预览。付款后解锁完整套件。</p><p><strong>您将获得：</strong></p><ul><li>为您自己的项目准备的可编辑白皮书模板。</li><li>DAO治理框架和投票指南。</li><li>国际商业实体设立指南。</li></ul>`, price: "10 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" }
+                sentinel: { title: "PI哨兵档案", body: `<p>欢迎，先锋。这份档案是基础知识的精选合集。</p><ul><li><strong>Pi Network官方白皮书</strong></li><li><strong>Pi Chain Mall分析</strong></li><li><strong>社区情绪报告</strong></li></ul>`, price: "免费", url: null },
+                echelon: { title: "梯队简报包", body: `<p>购买前预览。付款后解锁。</p><p><strong>您将获得：</strong></p><ul><li>"Pi与人工智能革命"</li><li>"RWA整合的代币经济学"</li><li>私人Fireside论坛访问</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" },
+                command: { title: "指挥中心套件", body: `<p>购买前预览。付款后解锁。</p><p><strong>您将获得：</strong></p><ul><li>可编辑白皮书模板</li><li>DAO治理框架</li><li>国际商业实体设立指南</li></ul>`, price: "10 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" }
+            },
+            vi: {
+                sentinel: { title: "HỒ SƠ SENTINEL PI", body: `<p>Chào mừng, Pioneer. Hồ sơ này là bộ sưu tập kiến thức nền tảng được tuyển chọn.</p><ul><li><strong>Sách trắng chính thức của Pi Network</strong></li><li><strong>Phân tích Pi Chain Mall</strong></li><li><strong>Báo cáo tâm lý cộng đồng</strong></li></ul>`, price: "MIỄN PHÍ", url: null },
+                echelon: { title: "GÓI THÔNG TIN ECHELON", body: `<p>Xem trước khi mua. Mở khóa sau khi thanh toán.</p><p><strong>Bạn sẽ nhận được:</strong></p><ul><li>"Pi và Cách mạng AI"</li><li>"Tokenomics của Tích hợp RWA"</li><li>Truy cập diễn đàn Fireside riêng</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" },
+                command: { title: "BỘ CHỈ HUY TRUNG TÂM", body: `<p>Xem trước khi mua. Mở khóa sau khi thanh toán.</p><p><strong>Bạn sẽ nhận được:</strong></p><ul><li>Mẫu Sách trắng có thể chỉnh sửa</li><li>Khung Quản trị DAO</li><li>Hướng dẫn Kinh doanh Quốc tế</li></ul>`, price: "10 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" }
+            },
+            tl: {
+                sentinel: { title: "PI SENTINEL DOSSIER", body: `<p>Maligayang pagdating, Pioneer. Ang dossier na ito ay isang na-curate na koleksyon ng pundasyong kaalaman.</p><ul><li><strong>Opisyal na Whitepaper ng Pi Network</strong></li><li><strong>Pagsusuri ng Pi Chain Mall</strong></li><li><strong>Ulat ng Sentimento ng Komunidad</strong></li></ul>`, price: "LIBRE", url: null },
+                echelon: { title: "ECHELON BRIEFING PACK", body: `<p>Preview bago bumili. I-unlock pagkatapos magbayad.</p><p><strong>Ano ang makukuha mo:</strong></p><ul><li>"Pi at ang Rebolusyong AI"</li><li>"Tokenomics ng Integrasyon ng RWA"</li><li>Pribadong access sa Fireside Forum</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" },
+                command: { title: "COMMAND CENTER SUITE", body: `<p>Preview bago bumili. I-unlock pagkatapos magbayad.</p><p><strong>Ano ang makukuha mo:</strong></p><ul><li>Nae-edit na Template ng Whitepaper</li><li>Balangkas ng Pamamahala ng DAO</li><li>Gabay sa Pandaigdigang Negosyo</li></ul>`, price: "10 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" }
+            },
+            ar: {
+                sentinel: { title: "ملف الحارس Pi", body: `<p>مرحباً بك يا رائد. هذا الملف عبارة عن مجموعة منسقة من المعرفة الأساسية.</p><ul><li><strong>الورقة البيضاء الرسمية لشبكة Pi</strong></li><li><strong>تحليل Pi Chain Mall</strong></li><li><strong>تقرير توجهات المجتمع</strong></li></ul>`, price: "مجاني", url: null },
+                echelon: { title: "حزمة إحاطة إيشيلون", body: `<p>معاينة قبل الشراء. افتح بعد الدفع.</p><p><strong>ما ستحصل عليه:</strong></p><ul><li>"ثورة Pi والذكاء الاصطناعي"</li><li>"اقتصاديات دمج الأصول الحقيقية (RWA)"</li><li>وصول خاص إلى منتدى Fireside</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" },
+                command: { title: "مجموعة مركز القيادة", body: `<p>معاينة قبل الشراء. افتح بعد الدفع.</p><p><strong>ما ستحصل عليه:</strong></p><ul><li>قالب ورقة بيضاء قابل للتعديل</li><li>إطار حوكمة DAO</li><li>دليل الأعمال التجارية الدولية</li></ul>`, price: "10 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" }
             }
         };
 
@@ -295,7 +308,10 @@
                 en: { vault: "THE VAULT", connectBtn: "🔐 Connect Account", pay1Btn: "💰 Pay 1.0 Pi", pay10Btn: "🔥 Pay 10 Pi", security: "🔒 SECURITY NOTICE: MB Legacy Store will NEVER ask for your wallet passphrase. All transactions are conducted securely via the Pi Browser official SDK.", footer: "© 2026 MB Legacy Store. All Rights Reserved.", freeBanner: "🆓 FREE EDITION", closeBtn: "CLOSE" },
                 ms: { vault: "BILIK KEBAL", connectBtn: "🔐 Sambung Akaun", pay1Btn: "💰 Bayar 1.0 Pi", pay10Btn: "🔥 Bayar 10 Pi", security: "🔒 NOTIS KESELAMATAN: MB Legacy Store TIDAK AKAN PERNAH meminta frasa laluan dompet anda. Semua transaksi dijalankan dengan selamat melalui SDK rasmi Pelayar Pi.", footer: "© 2026 MB Legacy Store. Hak Cipta Terpelihara.", freeBanner: "🆓 EDISI PERCUMA", closeBtn: "TUTUP" },
                 id: { vault: "BILIK KEBAH", connectBtn: "🔐 Sambungkan Akun", pay1Btn: "💰 Bayar 1.0 Pi", pay10Btn: "🔥 Bayar 10 Pi", security: "🔒 PEMBERITAHUAN KEAMANAN: MB Legacy Store TIDAK AKAN PERNAH meminta frasa sandi dompet Anda. Semua transaksi dilakukan dengan aman melalui SDK resmi Pi Browser.", footer: "© 2026 MB Legacy Store. Seluruh hak cipta.", freeBanner: "🆓 EDISI GRATIS", closeBtn: "TUTUP" },
-                zh: { vault: "金库", connectBtn: "🔐 连接账户", pay1Btn: "💰 支付 1.0 Pi", pay10Btn: "🔥 支付 10 Pi", security: "🔒 安全通知：MB Legacy Store 绝不会要求您提供钱包密码。所有交易均通过 Pi Browser 官方 SDK 安全进行。", footer: "© 2026 MB Legacy Store. 版权所有。", freeBanner: "🆓 免费版", closeBtn: "关闭" }
+                zh: { vault: "金库", connectBtn: "🔐 连接账户", pay1Btn: "💰 支付 1.0 Pi", pay10Btn: "🔥 支付 10 Pi", security: "🔒 安全通知：MB Legacy Store 绝不会要求您提供钱包密码。所有交易均通过 Pi Browser 官方 SDK 安全进行。", footer: "© 2026 MB Legacy Store. 版权所有。", freeBanner: "🆓 免费版", closeBtn: "关闭" },
+                vi: { vault: "KHO BÁU", connectBtn: "🔐 Kết Nối Tài Khoản", pay1Btn: "💰 Thanh Toán 1.0 Pi", pay10Btn: "🔥 Thanh Toán 10 Pi", security: "🔒 THÔNG BÁO BẢO MẬT: MB Legacy Store sẽ KHÔNG BAO GIỜ yêu cầu cụm mật khẩu ví của bạn. Tất cả giao dịch được thực hiện an toàn qua SDK chính thức của Trình duyệt Pi.", footer: "© 2026 MB Legacy Store. Đã đăng ký Bản quyền.", freeBanner: "🆓 PHIÊN BẢN MIỄN PHÍ", closeBtn: "ĐÓNG" },
+                tl: { vault: "ANG KABAN", connectBtn: "🔐 Ikonekta ang Account", pay1Btn: "💰 Magbayad ng 1.0 Pi", pay10Btn: "🔥 Magbayad ng 10 Pi", security: "🔒 PAUNAWA SA SEGURIDAD: HINDI kailanman hihingin ng MB Legacy Store ang iyong wallet passphrase. Ang lahat ng transaksyon ay ligtas na isinasagawa sa pamamagitan ng opisyal na SDK ng Pi Browser.", footer: "© 2026 MB Legacy Store. Lahat ng Karapatan ay Nakalaan.", freeBanner: "🆓 LIBRENG EDISYON", closeBtn: "SARADO" },
+                ar: { vault: "الخزنة", connectBtn: "🔐 ربط الحساب", pay1Btn: "💰 ادفع 1.0 Pi", pay10Btn: "🔥 ادفع 10 Pi", security: "🔒 إشعار أمان: لن يطلب منك متجر MB Legacy Store أبداً عبارة مرور محفظتك. تتم جميع المعاملات بشكل آمن عبر SDK الرسمي لمتصفح Pi.", footer: "© 2026 MB Legacy Store. جميع الحقوق محفوظة.", freeBanner: "🆓 نسخة مجانية", closeBtn: "إغلاق" }
             }[lang] || {};
 
             if (!t.vault) return;
@@ -310,24 +326,21 @@
 
             const productCards = document.querySelectorAll('.product-card');
             const content = vaultContent[lang] || vaultContent.en;
-            productCards[0].querySelector('.product-title').innerText = content.sentinel.title;
-            productCards[0].querySelector('.product-desc').innerText = content.sentinel.body.replace(/<[^>]*>/g, '').substring(0, 80) + '...';
-            productCards[1].querySelector('.product-title').innerText = content.echelon.title;
-            productCards[1].querySelector('.product-desc').innerText = content.echelon.body.replace(/<[^>]*>/g, '').substring(0, 80) + '...';
-            productCards[2].querySelector('.product-title').innerText = content.command.title;
-            productCards[2].querySelector('.product-desc').innerText = content.command.body.replace(/<[^>]*>/g, '').substring(0, 80) + '...';
+            if (productCards[0]) { productCards[0].querySelector('.product-title').innerText = content.sentinel.title; productCards[0].querySelector('.product-desc').innerText = content.sentinel.body.replace(/<[^>]*>/g, '').substring(0, 80) + '...'; }
+            if (productCards[1]) { productCards[1].querySelector('.product-title').innerText = content.echelon.title; productCards[1].querySelector('.product-desc').innerText = content.echelon.body.replace(/<[^>]*>/g, '').substring(0, 80) + '...'; }
+            if (productCards[2]) { productCards[2].querySelector('.product-title').innerText = content.command.title; productCards[2].querySelector('.product-desc').innerText = content.command.body.replace(/<[^>]*>/g, '').substring(0, 80) + '...'; }
         }
 
         function showVaultView(productKey, isPaidContent = false) {
             const content = vaultContent[currentLang]?.[productKey] || vaultContent.en[productKey];
             if (!content) return;
-            const closeText = { en: 'CLOSE', ms: 'TUTUP', id: 'TUTUP', zh: '关闭' }[currentLang] || 'CLOSE';
+            const closeText = { en: 'CLOSE', ms: 'TUTUP', id: 'TUTUP', zh: '关闭', vi: 'ĐÓNG', tl: 'SARADO', ar: 'إغلاق' }[currentLang] || 'CLOSE';
             
             let html = `<h3>${content.title}</h3><div style="text-align: left;">${content.body}</div><p class="modal-price">Price: ${content.price}</p>`;
             
             if (isPaidContent && content.url) {
-                const keyText = { en: "YOUR GOLDEN KEY", ms: "KUNCI EMAS ANDA", id: "KUNCI EMAS ANDA", zh: "您的金钥匙" }[currentLang] || "YOUR GOLDEN KEY";
-                const linkText = { en: "ACCESS YOUR CONTENT", ms: "AKSES KANDUNGAN ANDA", id: "AKSES KONTEN ANDA", zh: "访问您的内容" }[currentLang] || "ACCESS YOUR CONTENT";
+                const keyText = { en: "YOUR GOLDEN KEY", ms: "KUNCI EMAS ANDA", id: "KUNCI EMAS ANDA", zh: "您的金钥匙", vi: "CHÌA KHÓA VÀNG CỦA BẠN", tl: "ANG IYONG GINTONG SUSI", ar: "مفتاحك الذهبي" }[currentLang] || "YOUR GOLDEN KEY";
+                const linkText = { en: "ACCESS YOUR CONTENT", ms: "AKSES KANDUNGAN ANDA", id: "AKSES KONTEN ANDA", zh: "访问您的内容", vi: "TRUY CẬP NỘI DUNG CỦA BẠN", tl: "I-ACCESS ANG IYONG NILALAMAN", ar: "الوصول إلى المحتوى الخاص بك" }[currentLang] || "ACCESS YOUR CONTENT";
                 html += `<div class="golden-key">🔑 ${keyText}: MBL-${Date.now().toString(36).toUpperCase()}-PI</div>`;
                 html += `<a href="${content.url}" target="_blank" style="display: block; margin-top: 15px; padding: 15px; background: #FFD700; color: #000; text-align: center; font-weight: bold; text-decoration: none; letter-spacing: 2px;">${linkText}</a>`;
                 html += `<p style="text-align: center; font-size: 0.7rem; margin-top: 10px; color: #999;">Copy your Golden Key. This is your proof of purchase.</p>`;
@@ -339,7 +352,6 @@
         }
         function closeModal() { document.getElementById('productModal').style.display = "none"; }
 
-        // --- FUNGSI PEMBAYARAN ---
         let isPaymentPending = false;
         function onIncompletePaymentFound(payment) { isPaymentPending = true; document.getElementById('st').innerText = "⚠️ Pending Payment: " + payment.identifier; }
         function createPayment(amount, memo, btnId) {
@@ -349,33 +361,4 @@
                 onReadyForServerApproval: function(paymentId) { document.getElementById('st').innerText = "⏳ Approving..."; fetch('/api/finalize', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:paymentId}) }); },
                 onReadyForServerCompletion: function(paymentId, txid) {
                     isPaymentPending = false;
-                    document.getElementById('st').innerText = "✅ Payment " + amount + " Pi Successful!";
-                    document.getElementById(btnId).disabled = false;
-                    // "Delivery Gate" Lengkap
-                    if (amount === 1.0) showVaultView('echelon', true);
-                    if (amount === 10.0) showVaultView('command', true);
-                },
-                onCancel: function() { document.getElementById('st').innerText = "❌ Cancelled."; document.getElementById(btnId).disabled = false; },
-                onError: function() { document.getElementById('st').innerText = "❌ Error."; document.getElementById(btnId).disabled = false; },
-                onIncompletePaymentFound: onIncompletePaymentFound
-            });
-        }
-
-        window.onload = function() {
-            if (typeof Pi === 'undefined') { document.getElementById('st').innerText = "❌ Pi SDK not loaded."; return; }
-            Pi.init({ version: "2.0", sandbox: true });
-            document.getElementById('st').innerText = "✅ Vault Secured. System Ready.";
-            document.getElementById('btn-login').disabled = false;
-        };
-
-        document.getElementById('btn-login').addEventListener('click', function() {
-            document.getElementById('st').innerText = "🔄 Connecting..."; this.disabled = true;
-            Pi.authenticate(['username', 'payments'], onIncompletePaymentFound)
-                .then(function(auth) { if (!isPaymentPending) { document.getElementById('st').innerText = "👤 User: " + auth.user.username; } document.getElementById('btn-login').disabled = false; document.getElementById('btn-pay1').disabled = false; document.getElementById('btn-pay10').disabled = false; })
-                .catch(function() { document.getElementById('st').innerText = "❌ Connection Failed."; document.getElementById('btn-login').disabled = false; });
-        });
-        document.getElementById('btn-pay1').addEventListener('click', function() { createPayment(1.0, "MBL Store - 1 Pi (Kit)", 'btn-pay1'); });
-        document.getElementById('btn-pay10').addEventListener('click', function() { createPayment(10.0, "MBL Store - 10 Pi (Kit)", 'btn-pay10'); });
-    </script>
-</body>
-</html>
+                    document.getElementById('st').innerText = "✅ Payment " +
