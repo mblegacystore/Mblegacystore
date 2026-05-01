@@ -38,6 +38,22 @@
             font-size: 0.8rem;
             letter-spacing: 3px;
         }
+        .lang-selector {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .lang-selector button {
+            background: transparent;
+            border: 1px solid #FFD700;
+            color: #FFD700;
+            padding: 10px 20px;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+        .lang-selector button:hover { background: #FFD700; color: #000; }
         .status-box {
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,215,0,0.3);
@@ -93,6 +109,9 @@
         .product-card:hover {
             border-color: #FFD700;
             box-shadow: 0 0 15px rgba(255,215,0,0.2);
+        }
+        .free-banner {
+            background: #27ae60; color: #fff; text-align: center; padding: 5px; font-weight: bold; letter-spacing: 2px; font-size: 0.8rem;
         }
         .product-img-placeholder {
             width: 100%;
@@ -172,6 +191,11 @@
         <p class="subtitle">Your Pi, Your Legacy.</p>
     </div>
 
+    <div class="lang-selector">
+        <button onclick="switchLanguage('en')">🇬🇧 English</button>
+        <button onclick="switchLanguage('ms')">🇲🇾 Melayu</button>
+    </div>
+
     <div class="status-box">
         <p id="st">⏳ Initializing Vault...</p>
     </div>
@@ -183,12 +207,13 @@
     <div class="treasury-section">
         <h2>✦ THE VAULT ✦</h2>
 
-        <div class="product-card" onclick="showProductDetail('THE PI SENTINEL DOSSIER', 'A strategic market intelligence pack for the modern Pioneer. Understand global Pi economics and plan your professional entry.', '1 Pi')">
+        <div class="product-card" onclick="showProductDetail('THE PI SENTINEL DOSSIER', 'A FREE strategic market intelligence primer for the modern Pioneer. Get a basic understanding of global Pi economics.', 'FREE')">
             <div class="product-img-placeholder">I</div>
+            <div class="free-banner">🆓 FREE EDITION</div>
             <div class="product-info">
                 <h3>THE PI SENTINEL DOSSIER</h3>
-                <p>A strategic market intelligence pack for the modern Pioneer.</p>
-                <p class="product-price">Price: 1 Pi</p>
+                <p>A FREE strategic market intelligence primer for the modern Pioneer.</p>
+                <p class="product-price" style="color:#27ae60;">Price: FREE</p>
             </div>
         </div>
 
@@ -231,7 +256,7 @@
     <footer>© 2026 MB Legacy Store. All Rights Reserved.</footer>
 
     <script>
-        // --- ENJIN BAHASA GLOBAL (V3 - DIBAIKI) ---
+        // --- ENJIN BAHASA GLOBAL (V4 - DWIBAHASA) ---
         const translations = {
             en: {
                 langName: "English",
@@ -239,12 +264,13 @@
                 ready: "✅ Vault Secured. System Ready.",
                 vault: "THE VAULT",
                 sentinel: "THE PI SENTINEL DOSSIER",
-                sentinelDesc: "A strategic market intelligence pack for the modern Pioneer.",
+                sentinelDesc: "A FREE strategic market intelligence primer for the modern Pioneer.",
                 echelon: "THE ECHELON BRIEFING PACK",
                 echelonDesc: "An advanced education module on Pi, AI, RWA, and global shifts.",
                 command: "THE COMMAND CENTER SUITE",
                 commandDesc: "A professional toolset for building a global brand.",
                 priceLabel: "Price:",
+                freeLabel: "FREE",
                 connectBtn: "🔐 Connect Account",
                 pay1Btn: "💰 Pay 1.0 Pi",
                 pay10Btn: "🔥 Pay 10 Pi",
@@ -257,12 +283,13 @@
                 ready: "✅ Bilik Kebal Selamat. Sistem Sedia.",
                 vault: "BILIK KEBAL",
                 sentinel: "DOSSIER SENTINEL PI",
-                sentinelDesc: "Pakej risikan pasaran strategik untuk Pioneer moden.",
+                sentinelDesc: "Primer risikan pasaran PERCUMA untuk Pioneer moden.",
                 echelon: "PEK TAKLIMAT ECHELON",
                 echelonDesc: "Modul pendidikan lanjutan tentang Pi, AI, RWA, dan peralihan global.",
                 command: "SUIT PUSAT KAWALAN",
                 commandDesc: "Set alat profesional untuk membina jenama global.",
                 priceLabel: "Harga:",
+                freeLabel: "PERCUMA",
                 connectBtn: "🔐 Sambung Akaun",
                 pay1Btn: "💰 Bayar 1.0 Pi",
                 pay10Btn: "🔥 Bayar 10 Pi",
@@ -271,26 +298,19 @@
             }
         };
 
-        function applyLanguage(lang) {
+        function switchLanguage(lang) {
             const t = translations[lang] || translations.en;
-            
-            // Status Messages
             window.translationData = t;
             
-            document.querySelector('h1').innerText = "MB LEGACY STORE";
-            document.querySelector('.subtitle').innerText = "Your Pi, Your Legacy.";
             document.querySelector('.treasury-section h2').innerText = "✦ " + t.vault + " ✦";
             
             const cards = document.querySelectorAll('.product-card');
-            cards[0].querySelector('h3').innerText = t.sentinel;
-            cards[0].querySelector('p').innerText = t.sentinelDesc;
-            cards[1].querySelector('h3').innerText = t.echelon;
-            cards[1].querySelector('p').innerText = t.echelonDesc;
-            cards[2].querySelector('h3').innerText = t.command;
-            cards[2].querySelector('p').innerText = t.commandDesc;
+            if (cards[0]) { cards[0].querySelector('h3').innerText = t.sentinel; cards[0].querySelector('.product-info p:first-of-type').innerText = t.sentinelDesc; }
+            if (cards[1]) { cards[1].querySelector('h3').innerText = t.echelon; cards[1].querySelector('.product-info p:first-of-type').innerText = t.echelonDesc; }
+            if (cards[2]) { cards[2].querySelector('h3').innerText = t.command; cards[2].querySelector('.product-info p:first-of-type').innerText = t.commandDesc; }
             
             const priceElements = document.querySelectorAll('.product-price');
-            if (priceElements[0]) priceElements[0].innerHTML = t.priceLabel + ' 1 Pi';
+            if (priceElements[0]) priceElements[0].innerHTML = '<span style="color:#27ae60;">' + t.priceLabel + ' ' + t.freeLabel + '</span>';
             if (priceElements[1]) priceElements[1].innerHTML = t.priceLabel + ' 1 Pi';
             if (priceElements[2]) priceElements[2].innerHTML = t.priceLabel + ' 10 Pi';
             
@@ -303,13 +323,8 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const userLang = (navigator.language || navigator.userLanguage).split('-')[0];
-            console.log("🌐 Browser language detected: " + userLang);
-            
             if (translations[userLang]) {
-                applyLanguage(userLang);
-                console.log("✅ Language applied: " + translations[userLang].langName);
-            } else {
-                console.log("✅ Default Language: English");
+                switchLanguage(userLang);
             }
         });
         // --- TAMAT ENJIN BAHASA ---
@@ -324,7 +339,9 @@
             document.getElementById('productModal').style.display = "none";
         }
 
+        let isPaymentPending = false;
         function onIncompletePaymentFound(payment) {
+            isPaymentPending = true;
             document.getElementById('st').innerText = "⚠️ Pending Payment: " + payment.identifier;
         }
 
@@ -337,6 +354,7 @@
                     fetch('/api/finalize', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:paymentId}) });
                 },
                 onReadyForServerCompletion: function(paymentId, txid) {
+                    isPaymentPending = false;
                     document.getElementById('st').innerText = "✅ Payment " + amount + " Pi Successful!";
                     document.getElementById(btnId).disabled = false;
                     alert("🎉 Success! TX: " + txid);
@@ -356,14 +374,9 @@
         window.onload = function() {
             if (typeof Pi === 'undefined') { document.getElementById('st').innerText = "❌ Pi SDK not loaded."; return; }
             Pi.init({ version: "2.0", sandbox: true });
-            
-            const t = window.translationData;
-            if (t) {
-                document.getElementById('st').innerText = t.ready;
-            } else {
+            if (!isPaymentPending) {
                 document.getElementById('st').innerText = "✅ Vault Secured. System Ready.";
             }
-            
             document.getElementById('btn-login').disabled = false;
         };
 
@@ -372,7 +385,9 @@
             this.disabled = true;
             Pi.authenticate(['username', 'payments'], onIncompletePaymentFound)
                 .then(function(auth) {
-                    document.getElementById('st').innerText = "👤 User: " + auth.user.username;
+                    if (!isPaymentPending) {
+                        document.getElementById('st').innerText = "👤 User: " + auth.user.username;
+                    }
                     document.getElementById('btn-login').disabled = false;
                     document.getElementById('btn-pay1').disabled = false;
                     document.getElementById('btn-pay10').disabled = false;
