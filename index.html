@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MB LEGACY STORE</title>
+    <title>MB LEGACY STORE | The Vault</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -21,7 +21,7 @@
         .title-frame {
             border: 2px solid #FFD700;
             padding: 20px 40px;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
             text-align: center;
             box-shadow: 0 0 20px rgba(255,215,0,0.3);
             background: rgba(255,215,0,0.05);
@@ -32,18 +32,18 @@
             letter-spacing: 4px;
             font-weight: 400;
             text-transform: uppercase;
+            margin-bottom: 5px;
         }
         .subtitle {
             color: #999;
             font-size: 0.8rem;
             letter-spacing: 3px;
-            margin-top: 5px;
         }
         .status-box {
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,215,0,0.3);
             padding: 15px 30px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             border-radius: 4px;
             min-width: 300px;
             max-width: 400px;
@@ -52,6 +52,32 @@
         #st {
             font-size: 0.9rem;
             color: #ccc;
+            letter-spacing: 1px;
+        }
+        .trust-badge {
+            border: 1px solid #FFD700;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            text-align: center;
+            background: rgba(255,215,0,0.05);
+            max-width: 400px;
+        }
+        .trust-badge p {
+            color: #FFD700;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+        .security-notice {
+            border: 1px solid #E74C3C;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            background: rgba(231,76,60,0.05);
+            max-width: 400px;
+        }
+        .security-notice p {
+            color: #E74C3C;
+            font-size: 0.7rem;
             letter-spacing: 1px;
         }
         .golden-btn, .red-btn {
@@ -96,7 +122,7 @@
             background: transparent;
         }
         footer {
-            margin-top: 40px;
+            margin-top: 30px;
             color: #333;
             font-size: 0.7rem;
             letter-spacing: 2px;
@@ -111,14 +137,22 @@
     </div>
 
     <div class="status-box">
-        <p id="st">⏳ Initializing...</p>
+        <p id="st">⏳ Initializing Vault...</p>
+    </div>
+
+    <div class="trust-badge">
+        <p>✦ 5% OF EVERY PURCHASE FUNDS GLOBAL CHARITY ✦</p>
+    </div>
+
+    <div class="security-notice">
+        <p>🔒 SECURITY NOTICE: MB Legacy Store will NEVER ask for your wallet passphrase. All transactions are conducted securely via the Pi Browser official SDK.</p>
     </div>
 
     <button id="btn-login" class="golden-btn" disabled>🔐 Connect Account</button>
     <button id="btn-pay1" class="golden-btn" disabled>💰 Pay 1.0 Pi</button>
     <button id="btn-pay10" class="red-btn" disabled>🔥 Pay 10 Pi</button>
 
-    <footer>Powered by Pi Network • MB LEGACY STORE © 2025</footer>
+    <footer>© 2026 MB Legacy Store. All Rights Reserved.</footer>
 
     <script>
         function onIncompletePaymentFound(payment) {
@@ -153,7 +187,7 @@
         window.onload = function() {
             if (typeof Pi === 'undefined') { document.getElementById('st').innerText = "❌ Pi SDK not loaded."; return; }
             Pi.init({ version: "2.0", sandbox: true });
-            document.getElementById('st').innerText = "✅ System Ready.";
+            document.getElementById('st').innerText = "✅ Vault Secured. System Ready.";
             document.getElementById('btn-login').disabled = false;
         };
 
