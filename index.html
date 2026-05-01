@@ -144,28 +144,33 @@
             font-size: 1.1rem;
             font-weight: bold;
         }
+        /* --- MODAL ('BILIK KEBAL PERIBADI') --- */
         .modal {
             display: none;
             position: fixed;
             z-index: 100;
             left: 0; top: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.9);
+            background-color: rgba(0,0,0,0.95);
             align-items: center; justify-content: center;
+            overflow-y: auto;
         }
         .modal-content {
             background-color: #0d0d0d;
             border: 1px solid #FFD700;
-            padding: 25px;
-            max-width: 350px;
+            padding: 30px;
+            max-width: 400px;
             width: 90%;
-            text-align: center;
             color: #fff;
+            text-align: left;
         }
-        .modal-content h3 { color: #FFD700; font-size: 1.2rem; letter-spacing: 2px; margin-bottom: 10px; }
-        .modal-content p { color: #ccc; font-size: 0.85rem; margin-bottom: 15px; line-height: 1.4; }
-        .modal-price { font-size: 1.5rem; font-weight: bold; color: #FFD700; margin-bottom: 20px; }
-        .modal-close { padding: 10px 20px; background: transparent; border: 1px solid #E74C3C; color: #E74C3C; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: all 0.3s; }
-        .modal-close:hover { background: #E74C3C; color: #fff; }
+        .modal-content h3 { color: #FFD700; font-size: 1.3rem; letter-spacing: 2px; margin-bottom: 15px; text-align: center; }
+        .modal-content p { color: #ccc; font-size: 0.85rem; margin-bottom: 15px; line-height: 1.5; }
+        .modal-content ul { color: #ccc; font-size: 0.85rem; margin-left: 20px; margin-bottom: 15px; }
+        .modal-content ul li { margin-bottom: 8px; }
+        .modal-price { font-size: 1.5rem; font-weight: bold; color: #FFD700; margin-bottom: 20px; text-align: center; }
+        .modal-close-btn { padding: 12px 25px; background: transparent; border: 1px solid #E74C3C; color: #E74C3C; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: all 0.3s; display: block; margin: 20px auto 0; text-align: center; }
+        .modal-close-btn:hover { background: #E74C3C; color: #fff; }
+        /* --- END MODAL --- */
         .golden-btn, .red-btn {
             display: block; width: 85%; max-width: 400px; margin: 0 auto 12px auto; padding: 14px;
             font-size: 1rem; font-weight: bold; letter-spacing: 3px; text-transform: uppercase;
@@ -207,7 +212,7 @@
     <div class="treasury-section">
         <h2>✦ THE VAULT ✦</h2>
 
-        <div class="product-card" onclick="showProductDetail('THE PI SENTINEL DOSSIER', 'A FREE strategic market intelligence primer for the modern Pioneer. Get a basic understanding of global Pi economics.', 'FREE')">
+        <div class="product-card" onclick="showVaultView('sentinel')">
             <div class="product-img-placeholder">I</div>
             <div class="free-banner">🆓 FREE EDITION</div>
             <div class="product-info">
@@ -217,7 +222,7 @@
             </div>
         </div>
 
-        <div class="product-card" onclick="showProductDetail('THE ECHELON BRIEFING PACK', 'An advanced education module on the integration of Pi with AI, RWA, and global economic shifts. Become a thought leader.', '1 Pi')">
+        <div class="product-card" onclick="showVaultView('echelon')">
             <div class="product-img-placeholder">II</div>
             <div class="product-info">
                 <h3>THE ECHELON BRIEFING PACK</h3>
@@ -226,7 +231,7 @@
             </div>
         </div>
 
-        <div class="product-card" onclick="showProductDetail('THE COMMAND CENTER SUITE', 'A professional toolset for building a global brand. Includes whitepaper templates, governance frameworks, and international business guides.', '10 Pi')">
+        <div class="product-card" onclick="showVaultView('command')">
             <div class="product-img-placeholder">III</div>
             <div class="product-info">
                 <h3>THE COMMAND CENTER SUITE</h3>
@@ -241,12 +246,7 @@
     <button id="btn-pay10" class="red-btn" disabled>🔥 Pay 10 Pi</button>
 
     <div id="productModal" class="modal">
-        <div class="modal-content">
-            <h3 id="modalTitle"></h3>
-            <p id="modalDesc"></p>
-            <p class="modal-price" id="modalPrice"></p>
-            <button class="modal-close" onclick="closeModal()">Close</button>
-        </div>
+        <div class="modal-content" id="modalBody"></div>
     </div>
 
     <div class="footer-frame">
@@ -256,89 +256,129 @@
     <footer>© 2026 MB Legacy Store. All Rights Reserved.</footer>
 
     <script>
-        // --- ENJIN BAHASA GLOBAL (V4 - DWIBAHASA) ---
-        const translations = {
+        // --- KHASANAH KANDUNGAN GLOBAL (CURATED) ---
+        const vaultContent = {
             en: {
-                langName: "English",
-                init: "⏳ Initializing Vault...",
-                ready: "✅ Vault Secured. System Ready.",
-                vault: "THE VAULT",
-                sentinel: "THE PI SENTINEL DOSSIER",
-                sentinelDesc: "A FREE strategic market intelligence primer for the modern Pioneer.",
-                echelon: "THE ECHELON BRIEFING PACK",
-                echelonDesc: "An advanced education module on Pi, AI, RWA, and global shifts.",
-                command: "THE COMMAND CENTER SUITE",
-                commandDesc: "A professional toolset for building a global brand.",
-                priceLabel: "Price:",
-                freeLabel: "FREE",
-                connectBtn: "🔐 Connect Account",
-                pay1Btn: "💰 Pay 1.0 Pi",
-                pay10Btn: "🔥 Pay 10 Pi",
-                security: "🔒 SECURITY NOTICE: MB Legacy Store will NEVER ask for your wallet passphrase. All transactions are conducted securely via the Pi Browser official SDK.",
-                footer: "© 2026 MB Legacy Store. All Rights Reserved."
+                sentinel: {
+                    title: "THE PI SENTINEL DOSSIER",
+                    body: `<p>Welcome, Pioneer. This dossier is a curated collection of foundational knowledge, designed to give you a strategic edge in the Pi ecosystem.</p>
+                           <ul>
+                               <li><strong>Official Pi Network Whitepaper:</strong> The core foundational document.</li>
+                               <li><strong>Pi Chain Mall Analysis:</strong> A case study on the first major utility app.</li>
+                               <li><strong>Community Sentiment Report:</strong> Key insights from global Pioneer communities.</li>
+                           </ul>
+                           <p>Consider this your first briefcase for the mission ahead.</p>`,
+                    price: "FREE"
+                },
+                echelon: {
+                    title: "THE ECHELON BRIEFING PACK",
+                    body: `<p>This is the pre-purchase preview. Unlock the full briefing after payment.</p>
+                           <p><strong>What you will get:</strong></p>
+                           <ul>
+                               <li>Deep-dive analysis: "Pi and the AI Revolution".</li>
+                               <li>Exclusive report: "Tokenomics of RWA Integration on Pi".</li>
+                               <li>Access link to a private Fireside Forum discussion.</li>
+                           </ul>`,
+                    price: "1 Pi"
+                },
+                command: {
+                    title: "THE COMMAND CENTER SUITE",
+                    body: `<p>This is the pre-purchase preview. Unlock the full suite after payment.</p>
+                           <p><strong>What you will get:</strong></p>
+                           <ul>
+                               <li>Editable Whitepaper Template for your own project.</li>
+                               <li>DAO Governance Framework and voting guidelines.</li>
+                               <li>International Business Entity Setup Guide.</li>
+                           </ul>`,
+                    price: "10 Pi"
+                }
             },
             ms: {
-                langName: "Bahasa Melayu",
-                init: "⏳ Memulakan Bilik Kebal...",
-                ready: "✅ Bilik Kebal Selamat. Sistem Sedia.",
+                sentinel: {
+                    title: "DOSSIER SENTINEL PI",
+                    body: `<p>Selamat datang, Pioneer. Dossier ini adalah koleksi kurasi pengetahuan asas, direka untuk memberi anda kelebihan strategik dalam ekosistem Pi.</p>
+                           <ul>
+                               <li><strong>Kertas Putih Rasmi Pi Network:</strong> Dokumen asas yang penting.</li>
+                               <li><strong>Analisis Pi Chain Mall:</strong> Kajian kes tentang aplikasi utiliti utama pertama.</li>
+                               <li><strong>Laporan Sentimen Komuniti:</strong> Pandangan utama dari komuniti Pioneer global.</li>
+                           </ul>
+                           <p>Anggap ini sebagai beg bimbit pertama anda untuk misi yang akan datang.</p>`,
+                    price: "PERCUMA"
+                },
+                echelon: {
+                    title: "PEK TAKLIMAT ECHELON",
+                    body: `<p>Ini adalah pratonton pra-pembelian. Buka kunci taklimat penuh selepas pembayaran.</p>
+                           <p><strong>Apa yang anda akan dapat:</strong></p>
+                           <ul>
+                               <li>Analisis mendalam: "Pi dan Revolusi AI".</li>
+                               <li>Laporan eksklusif: "Tokenomik Integrasi RWA di Pi".</li>
+                               <li>Pautan akses ke perbincangan peribadi Forum Fireside.</li>
+                           </ul>`,
+                    price: "1 Pi"
+                },
+                command: {
+                    title: "SUIT PUSAT KAWALAN",
+                    body: `<p>Ini adalah pratonton pra-pembelian. Buka kunci suit penuh selepas pembayaran.</p>
+                           <p><strong>Apa yang anda akan dapat:</strong></p>
+                           <ul>
+                               <li>Templat Kertas Putih yang boleh diedit untuk projek anda sendiri.</li>
+                               <li>Rangka Kerja Tadbir Urus DAO dan garis panduan pengundian.</li>
+                               <li>Panduan Penubuhan Entiti Perniagaan Antarabangsa.</li>
+                           </ul>`,
+                    price: "10 Pi"
+                }
+            }
+        };
+
+        let currentLang = 'en';
+
+        function switchLanguage(lang) {
+            currentLang = lang;
+            const t = (lang === 'ms') ? {
                 vault: "BILIK KEBAL",
-                sentinel: "DOSSIER SENTINEL PI",
-                sentinelDesc: "Primer risikan pasaran PERCUMA untuk Pioneer moden.",
-                echelon: "PEK TAKLIMAT ECHELON",
-                echelonDesc: "Modul pendidikan lanjutan tentang Pi, AI, RWA, dan peralihan global.",
-                command: "SUIT PUSAT KAWALAN",
-                commandDesc: "Set alat profesional untuk membina jenama global.",
-                priceLabel: "Harga:",
-                freeLabel: "PERCUMA",
                 connectBtn: "🔐 Sambung Akaun",
                 pay1Btn: "💰 Bayar 1.0 Pi",
                 pay10Btn: "🔥 Bayar 10 Pi",
                 security: "🔒 NOTIS KESELAMATAN: MB Legacy Store TIDAK AKAN PERNAH meminta frasa laluan dompet anda. Semua transaksi dijalankan dengan selamat melalui SDK rasmi Pelayar Pi.",
-                footer: "© 2026 MB Legacy Store. Hak Cipta Terpelihara."
-            }
-        };
-
-        function switchLanguage(lang) {
-            const t = translations[lang] || translations.en;
-            window.translationData = t;
+                footer: "© 2026 MB Legacy Store. Hak Cipta Terpelihara.",
+                freeBanner: "🆓 EDISI PERCUMA"
+            } : {
+                vault: "THE VAULT",
+                connectBtn: "🔐 Connect Account",
+                pay1Btn: "💰 Pay 1.0 Pi",
+                pay10Btn: "🔥 Pay 10 Pi",
+                security: "🔒 SECURITY NOTICE: MB Legacy Store will NEVER ask for your wallet passphrase. All transactions are conducted securely via the Pi Browser official SDK.",
+                footer: "© 2026 MB Legacy Store. All Rights Reserved.",
+                freeBanner: "🆓 FREE EDITION"
+            };
             
             document.querySelector('.treasury-section h2').innerText = "✦ " + t.vault + " ✦";
-            
-            const cards = document.querySelectorAll('.product-card');
-            if (cards[0]) { cards[0].querySelector('h3').innerText = t.sentinel; cards[0].querySelector('.product-info p:first-of-type').innerText = t.sentinelDesc; }
-            if (cards[1]) { cards[1].querySelector('h3').innerText = t.echelon; cards[1].querySelector('.product-info p:first-of-type').innerText = t.echelonDesc; }
-            if (cards[2]) { cards[2].querySelector('h3').innerText = t.command; cards[2].querySelector('.product-info p:first-of-type').innerText = t.commandDesc; }
-            
-            const priceElements = document.querySelectorAll('.product-price');
-            if (priceElements[0]) priceElements[0].innerHTML = '<span style="color:#27ae60;">' + t.priceLabel + ' ' + t.freeLabel + '</span>';
-            if (priceElements[1]) priceElements[1].innerHTML = t.priceLabel + ' 1 Pi';
-            if (priceElements[2]) priceElements[2].innerHTML = t.priceLabel + ' 10 Pi';
-            
             document.getElementById('btn-login').innerText = t.connectBtn;
             document.getElementById('btn-pay1').innerText = t.pay1Btn;
             document.getElementById('btn-pay10').innerText = t.pay10Btn;
             document.querySelector('.footer-frame p').innerText = t.security;
             document.querySelector('footer').innerText = t.footer;
+            document.querySelector('.free-banner').innerText = t.freeBanner;
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const userLang = (navigator.language || navigator.userLanguage).split('-')[0];
-            if (translations[userLang]) {
-                switchLanguage(userLang);
-            }
-        });
-        // --- TAMAT ENJIN BAHASA ---
+        function showVaultView(productKey) {
+            const content = vaultContent[currentLang]?.[productKey] || vaultContent.en[productKey];
+            if (!content) return;
 
-        function showProductDetail(title, desc, price) {
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalDesc').innerText = desc;
-            document.getElementById('modalPrice').innerText = "Price: " + price;
+            document.getElementById('modalBody').innerHTML = `
+                <h3>${content.title}</h3>
+                <div style="text-align: left;">${content.body}</div>
+                <p class="modal-price">Price: ${content.price}</p>
+                <button class="modal-close-btn" onclick="closeModal()">${currentLang === 'ms' ? 'TUTUP' : 'CLOSE'}</button>
+            `;
             document.getElementById('productModal').style.display = "flex";
         }
+
         function closeModal() {
             document.getElementById('productModal').style.display = "none";
         }
 
+        // --- FUNGSI PEMBAYARAN ---
         let isPaymentPending = false;
         function onIncompletePaymentFound(payment) {
             isPaymentPending = true;
@@ -358,6 +398,9 @@
                     document.getElementById('st').innerText = "✅ Payment " + amount + " Pi Successful!";
                     document.getElementById(btnId).disabled = false;
                     alert("🎉 Success! TX: " + txid);
+                    // Penghantaran automatik ke 'Bilik Kebal Peribadi'
+                    if (amount === 1.0) showVaultView('echelon');
+                    if (amount === 10.0) showVaultView('command');
                 },
                 onCancel: function() {
                     document.getElementById('st').innerText = "❌ Cancelled.";
