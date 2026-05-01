@@ -361,4 +361,32 @@
                 onReadyForServerApproval: function(paymentId) { document.getElementById('st').innerText = "⏳ Approving..."; fetch('/api/finalize', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:paymentId}) }); },
                 onReadyForServerCompletion: function(paymentId, txid) {
                     isPaymentPending = false;
-                    document.getElementById('st').innerText = "✅ Payment " +
+                    document.getElementById('st').innerText = "✅ Payment " + amount + " Pi Successful!";
+                    document.getElementById(btnId).disabled = false;
+                    if (amount === 1.0) showVaultView('echelon', true);
+                    if (amount === 10.0) showVaultView('command', true);
+                },
+                onCancel: function() { document.getElementById('st').innerText = "❌ Cancelled."; document.getElementById(btnId).disabled = false; },
+                onError: function() { document.getElementById('st').innerText = "❌ Error."; document.getElementById(btnId).disabled = false; },
+                onIncompletePaymentFound: onIncompletePaymentFound
+            });
+        }
+
+        window.onload = function() {
+            if (typeof Pi === 'undefined') { document.getElementById('st').innerText = "❌ Pi SDK not loaded."; return; }
+            Pi.init({ version: "2.0", sandbox: true });
+            document.getElementById('st').innerText = "✅ Vault Secured. System Ready.";
+            document.getElementById('btn-login').disabled = false;
+        };
+
+        document.getElementById('btn-login').addEventListener('click', function() {
+            document.getElementById('st').innerText = "🔄 Connecting..."; this.disabled = true;
+            Pi.authenticate(['username', 'payments'], onIncompletePaymentFound)
+                .then(function(auth) { if (!isPaymentPending) { document.getElementById('st').innerText = "👤 User: " + auth.user.username; } document.getElementById('btn-login').disabled = false; document.getElementById('btn-pay1').disabled = false; document.getElementById('btn-pay10').disabled = false; })
+                .catch(function() { document.getElementById('st').innerText = "❌ Connection Failed."; document.getElementById('btn-login').disabled = false; });
+        });
+        document.getElementById('btn-pay1').addEventListener('click', function() { createPayment(1.0, "MBL Store - 1 Pi (Kit)", 'btn-pay1'); });
+        document.getElementById('btn-pay10').addEventListener('click', function() { createPayment(10.0, "MBL Store - 10 Pi (Kit)", 'btn-pay10'); });
+    </script>
+</body>
+</html>
