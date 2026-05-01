@@ -13,7 +13,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
             color: #ffffff;
             padding: 20px;
@@ -67,6 +66,49 @@
             font-size: 0.8rem;
             letter-spacing: 1px;
         }
+
+        /* --- SEKSYEN "THE VAULT" GLOBAL --- */
+        .treasury-section {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .treasury-section h2 {
+            color: #FFD700;
+            font-size: 1.2rem;
+            letter-spacing: 5px;
+            font-weight: 400;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+        .product-card {
+            border: 1px solid #333;
+            padding: 15px;
+            margin-bottom: 10px;
+            text-align: left;
+            background: rgba(255,255,255,0.02);
+        }
+        .product-card h3 {
+            color: #FFD700;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            font-weight: 400;
+        }
+        .product-card p {
+            color: #999;
+            font-size: 0.75rem;
+            margin: 5px 0 10px 0;
+            line-height: 1.4;
+        }
+        .product-price {
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        /* --- TAMAT SEKSYEN PRODUK --- */
+
         .golden-btn, .red-btn {
             display: block;
             width: 85%;
@@ -144,6 +186,28 @@
         <p>✦ 5% OF EVERY PURCHASE FUNDS GLOBAL CHARITY ✦</p>
     </div>
 
+    <div class="treasury-section">
+        <h2>✦ THE VAULT ✦</h2>
+
+        <div class="product-card">
+            <h3>I. THE PI SENTINEL DOSSIER</h3>
+            <p>A strategic market intelligence pack for the modern Pioneer. Understand global Pi economics and plan your professional entry.</p>
+            <p class="product-price">Price: 1 Pi</p>
+        </div>
+
+        <div class="product-card">
+            <h3>II. THE ECHELON BRIEFING PACK</h3>
+            <p>An advanced education module on the integration of Pi with AI, RWA, and global economic shifts. Become a thought leader.</p>
+            <p class="product-price">Price: 1 Pi</p>
+        </div>
+
+        <div class="product-card">
+            <h3>III. THE COMMAND CENTER SUITE</h3>
+            <p>A professional toolset for building a global brand. Includes whitepaper templates, governance frameworks, and international business guides.</p>
+            <p class="product-price">Price: 10 Pi</p>
+        </div>
+    </div>
+
     <button id="btn-login" class="golden-btn" disabled>🔐 Connect Account</button>
     <button id="btn-pay1" class="golden-btn" disabled>💰 Pay 1.0 Pi</button>
     <button id="btn-pay10" class="red-btn" disabled>🔥 Pay 10 Pi</button>
@@ -207,8 +271,8 @@
                 });
         });
 
-        document.getElementById('btn-pay1').addEventListener('click', function() { createPayment(1.0, "MBL Store - 1 Pi", 'btn-pay1'); });
-        document.getElementById('btn-pay10').addEventListener('click', function() { createPayment(10.0, "MBL Store - 10 Pi", 'btn-pay10'); });
+        document.getElementById('btn-pay1').addEventListener('click', function() { createPayment(1.0, "MBL Store - 1 Pi (Kit)", 'btn-pay1'); });
+        document.getElementById('btn-pay10').addEventListener('click', function() { createPayment(10.0, "MBL Store - 10 Pi (Kit)", 'btn-pay10'); });
     </script>
 </body>
 </html>
