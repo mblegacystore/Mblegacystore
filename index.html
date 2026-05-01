@@ -16,7 +16,7 @@
             min-height: 100vh;
             color: #ffffff;
             padding: 20px;
-            padding-bottom: 80px;
+            padding-bottom: 100px; /* Elak sticky status menutup footer */
         }
         .title-frame {
             border: 2px solid #FFD700;
@@ -82,6 +82,7 @@
         .red-btn:hover { background: #E74C3C; color: #fff; box-shadow: 0 0 25px rgba(231,76,60,0.6); }
         .golden-btn:disabled, .red-btn:disabled { border-color: #333; color: #333; cursor: not-allowed; box-shadow: none; background: transparent; animation: none; }
 
+        /* === STICKY STATUS BAR === */
         #stickyStatus {
             position: fixed;
             bottom: 0;
@@ -89,10 +90,9 @@
             width: 100%;
             background-color: rgba(0,0,0,0.95);
             border-top: 2px solid #FFD700;
-            padding: 12px;
+            padding: 15px;
             text-align: center;
             z-index: 50;
-            display: none;
             box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
         }
         #stSticky { font-size: 0.9rem; color: #FFD700; margin: 0; letter-spacing: 1px; font-weight: bold; }
@@ -268,21 +268,43 @@
         function closeModal() { document.getElementById('productModal').style.display = "none"; }
 
         let isPaymentPending = false;
-        function onIncompletePaymentFound(payment) { isPaymentPending = true; document.getElementById('stSticky').innerText = "⚠️ Pending Payment: " + payment.identifier; document.getElementById('stickyStatus').style.display = 'block'; }
+        function onIncompletePaymentFound(payment) {
+            isPaymentPending = true;
+            document.getElementById('stSticky').innerText = "⚠️ Pending Payment: " + payment.identifier;
+            document.getElementById('stickyStatus').style.display = 'block';
+        }
+
         function createPayment(amount, memo, btnId) {
-            document.getElementById('stSticky').innerText = "💰 Processing " + amount + " Pi..."; document.getElementById('stickyStatus').style.display = 'block';
+            document.getElementById('stSticky').innerText = "💰 Processing " + amount + " Pi...";
+            document.getElementById('btn-pay1').style.display = 'none';
+            document.getElementById('btn-pay10').style.display = 'none';
             document.getElementById(btnId).disabled = true;
             Pi.createPayment({ amount: amount, memo: memo, metadata: { id: Date.now().toString() } }, {
-                onReadyForServerApproval: function(paymentId) { document.getElementById('stSticky').innerText = "⏳ Approving..."; fetch('/api/finalize', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:paymentId}) }); },
+                onReadyForServerApproval: function(paymentId) {
+                    document.getElementById('stSticky').innerText = "⏳ Approving...";
+                    fetch('/api/finalize', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:paymentId}) });
+                },
                 onReadyForServerCompletion: function(paymentId, txid) {
                     isPaymentPending = false;
                     document.getElementById('stSticky').innerText = "✅ Payment " + amount + " Pi Successful!";
                     document.getElementById(btnId).disabled = false;
+                    document.getElementById('btn-pay1').style.display = 'block';
+                    document.getElementById('btn-pay10').style.display = 'block';
                     if (amount === 1.0) showVaultView('echelon', true);
                     if (amount === 10.0) showVaultView('command', true);
                 },
-                onCancel: function() { document.getElementById('stSticky').innerText = "❌ Cancelled."; document.getElementById(btnId).disabled = false; },
-                onError: function() { document.getElementById('stSticky').innerText = "❌ Error."; document.getElementById(btnId).disabled = false; },
+                onCancel: function() {
+                    document.getElementById('stSticky').innerText = "❌ Cancelled.";
+                    document.getElementById(btnId).disabled = false;
+                    document.getElementById('btn-pay1').style.display = 'block';
+                    document.getElementById('btn-pay10').style.display = 'block';
+                },
+                onError: function() {
+                    document.getElementById('stSticky').innerText = "❌ Error.";
+                    document.getElementById(btnId).disabled = false;
+                    document.getElementById('btn-pay1').style.display = 'block';
+                    document.getElementById('btn-pay10').style.display = 'block';
+                },
                 onIncompletePaymentFound: onIncompletePaymentFound
             });
         }
@@ -305,4 +327,4 @@
         document.getElementById('btn-pay10').addEventListener('click', function() { createPayment(10.0, "MBL Store - 10 Pi (Kit)", 'btn-pay10'); });
     </script>
 </body>
-</html>
+    </html>
