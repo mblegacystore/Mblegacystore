@@ -1,1 +1,203 @@
-<!DOCTYPE html><html><head><title>MBL STORE</title><script src="https://sdk.minepi.com/pi-sdk.js"></script></head><body style="text-align:center;padding:20px;font-family:Arial,sans-serif;background:#0d0d0d;color:white;"><h1 style="color:#f5c542;font-size:28px;">🔥 MB LEGACY STORE 🔥</h1><div style="background:#1a1a1a;border-radius:12px;padding:15px;margin:20px auto;max-width:400px;"><p id="st" style="font-size:14px;color:#ccc;">⏳ Tunggu sebentar...</p></div><button id="btn-login" style="padding:15px;width:90%;max-width:400px;font-size:16px;font-weight:bold;background:#6c3ce0;color:white;border:none;border-radius:30px;margin-bottom:10px;" disabled>🔐 CONNECT ACCOUNT</button><br><button id="btn-pay1" style="padding:15px;width:90%;max-width:400px;font-size:16px;font-weight:bold;background:#f5a623;color:#000;border:none;border-radius:30px;margin-bottom:10px;" disabled>💰 PAY 1.0 PI</button><br><button id="btn-pay10" style="padding:15px;width:90%;max-width:400px;font-size:16px;font-weight:bold;background:#e74c3c;color:white;border:none;border-radius:30px;margin-bottom:10px;" disabled>🔥 PAY 10 PI</button><br><button id="btn-cancel" style="padding:12px;width:90%;max-width:400px;font-size:14px;font-weight:bold;background:#95a5a6;color:white;border:none;border-radius:30px;margin-bottom:10px;" disabled>🗑️ CANCEL PENDING</button><br><br><p style="color:#555;font-size:11px;">Powered by Pi Network • MBL STORE © 2025</p><script>function onIncompletePaymentFound(p){document.getElementById('st').innerText="Pembayaran tertunda: "+p.identifier;document.getElementById('btn-cancel').disabled=false;}function createPayment(a,m,b){document.getElementById('st').innerText="Memproses "+a+" Pi...";document.getElementById(b).disabled=true;document.getElementById(b).style.opacity="0.6";Pi.createPayment({amount:a,memo:m,metadata:{id:Date.now().toString()}},{onReadyForServerApproval:function(pid){document.getElementById('st').innerText="Meluluskan...";fetch('/api/finalize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:pid})});},onReadyForServerCompletion:function(pid,tx){document.getElementById('st').innerText="Bayaran "+a+" Pi berjaya!";document.getElementById(b).disabled=false;document.getElementById(b).style.opacity="1";alert("Berjaya! TX: "+tx);},onCancel:function(){document.getElementById('st').innerText="Dibatalkan.";document.getElementById(b).disabled=false;document.getElementById(b).style.opacity="1";},onError:function(e){document.getElementById('st').innerText="Ralat.";document.getElementById(b).disabled=false;document.getElementById(b).style.opacity="1";},onIncompletePaymentFound:onIncompletePaymentFound});}window.onload=function(){if(typeof Pi==='undefined'){document.getElementById('st').innerText="Pi SDK tidak dimuatkan.";return;}Pi.init({version:"2.0",sandbox:true});document.getElementById('st').innerText="Status: Sedia.";document.getElementById('btn-login').disabled=false;};document.getElementById('btn-login').addEventListener('click',function(){document.getElementById('st').innerText="Menyambung...";this.disabled=true;Pi.authenticate(['username','payments'],onIncompletePaymentFound).then(function(auth){document.getElementById('st').innerText="User: "+auth.user.username;document.getElementById('btn-login').disabled=false;document.getElementById('btn-pay1').disabled=false;document.getElementById('btn-pay10').disabled=false;document.getElementById('btn-cancel').disabled=false;}).catch(function(e){document.getElementById('st').innerText="Gagal sambung.";document.getElementById('btn-login').disabled=false;});});document.getElementById('btn-pay1').addEventListener('click',function(){createPayment(1.0,"MBL Store - 1 Pi",'btn-pay1');});document.getElementById('btn-pay10').addEventListener('click',function(){createPayment(10.0,"MBL Store - 10 Pi",'btn-pay10');});document.getElementById('btn-cancel').addEventListener('click',function(){var pid=prompt("Masukkan Payment ID:");if(!pid)return;document.getElementById('st').innerText="Membatalkan...";this.disabled=true;fetch('/api/cancel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:pid})}).then(r=>r.json()).then(d=>{if(d.success){document.getElementById('st').innerText="Berjaya dibatalkan!";alert("Berjaya!");}else{document.getElementById('st').innerText="Gagal.";alert("Gagal: "+JSON.stringify(d));}document.getElementById('btn-cancel').disabled=false;}).catch(function(){document.getElementById('st').innerText="Ralat.";document.getElementById('btn-cancel').disabled=false;});});</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MB LEGACY STORE</title>
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #050505;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #ffffff;
+            padding: 20px;
+        }
+        .title-frame {
+            border: 2px solid #FFD700;
+            padding: 20px 40px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(255,215,0,0.3);
+            background: rgba(255,215,0,0.05);
+        }
+        h1 {
+            color: #FFD700;
+            font-size: 2.2rem;
+            letter-spacing: 4px;
+            font-weight: 400;
+            text-transform: uppercase;
+        }
+        .subtitle {
+            color: #999;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            margin-top: 5px;
+        }
+        .status-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,215,0,0.3);
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+            min-width: 300px;
+            max-width: 400px;
+            text-align: center;
+        }
+        #st {
+            font-size: 0.9rem;
+            color: #ccc;
+            letter-spacing: 1px;
+        }
+        .golden-btn, .red-btn, .grey-btn {
+            display: block;
+            width: 85%;
+            max-width: 400px;
+            margin: 0 auto 12px auto;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: bold;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+        .golden-btn {
+            background: rgba(255,215,0,0.05);
+            color: #FFD700;
+            border: 1px solid #FFD700;
+        }
+        .golden-btn:hover {
+            background: #FFD700;
+            color: #000;
+            box-shadow: 0 0 25px rgba(255,215,0,0.6);
+        }
+        .red-btn {
+            background: rgba(231,76,60,0.05);
+            color: #E74C3C;
+            border: 1px solid #E74C3C;
+        }
+        .red-btn:hover {
+            background: #E74C3C;
+            color: #fff;
+            box-shadow: 0 0 25px rgba(231,76,60,0.6);
+        }
+        .grey-btn {
+            background: rgba(149,165,166,0.05);
+            color: #95a5a6;
+            border: 1px solid #95a5a6;
+        }
+        .grey-btn:hover {
+            background: #95a5a6;
+            color: #000;
+            box-shadow: 0 0 15px rgba(149,165,166,0.4);
+        }
+        .golden-btn:disabled, .red-btn:disabled, .grey-btn:disabled {
+            border-color: #333;
+            color: #333;
+            cursor: not-allowed;
+            box-shadow: none;
+            background: transparent;
+        }
+        footer {
+            margin-top: 40px;
+            color: #333;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="title-frame">
+        <h1>MB LEGACY STORE</h1>
+        <p class="subtitle">Your Pi, Your Legacy.</p>
+    </div>
+
+    <div class="status-box">
+        <p id="st">⏳ Initializing...</p>
+    </div>
+
+    <button id="btn-login" class="golden-btn" disabled>🔐 Connect Account</button>
+    <button id="btn-pay1" class="golden-btn" disabled>💰 Pay 1.0 Pi</button>
+    <button id="btn-pay10" class="red-btn" disabled>🔥 Pay 10 Pi</button>
+    <button id="btn-cancel" class="grey-btn" disabled>🗑️ Cancel Pending</button>
+
+    <footer>Powered by Pi Network • MB LEGACY STORE © 2025</footer>
+
+    <script>
+        function onIncompletePaymentFound(payment) {
+            document.getElementById('st').innerText = "⚠️ Pending Payment: " + payment.identifier;
+            document.getElementById('btn-cancel').disabled = false;
+        }
+        function createPayment(amount, memo, btnId) {
+            document.getElementById('st').innerText = "💰 Processing " + amount + " Pi...";
+            document.getElementById(btnId).disabled = true;
+            Pi.createPayment({ amount: amount, memo: memo, metadata: { id: Date.now().toString() } }, {
+                onReadyForServerApproval: function(paymentId) {
+                    document.getElementById('st').innerText = "⏳ Approving...";
+                    fetch('/api/finalize', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:paymentId}) });
+                },
+                onReadyForServerCompletion: function(paymentId, txid) {
+                    document.getElementById('st').innerText = "✅ Payment " + amount + " Pi Successful!";
+                    document.getElementById(btnId).disabled = false;
+                    alert("🎉 Success! TX: " + txid);
+                },
+                onCancel: function() {
+                    document.getElementById('st').innerText = "❌ Cancelled.";
+                    document.getElementById(btnId).disabled = false;
+                },
+                onError: function(error) {
+                    document.getElementById('st').innerText = "❌ Error.";
+                    document.getElementById(btnId).disabled = false;
+                },
+                onIncompletePaymentFound: onIncompletePaymentFound
+            });
+        }
+        window.onload = function() {
+            if (typeof Pi === 'undefined') { document.getElementById('st').innerText = "❌ Pi SDK not loaded."; return; }
+            Pi.init({ version: "2.0", sandbox: true });
+            document.getElementById('st').innerText = "✅ System Ready.";
+            document.getElementById('btn-login').disabled = false;
+        };
+        document.getElementById('btn-login').addEventListener('click', function() {
+            document.getElementById('st').innerText = "🔄 Connecting...";
+            this.disabled = true;
+            Pi.authenticate(['username', 'payments'], onIncompletePaymentFound)
+                .then(function(auth) {
+                    document.getElementById('st').innerText = "👤 User: " + auth.user.username;
+                    document.getElementById('btn-login').disabled = false;
+                    document.getElementById('btn-pay1').disabled = false;
+                    document.getElementById('btn-pay10').disabled = false;
+                    document.getElementById('btn-cancel').disabled = false;
+                })
+                .catch(function(error) {
+                    document.getElementById('st').innerText = "❌ Connection Failed.";
+                    document.getElementById('btn-login').disabled = false;
+                });
+        });
+        document.getElementById('btn-pay1').addEventListener('click', function() { createPayment(1.0, "MBL Store - 1 Pi", 'btn-pay1'); });
+        document.getElementById('btn-pay10').addEventListener('click', function() { createPayment(10.0, "MBL Store - 10 Pi", 'btn-pay10'); });
+        document.getElementById('btn-cancel').addEventListener('click', function() {
+            var pid = prompt("Enter Payment ID to cancel:");
+            if (!pid) return;
+            document.getElementById('st').innerText = "🗑️ Cancelling...";
+            this.disabled = true;
+            fetch('/api/cancel', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:pid}) })
+                .then(r => r.json())
+                .then(d => {
+                    if (d.success) { document.getElementById('st').innerText = "✅ Cancelled!"; alert("✅ Success!"); }
+                    else { document.getElementById('st').innerText = "❌ Failed."; alert("❌ Failed: " + JSON.stringify(d)); }
+                    document.getElementById('btn-cancel').disabled = false;
+                })
+                .catch(function() { document.getElementById('st').innerText = "❌ Error."; document.getElementById('btn-cancel').disabled = false; });
+        });
+    </script>
+</body>
+</html>
