@@ -66,8 +66,6 @@
             font-size: 0.8rem;
             letter-spacing: 1px;
         }
-
-        /* --- SEKSYEN "THE VAULT" YANG DIPERBAHARUI --- */
         .treasury-section {
             width: 100%;
             max-width: 400px;
@@ -89,6 +87,12 @@
             margin-bottom: 15px;
             text-align: left;
             background: rgba(255,255,255,0.02);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .product-card:hover {
+            border-color: #FFD700;
+            box-shadow: 0 0 15px rgba(255,215,0,0.2);
         }
         .product-img-placeholder {
             width: 100%;
@@ -121,68 +125,44 @@
             font-size: 1.1rem;
             font-weight: bold;
         }
-        /* --- TAMAT SEKSYEN PRODUK --- */
-
-        .golden-btn, .red-btn {
-            display: block;
-            width: 85%;
-            max-width: 400px;
-            margin: 0 auto 12px auto;
-            padding: 14px;
-            font-size: 1rem;
-            font-weight: bold;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-radius: 2px;
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            align-items: center; justify-content: center;
         }
-        .golden-btn {
-            background: rgba(255,215,0,0.05);
-            color: #FFD700;
+        .modal-content {
+            background-color: #0d0d0d;
             border: 1px solid #FFD700;
-        }
-        .golden-btn:hover {
-            background: #FFD700;
-            color: #000;
-            box-shadow: 0 0 25px rgba(255,215,0,0.6);
-        }
-        .red-btn {
-            background: rgba(231,76,60,0.05);
-            color: #E74C3C;
-            border: 1px solid #E74C3C;
-        }
-        .red-btn:hover {
-            background: #E74C3C;
-            color: #fff;
-            box-shadow: 0 0 25px rgba(231,76,60,0.6);
-        }
-        .golden-btn:disabled, .red-btn:disabled {
-            border-color: #333;
-            color: #333;
-            cursor: not-allowed;
-            box-shadow: none;
-            background: transparent;
-        }
-        .footer-frame {
-            margin-top: 30px;
-            border: 1px solid #E74C3C;
-            padding: 12px 15px;
+            padding: 25px;
+            max-width: 350px;
+            width: 90%;
             text-align: center;
-            background: rgba(231,76,60,0.05);
-            max-width: 400px;
+            color: #fff;
         }
-        .footer-frame p {
-            color: #E74C3C;
-            font-size: 0.7rem;
-            letter-spacing: 1px;
+        .modal-content h3 { color: #FFD700; font-size: 1.2rem; letter-spacing: 2px; margin-bottom: 10px; }
+        .modal-content p { color: #ccc; font-size: 0.85rem; margin-bottom: 15px; line-height: 1.4; }
+        .modal-price { font-size: 1.5rem; font-weight: bold; color: #FFD700; margin-bottom: 20px; }
+        .modal-close { padding: 10px 20px; background: transparent; border: 1px solid #E74C3C; color: #E74C3C; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: all 0.3s; }
+        .modal-close:hover { background: #E74C3C; color: #fff; }
+        .golden-btn, .red-btn {
+            display: block; width: 85%; max-width: 400px; margin: 0 auto 12px auto; padding: 14px;
+            font-size: 1rem; font-weight: bold; letter-spacing: 3px; text-transform: uppercase;
+            cursor: pointer; transition: all 0.3s ease; border-radius: 2px;
         }
-        footer {
-            margin-top: 20px;
-            color: #333;
-            font-size: 0.6rem;
-            letter-spacing: 2px;
+        .golden-btn { background: rgba(255,215,0,0.05); color: #FFD700; border: 1px solid #FFD700; }
+        .golden-btn:hover { background: #FFD700; color: #000; box-shadow: 0 0 25px rgba(255,215,0,0.6); }
+        .red-btn { background: rgba(231,76,60,0.05); color: #E74C3C; border: 1px solid #E74C3C; }
+        .red-btn:hover { background: #E74C3C; color: #fff; box-shadow: 0 0 25px rgba(231,76,60,0.6); }
+        .golden-btn:disabled, .red-btn:disabled { border-color: #333; color: #333; cursor: not-allowed; box-shadow: none; background: transparent; }
+        .footer-frame {
+            margin-top: 30px; border: 1px solid #E74C3C; padding: 12px 15px; text-align: center;
+            background: rgba(231,76,60,0.05); max-width: 400px;
         }
+        .footer-frame p { color: #E74C3C; font-size: 0.7rem; letter-spacing: 1px; }
+        footer { margin-top: 20px; color: #333; font-size: 0.6rem; letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -203,29 +183,29 @@
     <div class="treasury-section">
         <h2>✦ THE VAULT ✦</h2>
 
-        <div class="product-card">
+        <div class="product-card" onclick="showProductDetail('THE PI SENTINEL DOSSIER', 'A strategic market intelligence pack for the modern Pioneer. Understand global Pi economics and plan your professional entry.', '1 Pi')">
             <div class="product-img-placeholder">I</div>
             <div class="product-info">
                 <h3>THE PI SENTINEL DOSSIER</h3>
-                <p>A strategic market intelligence pack for the modern Pioneer. Understand global Pi economics and plan your professional entry.</p>
+                <p>A strategic market intelligence pack for the modern Pioneer.</p>
                 <p class="product-price">Price: 1 Pi</p>
             </div>
         </div>
 
-        <div class="product-card">
+        <div class="product-card" onclick="showProductDetail('THE ECHELON BRIEFING PACK', 'An advanced education module on the integration of Pi with AI, RWA, and global economic shifts. Become a thought leader.', '1 Pi')">
             <div class="product-img-placeholder">II</div>
             <div class="product-info">
                 <h3>THE ECHELON BRIEFING PACK</h3>
-                <p>An advanced education module on the integration of Pi with AI, RWA, and global economic shifts. Become a thought leader.</p>
+                <p>An advanced education module on Pi, AI, RWA, and global shifts.</p>
                 <p class="product-price">Price: 1 Pi</p>
             </div>
         </div>
 
-        <div class="product-card">
+        <div class="product-card" onclick="showProductDetail('THE COMMAND CENTER SUITE', 'A professional toolset for building a global brand. Includes whitepaper templates, governance frameworks, and international business guides.', '10 Pi')">
             <div class="product-img-placeholder">III</div>
             <div class="product-info">
                 <h3>THE COMMAND CENTER SUITE</h3>
-                <p>A professional toolset for building a global brand. Includes whitepaper templates, governance frameworks, and international business guides.</p>
+                <p>A professional toolset for building a global brand.</p>
                 <p class="product-price">Price: 10 Pi</p>
             </div>
         </div>
@@ -235,6 +215,15 @@
     <button id="btn-pay1" class="golden-btn" disabled>💰 Pay 1.0 Pi</button>
     <button id="btn-pay10" class="red-btn" disabled>🔥 Pay 10 Pi</button>
 
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle"></h3>
+            <p id="modalDesc"></p>
+            <p class="modal-price" id="modalPrice"></p>
+            <button class="modal-close" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
     <div class="footer-frame">
         <p>🔒 SECURITY NOTICE: MB Legacy Store will NEVER ask for your wallet passphrase. All transactions are conducted securely via the Pi Browser official SDK.</p>
     </div>
@@ -242,6 +231,99 @@
     <footer>© 2026 MB Legacy Store. All Rights Reserved.</footer>
 
     <script>
+        // --- ENJIN BAHASA GLOBAL (V3 - DIBAIKI) ---
+        const translations = {
+            en: {
+                langName: "English",
+                init: "⏳ Initializing Vault...",
+                ready: "✅ Vault Secured. System Ready.",
+                vault: "THE VAULT",
+                sentinel: "THE PI SENTINEL DOSSIER",
+                sentinelDesc: "A strategic market intelligence pack for the modern Pioneer.",
+                echelon: "THE ECHELON BRIEFING PACK",
+                echelonDesc: "An advanced education module on Pi, AI, RWA, and global shifts.",
+                command: "THE COMMAND CENTER SUITE",
+                commandDesc: "A professional toolset for building a global brand.",
+                priceLabel: "Price:",
+                connectBtn: "🔐 Connect Account",
+                pay1Btn: "💰 Pay 1.0 Pi",
+                pay10Btn: "🔥 Pay 10 Pi",
+                security: "🔒 SECURITY NOTICE: MB Legacy Store will NEVER ask for your wallet passphrase. All transactions are conducted securely via the Pi Browser official SDK.",
+                footer: "© 2026 MB Legacy Store. All Rights Reserved."
+            },
+            ms: {
+                langName: "Bahasa Melayu",
+                init: "⏳ Memulakan Bilik Kebal...",
+                ready: "✅ Bilik Kebal Selamat. Sistem Sedia.",
+                vault: "BILIK KEBAL",
+                sentinel: "DOSSIER SENTINEL PI",
+                sentinelDesc: "Pakej risikan pasaran strategik untuk Pioneer moden.",
+                echelon: "PEK TAKLIMAT ECHELON",
+                echelonDesc: "Modul pendidikan lanjutan tentang Pi, AI, RWA, dan peralihan global.",
+                command: "SUIT PUSAT KAWALAN",
+                commandDesc: "Set alat profesional untuk membina jenama global.",
+                priceLabel: "Harga:",
+                connectBtn: "🔐 Sambung Akaun",
+                pay1Btn: "💰 Bayar 1.0 Pi",
+                pay10Btn: "🔥 Bayar 10 Pi",
+                security: "🔒 NOTIS KESELAMATAN: MB Legacy Store TIDAK AKAN PERNAH meminta frasa laluan dompet anda. Semua transaksi dijalankan dengan selamat melalui SDK rasmi Pelayar Pi.",
+                footer: "© 2026 MB Legacy Store. Hak Cipta Terpelihara."
+            }
+        };
+
+        function applyLanguage(lang) {
+            const t = translations[lang] || translations.en;
+            
+            // Status Messages
+            window.translationData = t;
+            
+            document.querySelector('h1').innerText = "MB LEGACY STORE";
+            document.querySelector('.subtitle').innerText = "Your Pi, Your Legacy.";
+            document.querySelector('.treasury-section h2').innerText = "✦ " + t.vault + " ✦";
+            
+            const cards = document.querySelectorAll('.product-card');
+            cards[0].querySelector('h3').innerText = t.sentinel;
+            cards[0].querySelector('p').innerText = t.sentinelDesc;
+            cards[1].querySelector('h3').innerText = t.echelon;
+            cards[1].querySelector('p').innerText = t.echelonDesc;
+            cards[2].querySelector('h3').innerText = t.command;
+            cards[2].querySelector('p').innerText = t.commandDesc;
+            
+            const priceElements = document.querySelectorAll('.product-price');
+            if (priceElements[0]) priceElements[0].innerHTML = t.priceLabel + ' 1 Pi';
+            if (priceElements[1]) priceElements[1].innerHTML = t.priceLabel + ' 1 Pi';
+            if (priceElements[2]) priceElements[2].innerHTML = t.priceLabel + ' 10 Pi';
+            
+            document.getElementById('btn-login').innerText = t.connectBtn;
+            document.getElementById('btn-pay1').innerText = t.pay1Btn;
+            document.getElementById('btn-pay10').innerText = t.pay10Btn;
+            document.querySelector('.footer-frame p').innerText = t.security;
+            document.querySelector('footer').innerText = t.footer;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const userLang = (navigator.language || navigator.userLanguage).split('-')[0];
+            console.log("🌐 Browser language detected: " + userLang);
+            
+            if (translations[userLang]) {
+                applyLanguage(userLang);
+                console.log("✅ Language applied: " + translations[userLang].langName);
+            } else {
+                console.log("✅ Default Language: English");
+            }
+        });
+        // --- TAMAT ENJIN BAHASA ---
+
+        function showProductDetail(title, desc, price) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('modalPrice').innerText = "Price: " + price;
+            document.getElementById('productModal').style.display = "flex";
+        }
+        function closeModal() {
+            document.getElementById('productModal').style.display = "none";
+        }
+
         function onIncompletePaymentFound(payment) {
             document.getElementById('st').innerText = "⚠️ Pending Payment: " + payment.identifier;
         }
@@ -274,7 +356,14 @@
         window.onload = function() {
             if (typeof Pi === 'undefined') { document.getElementById('st').innerText = "❌ Pi SDK not loaded."; return; }
             Pi.init({ version: "2.0", sandbox: true });
-            document.getElementById('st').innerText = "✅ Vault Secured. System Ready.";
+            
+            const t = window.translationData;
+            if (t) {
+                document.getElementById('st').innerText = t.ready;
+            } else {
+                document.getElementById('st').innerText = "✅ Vault Secured. System Ready.";
+            }
+            
             document.getElementById('btn-login').disabled = false;
         };
 
