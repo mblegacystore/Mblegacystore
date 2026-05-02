@@ -252,7 +252,7 @@
             
             let html = `<h3>${content.title}</h3><div style="text-align: left;">${content.body}</div><p class="modal-price">Price: ${content.price}</p>`;
             
-            if (isPaidContent && content.url) {
+            if ((isPaidContent || productKey === 'sentinel') && content.url) {
                 const keyText = { en: "YOUR GOLDEN KEY", ms: "KUNCI EMAS ANDA", id: "KUNCI EMAS ANDA", zh: "您的金钥匙", ko: "당신의 황금 열쇠", vi: "CHÌA KHÓA VÀNG CỦA BẠN", tl: "ANG IYONG GINTONG SUSI", ar: "مفتاحك الذهبي" }[currentLang] || "YOUR GOLDEN KEY";
                 const linkText = { en: "ACCESS YOUR CONTENT", ms: "AKSES KANDUNGAN ANDA", id: "AKSES KONTEN ANDA", zh: "访问您的内容", ko: "콘텐츠에 접속하기", vi: "TRUY CẬP NỘI DUNG CỦA BẠN", tl: "I-ACCESS ANG IYONG NILALAMAN", ar: "الوصول إلى المحتوى الخاص بك" }[currentLang] || "ACCESS YOUR CONTENT";
                 html += `<div class="golden-key">🔑 ${keyText}: MBL-${Date.now().toString(36).toUpperCase()}-PI</div>`;
@@ -316,7 +316,7 @@
                 .catch(function() { document.getElementById('stSticky').innerText = "❌ Connection Failed."; document.getElementById('btn-login').disabled = false; });
         });
         document.getElementById('btn-pay1').addEventListener('click', function() { createPayment(1.0, "MBL Store - 1 Pi (Kit)", 'btn-pay1'); });
-        document.getElementById('btn-pay10').addEventListener('click', function() { createPayment(10.0, "MBL Store - 10 Pi (Kit)", 'btn-pay10'); });
+        document.getElementById('btn-pay5').addEventListener('click', function() { createPayment(10.0, "MBL Store - 10 Pi (Kit)", 'btn-pay10'); });
     </script>
 </body>
 </html>
