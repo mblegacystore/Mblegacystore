@@ -16,7 +16,7 @@
             min-height: 100vh;
             color: #ffffff;
             padding: 20px;
-            padding-bottom: 100px; /* Elak sticky status menutup footer */
+            padding-bottom: 80px;
         }
         .title-frame {
             border: 2px solid #FFD700;
@@ -84,16 +84,15 @@
 
         /* === STICKY STATUS BAR === */
         #stickyStatus {
-            position: fixed;
-            bottom: 0;
-            left: 0;
             width: 100%;
+            max-width: 400px;
             background-color: rgba(0,0,0,0.95);
-            border-top: 2px solid #FFD700;
+            border: 2px solid #FFD700;
             padding: 15px;
             text-align: center;
             z-index: 50;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 0 15px rgba(255,215,0,0.3);
+            margin-bottom: 15px;
         }
         #stSticky { font-size: 0.9rem; color: #FFD700; margin: 0; letter-spacing: 1px; font-weight: bold; }
     </style>
@@ -152,6 +151,10 @@
         </div>
     </div>
 
+    <div id="stickyStatus">
+        <p id="stSticky">⏳ Initializing Vault...</p>
+    </div>
+
     <button id="btn-login" class="golden-btn" disabled>🔐 Connect Account</button>
     <button id="btn-pay1" class="golden-btn" disabled>💰 Pay 1.0 Pi</button>
     <button id="btn-pay10" class="red-btn" disabled>🔥 Pay 10 Pi</button>
@@ -165,10 +168,6 @@
     </div>
 
     <footer>© 2026 MB Legacy Store. All Rights Reserved.</footer>
-
-    <div id="stickyStatus">
-        <p id="stSticky">⏳ Initializing Vault...</p>
-    </div>
 
     <script>
         const vaultContent = {
@@ -276,8 +275,7 @@
 
         function createPayment(amount, memo, btnId) {
             document.getElementById('stSticky').innerText = "💰 Processing " + amount + " Pi...";
-            document.getElementById('btn-pay1').style.display = 'none';
-            document.getElementById('btn-pay10').style.display = 'none';
+            document.getElementById('stickyStatus').style.display = 'block';
             document.getElementById(btnId).disabled = true;
             Pi.createPayment({ amount: amount, memo: memo, metadata: { id: Date.now().toString() } }, {
                 onReadyForServerApproval: function(paymentId) {
@@ -288,22 +286,16 @@
                     isPaymentPending = false;
                     document.getElementById('stSticky').innerText = "✅ Payment " + amount + " Pi Successful!";
                     document.getElementById(btnId).disabled = false;
-                    document.getElementById('btn-pay1').style.display = 'block';
-                    document.getElementById('btn-pay10').style.display = 'block';
                     if (amount === 1.0) showVaultView('echelon', true);
                     if (amount === 10.0) showVaultView('command', true);
                 },
                 onCancel: function() {
                     document.getElementById('stSticky').innerText = "❌ Cancelled.";
                     document.getElementById(btnId).disabled = false;
-                    document.getElementById('btn-pay1').style.display = 'block';
-                    document.getElementById('btn-pay10').style.display = 'block';
                 },
                 onError: function() {
                     document.getElementById('stSticky').innerText = "❌ Error.";
                     document.getElementById(btnId).disabled = false;
-                    document.getElementById('btn-pay1').style.display = 'block';
-                    document.getElementById('btn-pay10').style.display = 'block';
                 },
                 onIncompletePaymentFound: onIncompletePaymentFound
             });
@@ -327,4 +319,4 @@
         document.getElementById('btn-pay10').addEventListener('click', function() { createPayment(10.0, "MBL Store - 10 Pi (Kit)", 'btn-pay10'); });
     </script>
 </body>
-    </html>
+</html>
