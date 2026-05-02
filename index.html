@@ -227,7 +227,7 @@
             if (productKey === 'sentinel') {
                 html = (freeContent[currentLang] || freeContent.en) + `<p class="modal-price">Price: ${content.price}</p>`;
             } else {
-                html = `<h3>${content.title}</h3><div style="text-align: left;">${content.body}</div><p class="modal-price">Price: ${content.price}</p>`;
+                html = `<h3>${content.title}</h3><div style="text-align: left; word-break: break-word; overflow-wrap: break-word;">${content.body}</div><p class="modal-price">Price: ${content.price}</p>`;
                 
                 if (isPaidContent && content.url) {
                     const keyText = { en: "YOUR GOLDEN KEY", ms: "KUNCI EMAS ANDA", id: "KUNCI EMAS ANDA", zh: "您的金钥匙", ko: "당신의 황금 열쇠", vi: "CHÌA KHÓA VÀNG CỦA BẠN", tl: "ANG IYONG GINTONG SUSI", ar: "مفتاحك الذهبي" }[currentLang] || "YOUR GOLDEN KEY";
