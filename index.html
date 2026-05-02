@@ -225,7 +225,7 @@
             let html = '';
 
             if (productKey === 'sentinel') {
-                html = `<h3>${content.title}</h3>` + (freeContent[currentLang] || freeContent.en) + `<p class="modal-price">Price: ${content.price}</p>`;
+                html = `<h3 style="text-align:center;">${content.title}</h3><div style="text-align:left;">` + (freeContent[currentLang] || freeContent.en) + `</div><p class="modal-price" style="text-align:center;">Price: ${content.price}</p>`;
             } else {
                 html = `<h3>${content.title}</h3><div style="text-align: left; word-break: break-word; overflow-wrap: break-word;">${content.body}</div><p class="modal-price">Price: ${content.price}</p>`;
                 
