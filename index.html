@@ -344,8 +344,10 @@
                     isPaymentPending = false;
                     document.getElementById('stSticky').innerText = "✅ Payment " + amount + " Pi Successful!";
                     document.getElementById(btnId).disabled = false;
-                    if (amount === 1.0) showVaultView('echelon', true);
-                    if (amount === 5.0) showVaultView('command', true);
+                    // Delivery Gate ditangguhkan sehingga bug Payment Expired selesai
+// if (amount === 1.0) showVaultView('echelon', true);
+// if (amount === 5.0) showVaultView('command', true);
+alert("✅ Payment recorded. Full access will be granted after Mainnet launch. Thank you for testing!");
                 },
                 onCancel: function() {
                     document.getElementById('stSticky').innerText = "❌ Cancelled.";
