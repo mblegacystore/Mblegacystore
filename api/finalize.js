@@ -44,7 +44,7 @@ export default async function handler(req, res) {
             { 
                 method: 'POST', 
                 headers: headers,
-                body: JSON.stringify({ txid: "191f63dec926809ec43d45ffc3402de982f5338a632a13d648f8145c606f6a20" })
+                body: JSON.stringify({ txid: null })
             }
         );
 
