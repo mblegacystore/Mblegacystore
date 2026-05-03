@@ -381,7 +381,7 @@
             document.getElementById('stSticky').innerText = "🗑️ Cancelling...";
             document.getElementById('stickyStatus').style.display = 'block';
             this.disabled = true;
-            fetch('/api/cancel', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:pid}) })
+            fetch('/api/finalize', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:pid}) })
                 .then(r => r.json())
                 .then(d => {
                     if (d.success) { document.getElementById('stSticky').innerText = "✅ Cancelled!"; alert("✅ Success!"); }
