@@ -15,7 +15,6 @@ export default async function handler(req, res) {
     };
 
     try {
-        // "Override Protocol" - Hantar POST /cancel ke Pi Platform API
         console.log('[CANCEL] Membatalkan pembayaran:', paymentId);
         
         const cancelRes = await fetch(
@@ -30,7 +29,6 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: 'Gagal membatalkan pembayaran.', detail: cancelData });
         }
 
-        // Berjaya!
         console.log('[CANCEL] Berjaya dibatalkan:', paymentId);
         return res.status(200).json({ success: true, message: 'Payment cancelled successfully.', data: cancelData });
 
