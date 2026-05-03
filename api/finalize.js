@@ -15,24 +15,25 @@ export default async function handler(req, res) {
     };
 
     try {
-        // Langkah 1: Approve pembayaran
-        console.log('[FINALIZE] Meluluskan pembayaran:', paymentId);
-        
-        const approveRes = await fetch(
-            `https://api.minepi.com/v2/payments/${paymentId}/approve`,
-            { method: 'POST', headers: headers }
-        );
-
-        const approveData = await approveRes.json();
-
-        if (!approveRes.ok) {
-            console.error('[FINALIZE] Gagal approve:', approveData);
-            return res.status(500).json({ error: 'Gagal meluluskan pembayaran.', detail: approveData });
+        // Langkah 1: Cuba approve (jika belum)
+        console.log('[FINALIZE] Mencuba approve:', paymentId);
+        try {
+            const approveRes = await fetch(
+                `https://api.minepi.com/v2/payments/${paymentId}/approve`,
+                { method: 'POST', headers: headers }
+            );
+            const approveData = await approveRes.json();
+            if (approveRes.ok) {
+                console.log('[FINALIZE] Approve berjaya.');
+            } else {
+                console.log('[FINALIZE] Approve tidak diperlukan (mungkin sudah approved):', approveData.error);
+            }
+        } catch (e) {
+            console.log('[FINALIZE] Approve skipped - ralat:', e.message);
         }
 
-        console.log('[FINALIZE] Berjaya diluluskan.');
-
         // Langkah 2: Tunggu 3 saat
+        console.log('[FINALIZE] Menunggu 3 saat...');
         await new Promise(resolve => setTimeout(resolve, 3000));
 
         // Langkah 3: Force Complete dengan txid
@@ -58,7 +59,6 @@ export default async function handler(req, res) {
         return res.status(200).json({ 
             success: true, 
             message: 'Payment approved and completed successfully.',
-            approved: approveData,
             completed: completeData 
         });
 
