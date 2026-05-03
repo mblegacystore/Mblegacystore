@@ -15,36 +15,48 @@ export default async function handler(req, res) {
     };
 
     try {
-        // Langkah 1: Cuba approve (jika belum)
-        console.log('[FINALIZE] Mencuba approve:', paymentId);
-        try {
-            const approveRes = await fetch(
-                `https://api.minepi.com/v2/payments/${paymentId}/approve`,
-                { method: 'POST', headers: headers }
-            );
-            const approveData = await approveRes.json();
-            if (approveRes.ok) {
-                console.log('[FINALIZE] Approve berjaya.');
-            } else {
-                console.log('[FINALIZE] Approve tidak diperlukan (mungkin sudah approved):', approveData.error);
-            }
-        } catch (e) {
-            console.log('[FINALIZE] Approve skipped - ralat:', e.message);
+        // Langkah 1: Dapatkan maklumat pembayaran
+        console.log('[FINALIZE] Mendapatkan maklumat pembayaran:', paymentId);
+        
+        const getRes = await fetch(
+            `https://api.minepi.com/v2/payments/${paymentId}`,
+            { method: 'GET', headers: headers }
+        );
+
+        const paymentData = await getRes.json();
+
+        if (!getRes.ok) {
+            console.error('[FINALIZE] Gagal dapatkan maklumat:', paymentData);
+            return res.status(500).json({ 
+                error: 'Gagal mendapatkan maklumat pembayaran.', 
+                detail: paymentData 
+            });
         }
 
+        // Dapatkan txid dari respons
+        const txid = paymentData?.transaction?.txid;
+        
+        if (!txid) {
+            return res.status(500).json({ 
+                error: 'txid tidak ditemui dalam pembayaran.',
+                paymentData: paymentData
+            });
+        }
+
+        console.log('[FINALIZE] txid ditemui:', txid);
+
         // Langkah 2: Tunggu 3 saat
-        console.log('[FINALIZE] Menunggu 3 saat...');
         await new Promise(resolve => setTimeout(resolve, 3000));
 
-        // Langkah 3: Force Complete dengan txid
-        console.log('[FINALIZE] Menyelesaikan pembayaran:', paymentId);
+        // Langkah 3: Complete dengan txid yang betul
+        console.log('[FINALIZE] Menyelesaikan pembayaran dengan txid:', txid);
         
         const completeRes = await fetch(
             `https://api.minepi.com/v2/payments/${paymentId}/complete`,
             { 
                 method: 'POST', 
                 headers: headers,
-                body: JSON.stringify({ txid: null })
+                body: JSON.stringify({ txid: txid })
             }
         );
 
@@ -58,7 +70,8 @@ export default async function handler(req, res) {
         console.log('[FINALIZE] Pembayaran selesai sepenuhnya:', paymentId);
         return res.status(200).json({ 
             success: true, 
-            message: 'Payment approved and completed successfully.',
+            message: 'Payment completed successfully.',
+            txid: txid,
             completed: completeData 
         });
 
