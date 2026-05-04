@@ -32,8 +32,7 @@
         .lang-selector button { background: transparent; border: 1px solid #FFD700; color: #FFD700; padding: 5px 8px; margin: 0 1px; cursor: pointer; font-weight: bold; letter-spacing: 1px; transition: all 0.3s; font-size: 0.7rem; }
         .lang-selector button:hover { background: #FFD700; color: #000; }
 
-        .trust-badge { border: 1px solid #FFD700; padding: 15px 20px; margin-bottom: 20px; text-align: center; background: rgba(255,215,0,0.05); max-width: 400px; }
-        .trust-badge p { color: #FFD700; font-size: 0.8rem; letter-spacing: 1px; }
+        .section-divider { width: 100%; max-width: 400px; height: 1px; background: linear-gradient(to right, transparent, #FFD700, transparent); margin-bottom: 20px; }
 
         @keyframes warningBlink {
             0%, 100% { background-color: rgba(200, 0, 0, 0.8); border-color: #ff0000; box-shadow: 0 0 25px rgba(255,0,0,0.9); }
@@ -83,15 +82,11 @@
         .golden-btn:disabled, .red-btn:disabled { border-color: #333; color: #333; cursor: not-allowed; box-shadow: none; background: transparent; animation: none; }
 
         #stickyStatus {
-            width: 100%;
-            max-width: 400px;
+            width: 100%; max-width: 400px;
             background-color: rgba(0,0,0,0.95);
             border: 2px solid #FFD700;
-            padding: 12px 15px;
-            text-align: center;
-            z-index: 50;
-            box-shadow: 0 0 15px rgba(255,215,0,0.3);
-            margin-bottom: 15px;
+            padding: 12px 15px; text-align: center; z-index: 50;
+            box-shadow: 0 0 15px rgba(255,215,0,0.3); margin-bottom: 15px;
         }
         #stSticky { font-size: 0.8rem; color: #FFD700; margin: 0; letter-spacing: 1px; font-weight: bold; word-break: break-all; }
 
@@ -127,9 +122,7 @@
         <button onclick="switchLanguage('ar')">🇸🇦 العربية</button>
     </div>
 
-    <div class="trust-badge">
-        <p>✦ 5% OF EVERY PURCHASE FUNDS GLOBAL CHARITY ✦</p>
-    </div>
+    <div class="section-divider"></div>
 
     <div style="display: flex; gap: 8px; margin-bottom: 15px; max-width: 400px; width: 100%;">
         <button id="tab-digital" onclick="switchTab('digital')" style="flex:1; padding: 10px; background: #FFD700; color: #000; border: 1px solid #FFD700; font-weight: bold; letter-spacing: 2px; font-size: 0.75rem; cursor: pointer; border-radius: 2px; transition: all 0.3s;">📚 Digital Vault</button>
@@ -147,6 +140,7 @@
                 <p>Secured by Pi SDK payments</p>
                 <p>Built on trust & transparency</p>
             </div>
+            <button id="seller-login-btn" class="golden-btn" disabled style="margin-top:20px; font-size:0.8rem; letter-spacing:1px;">🔐 Seller Login</button>
             <p class="merchant-footer">Powered by Pi Network • MB LEGACY STORE</p>
         </div>
     </div>
@@ -183,117 +177,27 @@
         </div>
     </div>
 
-    <div id="stickyStatus">
-        <p id="stSticky">⏳ Initializing Vault...</p>
-    </div>
+    <div id="stickyStatus"><p id="stSticky">⏳ Initializing Vault...</p></div>
 
     <button id="btn-login" class="golden-btn" disabled>🔐 Connect Account</button>
     <button id="btn-pay1" class="golden-btn" disabled>💰 Pay 1.0 Pi</button>
     <button id="btn-pay10" class="red-btn" disabled>🔥 Pay 5 Pi</button>
     <button id="btn-cancel" class="golden-btn" disabled style="margin-top:5px; font-size:0.8rem; letter-spacing:1px;">🗑️ Cancel Pending</button>
 
-    <div id="productModal" class="modal">
-        <div class="modal-content" id="modalBody"></div>
-    </div>
+    <div id="productModal" class="modal"><div class="modal-content" id="modalBody"></div></div>
 
-    <div class="footer-frame">
-        <p>🔒 SECURITY NOTICE: MB Legacy Store will NEVER ask for your wallet passphrase. All transactions are conducted securely via the Pi Browser official SDK.</p>
-    </div>
-
+    <div class="footer-frame"><p>🔒 SECURITY NOTICE: MB Legacy Store will NEVER ask for your wallet passphrase. All transactions are conducted securely via the Pi Browser official SDK.</p></div>
     <footer>© 2026 MB Legacy Store. All Rights Reserved.</footer>
 
     <script>
         const freeContent = {
-            en: `<h3>THE PI SENTINEL DOSSIER</h3>
-            <p>Welcome, Pioneer. You are holding one of the most in-depth strategic dossiers in the Pi ecosystem. This is not a basic guide; this is your first intelligence briefcase for navigating the new digital economy.</p>
-            <h4>1. The Vision: The Founders' Masterplan</h4>
-            <p>A deep dive into the philosophy of Dr. Nicolas Kokkalis and Dr. Chengdiao Fan. Understand why Pi is not just a cryptocurrency, but a movement to decentralize global finance. Learn why "accessibility" and "user-centric design" are the secret weapons behind Pi's 100M+ downloads.</p>
-            <h4>2. The Wallet: Your Digital Fortress</h4>
-            <p>The Pi Wallet is more than a place to store coins. It is your personal fortress on the blockchain. This report explains the critical difference between your non-custodial wallet (where YOU hold the keys) and traditional banking. Learn security protocols, backup strategies, and the real meaning of "Not your keys, not your coins."</p>
-            <h4>3. The Strategy: Beyond the "Mining" Button</h4>
-            <p>Is pressing the lightning button enough? No. This section unveils the art of expanding your security circle, running Pi Node on your laptop for extra rewards, and understanding how your daily engagement creates true utility for the network. Learn how the KYC process transforms you from a user into a global citizen.</p>
-            <p><strong>This is your foundation. With this knowledge, you are no longer just a user; you are a Sentinel of the Pi Network. Guard it, share it, and build the future.</strong></p>`,
-
-            ms: `<h3>DOSSIER PI SENTINEL</h3>
-            <p>Selamat datang, Pioneer. Anda sedang memegang salah satu dossier strategik paling eksklusif dalam ekosistem Pi. Ini bukan panduan asas; ini adalah beg bimbit perisikan pertama anda untuk menavigasi ekonomi digital baharu.</p>
-            <h4>1. Visi: Pelan Induk Pengasas</h4>
-            <p>Selami falsafah Dr. Nicolas Kokkalis dan Dr. Chengdiao Fan. Fahami mengapa Pi bukan sekadar mata wang kripto, tetapi satu gerakan untuk mendesentralisasi kewangan global. Ketahui mengapa "kebolehcapaian" dan "reka bentuk mesra pengguna" adalah senjata rahsia di sebalik 100 juta+ muat turun Pi.</p>
-            <h4>2. Dompet: Kubu Digital Anda</h4>
-            <p>Dompet Pi bukan sekadar tempat menyimpan syiling. Ia adalah kubu peribadi anda di atas rantaian blok. Laporan ini menerangkan perbezaan kritikal antara dompet bukan kustodian (di mana ANDA memegang kunci) dan perbankan tradisional. Pelajari protokol keselamatan, strategi sandaran, dan maksud sebenar "Bukan kunci anda, bukan syiling anda."</p>
-            <h4>3. Strategi: Melangkaui Butang "Lombong"</h4>
-            <p>Adakah menekan butang petir sudah cukup? Tidak. Bahagian ini mendedahkan seni mengembangkan lingkaran keselamatan anda, menjalankan Pi Node pada komputer riba anda untuk ganjaran tambahan, dan memahami bagaimana penglibatan harian anda mencipta utiliti sebenar untuk rangkaian. Ketahui bagaimana proses KYC mengubah anda daripada pengguna kepada warga global.</p>
-            <p><strong>Ini adalah asas anda. Dengan pengetahuan ini, anda bukan lagi sekadar pengguna; anda adalah seorang Sentinel Rangkaian Pi. Jaganya, kongsi, dan binakan masa depan.</strong></p>`,
-
-            id: `<h3>DOSSIER PI SENTINEL</h3>
-            <p>Selamat datang, Pioneer. Anda sedang memegang salah satu dokumen strategis paling eksklusif di ekosistem Pi. Ini bukan panduan dasar; ini adalah tas intelijen pertama Anda untuk menavigasi ekonomi digital baru.</p>
-            <h4>1. Visi: Cetak Biru Para Pendiri</h4>
-            <p>Menyelami filosofi Dr. Nicolas Kokkalis dan Dr. Chengdiao Fan. Pahami mengapa Pi bukan sekadar mata uang kripto, tetapi sebuah gerakan untuk mendesentralisasi keuangan global. Pelajari mengapa "aksesibilitas" dan "desain yang berpusat pada pengguna" adalah senjata rahasia di balik 100 juta+ unduhan Pi.</p>
-            <h4>2. Dompet: Benteng Digital Anda</h4>
-            <p>Dompet Pi lebih dari sekadar tempat menyimpan koin. Ini adalah benteng pribadi Anda di atas blockchain. Laporan ini menjelaskan perbedaan penting antara dompet non-kustodian (di mana ANDA memegang kunci) dan perbankan tradisional. Pelajari protokol keamanan, strategi pencadangan, dan makna sebenarnya dari "Bukan kunci Anda, bukan koin Anda."</p>
-            <h4>3. Strategi: Melampaui Tombol "Menambang"</h4>
-            <p>Apakah menekan tombol petir saja cukup? Tidak. Bagian ini mengungkap seni memperluas lingkaran keamanan Anda, menjalankan Pi Node di laptop untuk mendapatkan hadiah tambahan, dan memahami bagaimana keterlibatan harian Anda menciptakan utilitas nyata untuk jaringan. Pelajari bagaimana proses KYC mengubah Anda dari pengguna menjadi warga global.</p>
-            <p><strong>Ini adalah fondasi Anda. Dengan pengetahuan ini, Anda bukan lagi sekadar pengguna; Anda adalah seorang Sentinel Jaringan Pi. Jagalah, bagikan, dan bangun masa depan.</strong></p>`,
-
-            zh: `<h3>Pi哨兵档案</h3>
-            <p>欢迎，先锋。您手中握着的是Pi生态系统中最具战略价值的档案之一。这并非一份基础指南，而是您开启新数字经济之门的第一份情报公文包。</p>
-            <h4>1. 愿景：创始人的宏伟蓝图</h4>
-            <p>深入了解Nicolas Kokkalis博士与Chengdiao Fan博士的核心理念。理解为何Pi不仅仅是一种加密代币，而是一场旨在实现全球金融权力下放的变革运动。探究为何“无障碍”与“以用户为中心的设计”是Pi实现超过1亿次下载的秘密武器。</p>
-            <h4>2. 钱包：您的数字堡垒</h4>
-            <p>Pi钱包远不止是一个存储代币的地方。它是您在区块链上的专属堡垒。本报告将为您阐述非托管钱包（即由您自己掌控私钥）与传统银行体系之间的根本性区别。深入了解安全协议、备份策略，以及“掌握私钥，才算真正拥有代币”这一理念的深刻内涵。</p>
-            <h4>3. 战略：超越“点击挖矿”</h4>
-            <p>仅仅点击闪电按钮就足够了吗？不。本部分将为您揭示扩展安全圈、在笔记本电脑上运行Pi节点以获取额外奖励的深层策略，并剖析您的日常参与如何为整个网络构建真正的实用价值。深刻理解KYC流程如何将您的身份从普通用户转变为全球公民。</p>
-            <p><strong>这正是您扎根生态的基石。拥有了这份洞见，您的身份便超越了普通用户，正式成为Pi网络的哨兵。守护它，分享它，共筑未来。</strong></p>`,
-
-            ko: `<h3>파이 센티넬 보고서</h3>
-            <p>환영합니다, 파이오니어. 당신은 지금 파이 생태계에서 가장 독점적인 전략 보고서 중 하나를 손에 쥐고 있습니다. 이것은 기본 가이드가 아닙니다. 새로운 디지털 경제를 항해하기 위한 당신의 첫 번째 정보 서류 가방입니다.</p>
-            <h4>1. 비전: 창립자의 마스터플랜</h4>
-            <p>니콜라스 코칼리스 박사와 청디아오 판 박사의 철학에 대한 심층 분석. 파이가 단순한 암호화폐가 아니라 글로벌 금융을 탈중앙화하려는 운동인 이유를 이해하세요. "접근성"과 "사용자 중심 디자인"이 파이의 1억 회 이상 다운로드 뒤에 숨은 비밀 병기인 이유를 알아보세요.</p>
-            <h4>2. 지갑: 당신의 디지털 요새</h4>
-            <p>파이 지갑은 단순히 코인을 보관하는 장소 그 이상입니다. 블록체인 위에 세워진 당신의 개인 요새입니다. 이 보고서는 비수탁형 지갑(당신이 열쇠를 직접 보유하는)과 전통적인 은행 업무의 중요한 차이점을 설명합니다. 보안 프로토콜, 백업 전략, 그리고 "당신의 열쇠가 아니면, 당신의 코인이 아니다"라는 말의 진정한 의미를 배우세요.</p>
-            <h4>3. 전략: "채굴" 버튼 너머</h4>
-            <p>번개 버튼을 누르는 것만으로 충분할까요? 아닙니다. 이 섹션에서는 보안 서클을 확장하고, 추가 보상을 위해 노트북에서 파이 노드를 실행하며, 일일 활동이 네트워크에 어떻게 실질적인 유용성을 창출하는지 이해하는 기술을 공개합니다. KYC 절차가 어떻게 당신을 단순한 사용자에서 세계 시민으로 변화시키는지 알아보세요.</p>
-            <p><strong>이것이 당신의 기초입니다. 이 지식을 바탕으로, 당신은 더 이상 단순한 사용자가 아닙니다. 당신은 파이 네트워크의 센티넬입니다. 지키고, 공유하고, 미래를 건설하세요.</strong></p>`,
-
-            vi: `<h3>HỒ SƠ TÌNH BÁO PI</h3>
-            <p>Chào mừng, Pioneer. Bạn đang nắm giữ một trong những hồ sơ chiến lược độc quyền nhất trong hệ sinh thái Pi. Đây không phải là một hướng dẫn cơ bản; đây là chiếc cặp tình báo đầu tiên của bạn để định hướng nền kinh tế kỹ thuật số mới.</p>
-            <h4>1. Tầm Nhìn: Kế Hoạch Tổng Thể Của Nhà Sáng Lập</h4>
-            <p>Đi sâu vào triết lý của Tiến sĩ Nicolas Kokkalis và Tiến sĩ Chengdiao Fan. Hiểu tại sao Pi không chỉ là một loại tiền mã hóa, mà còn là một phong trào nhằm phi tập trung hóa tài chính toàn cầu. Tìm hiểu lý do tại sao "khả năng tiếp cận" và "thiết kế lấy người dùng làm trung tâm" lại là vũ khí bí mật đằng sau hơn 100 triệu lượt tải xuống của Pi.</p>
-            <h4>2. Ví: Pháo Đài Kỹ Thuật Số Của Bạn</h4>
-            <p>Ví Pi không chỉ là nơi lưu trữ đồng xu. Đó là pháo đài cá nhân của bạn trên blockchain. Báo cáo này giải thích sự khác biệt quan trọng giữa ví không lưu ký (nơi BẠN nắm giữ khóa) và ngân hàng truyền thống. Tìm hiểu các giao thức bảo mật, chiến lược sao lưu và ý nghĩa thực sự của câu nói "Không có khóa, không có tiền."</p>
-            <h4>3. Chiến Lược: Vượt Xa Nút "Khai Thác"</h4>
-            <p>Nhấn nút tia sét có đủ không? Không. Phần này tiết lộ nghệ thuật mở rộng vòng tròn bảo mật của bạn, chạy Pi Node trên máy tính xách tay để nhận thêm phần thưởng và hiểu cách tương tác hàng ngày của bạn tạo ra tiện ích thực sự cho mạng lưới. Tìm hiểu cách quy trình KYC biến bạn từ người dùng thành công dân toàn cầu.</p>
-            <p><strong>Đây là nền tảng của bạn. Với kiến thức này, bạn không còn chỉ là người dùng; bạn là một Sentinel của Mạng Pi. Hãy bảo vệ nó, chia sẻ nó và xây dựng tương lai.</strong></p>`,
-
-            tl: `<h3>PI SENTINEL DOSSIER</h3>
-            <p>Maligayang pagdating, Pioneer. Hawak mo ang isa sa mga pinaka-eksklusibong strategic dossier sa Pi ecosystem. Hindi ito isang pangunahing gabay; ito ang iyong unang intelligence briefcase para sa pag-navigate sa bagong digital economy.</p>
-            <h4>1. Ang Bisyon: Ang Masterplan ng mga Tagapagtatag</h4>
-            <p>Isang malalimang pagsisid sa pilosopiya nina Dr. Nicolas Kokkalis at Dr. Chengdiao Fan. Unawain kung bakit ang Pi ay hindi lamang isang cryptocurrency, kundi isang kilusan upang i-desentralisa ang pandaigdigang pananalapi. Alamin kung bakit ang "accessibility" at "user-centric design" ang mga sikretong sandata sa likod ng 100M+ downloads ng Pi.</p>
-            <h4>2. Ang Wallet: Ang Iyong Digital Fortress</h4>
-            <p>Ang Pi Wallet ay higit pa sa isang lugar upang mag-imbak ng mga barya. Ito ang iyong personal na kuta sa blockchain. Ipinapaliwanag ng ulat na ito ang kritikal na pagkakaiba sa pagitan ng iyong non-custodial wallet (kung saan IKAW ang may hawak ng mga susi) at tradisyonal na pagbabangko. Alamin ang mga security protocol, backup na estratehiya, at ang tunay na kahulugan ng "Not your keys, not your coins."</p>
-            <h4>3. Ang Estratehiya: Higit pa sa "Mining" Button</h4>
-            <p>Sapat na ba ang pagpindot sa lightning button? Hindi. Inilalahad ng seksyong ito ang sining ng pagpapalawak ng iyong security circle, pagpapatakbo ng Pi Node sa iyong laptop para sa karagdagang gantimpala, at pag-unawa kung paano ang iyong pang-araw-araw na pakikipag-ugnayan ay lumilikha ng tunay na utility para sa network. Alamin kung paano binabago ng proseso ng KYC ang iyong pagkakakilanlan mula sa isang user patungo sa isang pandaigdigang mamamayan.</p>
-            <p><strong>Ito ang iyong pundasyon. Sa kaalamang ito, hindi ka na lamang isang user; ikaw ay isang Sentinel ng Pi Network. Pangalagaan ito, ibahagi ito, at buuin ang hinaharap.</strong></p>`,
-
-            ar: `<h3>ملف الحارس Pi</h3>
-            <p>مرحباً بك أيها الرائد. أنت تحمل بين يديك أحد أكثر الملفات الإستراتيجية حصرية في نظام Pi البيئي. هذا ليس دليلاً أساسياً؛ إنها حقيبة الاستخبارات الأولى الخاصة بك للإبحار في الاقتصاد الرقمي الجديد.</p>
-            <h4>1. الرؤية: المخطط الرئيسي للمؤسسين</h4>
-            <p>تعمق في فلسفة الدكتور نيكولاس كوكاليس والدكتورة تشنغدياو فان. افهم لماذا Pi ليست مجرد عملة مشفرة، بل حركة لتحقيق اللامركزية في التمويل العالمي. تعرف على لماذا تعتبر "إمكانية الوصول" و"التصميم الذي يركز على المستخدم" هما السلاح السري وراء أكثر من 100 مليون عملية تنزيل لـ Pi.</p>
-            <h4>2. المحفظة: حصنك الرقمي</h4>
-            <p>محفظة Pi هي أكثر من مجرد مكان لتخزين العملات. إنها حصنك الشخصي على سلسلة الكتل. يشرح هذا التقرير الفرق الحاسم بين محفظتك غير الاحتجازية (حيث أنت تحتفظ بالمفاتيح) والخدمات المصرفية التقليدية. تعرف على بروتوكولات الأمان واستراتيجيات النسخ الاحتياطي والمعنى الحقيقي لـ "إن لم تكن مفاتيحك ليست عملاتك".</p>
-            <h4>3. الإستراتيجية: ما وراء زر "التعدين"</h4>
-            <p>هل الضغط على زر البرق كافٍ؟ لا. يكشف هذا القسم عن فن توسيع دائرة الأمان الخاصة بك، وتشغيل عقدة Pi على الكمبيوتر المحمول الخاص بك للحصول على مكافآت إضافية، وفهم كيف يؤدي تفاعلك اليومي إلى إنشاء فائدة حقيقية للشبكة. تعرف على كيف تحولك عملية التحقق من الهوية (KYC) من مجرد مستخدم إلى مواطن عالمي.</p>
-            <p><strong>هذا هو أساسك. بهذه المعرفة، لم تعد مجرد مستخدم؛ أنت حارس لشبكة Pi. احمها وشاركها وابن المستقبل.</strong></p>`
+            en: `<h3>THE PI SENTINEL DOSSIER</h3><p>Welcome, Pioneer. You are holding one of the most in-depth strategic dossiers in the Pi ecosystem.</p><h4>1. The Vision: The Founders' Masterplan</h4><p>A deep dive into the philosophy of Dr. Nicolas Kokkalis and Dr. Chengdiao Fan.</p><h4>2. The Wallet: Your Digital Fortress</h4><p>The Pi Wallet is more than a place to store coins.</p><h4>3. The Strategy: Beyond the "Mining" Button</h4><p>Is pressing the lightning button enough? No.</p><p><strong>This is your foundation. You are a Sentinel of the Pi Network.</strong></p>`,
+            ms: `<h3>DOSSIER PI SENTINEL</h3><p>Selamat datang, Pioneer. Anda sedang memegang salah satu dossier strategik paling eksklusif dalam ekosistem Pi.</p><h4>1. Visi: Pelan Induk Pengasas</h4><p>Selami falsafah Dr. Nicolas Kokkalis dan Dr. Chengdiao Fan.</p><h4>2. Dompet: Kubu Digital Anda</h4><p>Dompet Pi bukan sekadar tempat menyimpan syiling.</p><h4>3. Strategi: Melangkaui Butang "Lombong"</h4><p>Adakah menekan butang petir sudah cukup? Tidak.</p><p><strong>Ini adalah asas anda. Anda adalah seorang Sentinel Rangkaian Pi.</strong></p>`
         };
 
         const vaultContent = {
             en: { sentinel: { title: "THE PI SENTINEL DOSSIER", body: "Full content available in popup.", price: "FREE", url: null }, echelon: { title: "THE ECHELON BRIEFING PACK", body: `<p>Pre-purchase preview. Unlock after payment.</p><p><strong>What you get:</strong></p><ul><li>"Pi and the AI Revolution"</li><li>"Tokenomics of RWA Integration"</li><li>Private Fireside access</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" }, command: { title: "THE COMMAND CENTER SUITE", body: `<p>Pre-purchase preview. Unlock after payment.</p><p><strong>What you get:</strong></p><ul><li>Editable Whitepaper Template</li><li>DAO Governance Framework</li><li>International Business Guide</li></ul>`, price: "5 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" } },
-            ms: { sentinel: { title: "DOSSIER SENTINEL PI", body: "Kandungan penuh tersedia dalam popup.", price: "PERCUMA", url: null }, echelon: { title: "PEK TAKLIMAT ECHELON", body: `<p>Pratonton pra-pembelian. Buka selepas bayaran.</p><p><strong>Apa yang anda dapat:</strong></p><ul><li>"Pi dan Revolusi AI"</li><li>"Tokenomik Integrasi RWA"</li><li>Akses peribadi Fireside</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" }, command: { title: "SUIT PUSAT KAWALAN", body: `<p>Pratonton pra-pembelian. Buka selepas bayaran.</p><p><strong>Apa yang anda dapat:</strong></p><ul><li>Templat Kertas Putih</li><li>Rangka Kerja Tadbir Urus DAO</li><li>Panduan Perniagaan Antarabangsa</li></ul>`, price: "5 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" } },
-            id: { sentinel: { title: "DOSSIER SENTINEL PI", body: "Konten penuh tersedia di popup.", price: "GRATIS", url: null }, echelon: { title: "PAKET PENGARAHAN ECHELON", body: `<p>Pratinjau pra-pembelian. Buka setelah pembayaran.</p><p><strong>Apa yang Anda dapatkan:</strong></p><ul><li>"Pi dan Revolusi AI"</li><li>"Tokenomik Integrasi RWA"</li><li>Akses pribadi Fireside</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" }, command: { title: "SUITE PUSAT KOMANDO", body: `<p>Pratinjau pra-pembelian. Buka setelah pembayaran.</p><p><strong>Apa yang Anda dapatkan:</strong></p><ul><li>Templat Whitepaper yang Dapat Diedit</li><li>Kerangka Tata Kelola DAO</li><li>Panduan Bisnis Internasional</li></ul>`, price: "5 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" } },
-            zh: { sentinel: { title: "PI哨兵档案", body: "完整内容可在弹出窗口中查看。", price: "免费", url: null }, echelon: { title: "梯队简报包", body: `<p>购买前预览。付款后解锁。</p><p><strong>您将获得：</strong></p><ul><li>"Pi与人工智能革命"</li><li>"RWA整合的代币经济学"</li><li>私人Fireside论坛访问</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" }, command: { title: "指挥中心套件", body: `<p>购买前预览。付款后解锁。</p><p><strong>您将获得：</strong></p><ul><li>可编辑白皮书模板</li><li>DAO治理框架</li><li>国际商业实体设立指南</li></ul>`, price: "5 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" } },
-            ko: { sentinel: { title: "PI 센티넬 문서", body: "전체 내용은 팝업에서 확인할 수 있습니다.", price: "무료", url: null }, echelon: { title: "에셜론 브리핑 팩", body: `<p>구매 전 미리보기. 결제 후 잠금 해제됩니다.</p><p><strong>제공 내용:</strong></p><ul><li>"Pi와 AI 혁명"</li><li>"RWA 통합의 토큰경제학"</li><li>비공개 Fireside 포럼 접근</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" }, command: { title: "커맨드 센터 스위트", body: `<p>구매 전 미리보기. 결제 후 잠금 해제됩니다.</p><p><strong>제공 내용:</strong></p><ul><li>편집 가능한 백서 템플릿</li><li>DAO 거버넌스 프레임워크</li><li>국제 비즈니스 설립 가이드</li></ul>`, price: "5 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" } },
-            vi: { sentinel: { title: "HỒ SƠ SENTINEL PI", body: "Nội dung đầy đủ có sẵn trong cửa sổ bật lên.", price: "MIỄN PHÍ", url: null }, echelon: { title: "GÓI THÔNG TIN ECHELON", body: `<p>Xem trước khi mua. Mở khóa sau khi thanh toán.</p><p><strong>Bạn sẽ nhận được:</strong></p><ul><li>"Pi và Cách mạng AI"</li><li>"Tokenomics của Tích hợp RWA"</li><li>Truy cập diễn đàn Fireside riêng</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" }, command: { title: "BỘ CHỈ HUY TRUNG TÂM", body: `<p>Xem trước khi mua. Mở khóa sau khi thanh toán.</p><p><strong>Bạn sẽ nhận được:</strong></p><ul><li>Mẫu Sách trắng có thể chỉnh sửa</li><li>Khung Quản trị DAO</li><li>Hướng dẫn Kinh doanh Quốc tế</li></ul>`, price: "5 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" } },
-            tl: { sentinel: { title: "PI SENTINEL DOSSIER", body: "Ang buong nilalaman ay available sa popup.", price: "LIBRE", url: null }, echelon: { title: "ECHELON BRIEFING PACK", body: `<p>Preview bago bumili. I-unlock pagkatapos magbayad.</p><p><strong>Ano ang makukuha mo:</strong></p><ul><li>"Pi at ang Rebolusyong AI"</li><li>"Tokenomics ng Integrasyon ng RWA"</li><li>Pribadong access sa Fireside Forum</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" }, command: { title: "COMMAND CENTER SUITE", body: `<p>Preview bago bumili. I-unlock pagkatapos magbayad.</p><p><strong>Ano ang makukuha mo:</strong></p><ul><li>Nae-edit na Template ng Whitepaper</li><li>Balangkas ng Pamamahala ng DAO</li><li>Gabay sa Pandaigdigang Negosyo</li></ul>`, price: "5 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" } },
-            ar: { sentinel: { title: "ملف الحارس Pi", body: "المحتوى الكامل متاح في النافذة المنبثقة.", price: "مجاني", url: null }, echelon: { title: "حزمة إحاطة إيشيلون", body: `<p>معاينة قبل الشراء. افتح بعد الدفع.</p><p><strong>ما ستحصل عليه:</strong></p><ul><li>"ثورة Pi والذكاء الاصطناعي"</li><li>"اقتصاديات دمج الأصول الحقيقية (RWA)"</li><li>وصول خاص إلى منتدى Fireside</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" }, command: { title: "مجموعة مركز القيادة", body: `<p>معاينة قبل الشراء. افتح بعد الدفع.</p><p><strong>ما ستحصل عليه:</strong></p><ul><li>قالب ورقة بيضاء قابل للتعديل</li><li>إطار حوكمة DAO</li><li>دليل الأعمال التجارية الدولية</li></ul>`, price: "5 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" } }
+            ms: { sentinel: { title: "DOSSIER SENTINEL PI", body: "Kandungan penuh tersedia dalam popup.", price: "PERCUMA", url: null }, echelon: { title: "PEK TAKLIMAT ECHELON", body: `<p>Pratonton pra-pembelian. Buka selepas bayaran.</p><p><strong>Apa yang anda dapat:</strong></p><ul><li>"Pi dan Revolusi AI"</li><li>"Tokenomik Integrasi RWA"</li><li>Akses peribadi Fireside</li></ul>`, price: "1 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/echelon/" }, command: { title: "SUIT PUSAT KAWALAN", body: `<p>Pratonton pra-pembelian. Buka selepas bayaran.</p><p><strong>Apa yang anda dapat:</strong></p><ul><li>Templat Kertas Putih</li><li>Rangka Kerja Tadbir Urus DAO</li><li>Panduan Perniagaan Antarabangsa</li></ul>`, price: "5 Pi", url: "https://github.com/mblegacystore/Mblegacystore/blob/main/vault/command/" } }
         };
 
         let currentLang = 'en';
@@ -303,16 +207,14 @@
             const t = {
                 en: { vault: "THE VAULT", connectBtn: "🔐 Connect Account", pay1Btn: "💰 Pay 1.0 Pi", pay10Btn: "🔥 Pay 5 Pi", security: "🔒 SECURITY NOTICE: MB Legacy Store will NEVER ask for your wallet passphrase. All transactions are conducted securely via the Pi Browser official SDK.", footer: "© 2026 MB Legacy Store. All Rights Reserved.", freeBanner: "🆓 FREE EDITION", closeBtn: "CLOSE" },
                 ms: { vault: "BILIK KEBAL", connectBtn: "🔐 Sambung Akaun", pay1Btn: "💰 Bayar 1.0 Pi", pay10Btn: "🔥 Bayar 5 Pi", security: "🔒 NOTIS KESELAMATAN: MB Legacy Store TIDAK AKAN PERNAH meminta frasa laluan dompet anda. Semua transaksi dijalankan dengan selamat melalui SDK rasmi Pelayar Pi.", footer: "© 2026 MB Legacy Store. Hak Cipta Terpelihara.", freeBanner: "🆓 EDISI PERCUMA", closeBtn: "TUTUP" },
-                id: { vault: "BILIK VALT", connectBtn: "🔐 Sambungkan Akun", pay1Btn: "💰 Bayar 1.0 Pi", pay10Btn: "🔥 Bayar 5 Pi", security: "🔒 PEMBERITAHUAN KEAMANAN: MB Legacy Store TIDAK AKAN PERNAH meminta frasa sandi dompet Anda. Semua transaksi dilakukan dengan aman melalui SDK resmi Pi Browser.", footer: "© 2026 MB Legacy Store. Seluruh hak cipta.", freeBanner: "🆓 EDISI GRATIS", closeBtn: "TUTUP" },
-                zh: { vault: "金库", connectBtn: "🔐 连接账户", pay1Btn: "💰 支付 1.0 Pi", pay10Btn: "🔥 支付 5 Pi", security: "🔒 安全通知：MB Legacy Store 绝不会要求您提供钱包密码。所有交易均通过 Pi Browser 官方 SDK 安全进行。", footer: "© 2026 MB Legacy Store. 版权所有。", freeBanner: "🆓 免费版", closeBtn: "关闭" },
-                ko: { vault: "금고", connectBtn: "🔐 계정 연결", pay1Btn: "💰 1.0 Pi 결제", pay10Btn: "🔥 5 Pi 결제", security: "🔒 보안 공지: MB Legacy Store는 절대로 귀하의 지갑 비밀번호를 요구하지 않습니다. 모든 거래는 Pi 브라우저 공식 SDK를 통해 안전하게 처리됩니다.", footer: "© 2026 MB Legacy Store. 모든 권리 보유.", freeBanner: "🆓 무료 버전", closeBtn: "닫기" },
-                vi: { vault: "KHO BÁU", connectBtn: "🔐 Kết Nối Tài Khoản", pay1Btn: "💰 Thanh Toán 1.0 Pi", pay10Btn: "🔥 Thanh Toán 5 Pi", security: "🔒 THÔNG BÁO BẢO MẬT: MB Legacy Store sẽ KHÔNG BAO GIỜ yêu cầu cụm mật khẩu ví của bạn. Tất cả giao dịch được thực hiện an toàn qua SDK chính thức của Trình duyệt Pi.", footer: "© 2026 MB Legacy Store. Đã đăng ký Bản quyền.", freeBanner: "🆓 PHIÊN BẢN MIỄN PHÍ", closeBtn: "ĐÓNG" },
-                tl: { vault: "ANG KABAN", connectBtn: "🔐 Ikonekta ang Account", pay1Btn: "💰 Magbayad ng 1.0 Pi", pay10Btn: "🔥 Magbayad ng 5 Pi", security: "🔒 PAUNAWA SA SEGURIDAD: HINDI kailanman hihingin ng MB Legacy Store ang iyong wallet passphrase. Ang lahat ng transaksyon ay ligtas na isinasagawa sa pamamagitan ng opisyal na SDK ng Pi Browser.", footer: "© 2026 MB Legacy Store. Lahat ng Karapatan ay Nakalaan.", freeBanner: "🆓 LIBRENG EDISYON", closeBtn: "SARADO" },
-                ar: { vault: "الخزنة", connectBtn: "🔐 ربط الحساب", pay1Btn: "💰 ادفع 1.0 Pi", pay10Btn: "🔥 ادفع 5 Pi", security: "🔒 إشعار أمان: لن يطلب منك متجر MB Legacy Store أبداً عبارة مرور محفظتك. تتم جميع المعاملات بشكل آمن عبر SDK الرسمي لمتصفح Pi.", footer: "© 2026 MB Legacy Store. جميع الحقوق محفوظة.", freeBanner: "🆓 نسخة مجانية", closeBtn: "إغلاق" }
+                id: { vault: "BILIK VALT", connectBtn: "🔐 Sambungkan Akun", pay1Btn: "💰 Bayar 1.0 Pi", pay10Btn: "🔥 Bayar 5 Pi", security: "🔒 PEMBERITAHUAN KEAMANAN: MB Legacy Store TIDAK AKAN PERNAH meminta frasa sandi dompet Anda.", footer: "© 2026 MB Legacy Store. Seluruh hak cipta.", freeBanner: "🆓 EDISI GRATIS", closeBtn: "TUTUP" },
+                zh: { vault: "金库", connectBtn: "🔐 连接账户", pay1Btn: "💰 支付 1.0 Pi", pay10Btn: "🔥 支付 5 Pi", security: "🔒 安全通知：MB Legacy Store 绝不会要求您提供钱包密码。", footer: "© 2026 MB Legacy Store. 版权所有。", freeBanner: "🆓 免费版", closeBtn: "关闭" },
+                ko: { vault: "금고", connectBtn: "🔐 계정 연결", pay1Btn: "💰 1.0 Pi 결제", pay10Btn: "🔥 5 Pi 결제", security: "🔒 보안 공지: MB Legacy Store는 절대로 귀하의 지갑 비밀번호를 요구하지 않습니다.", footer: "© 2026 MB Legacy Store. 모든 권리 보유.", freeBanner: "🆓 무료 버전", closeBtn: "닫기" },
+                vi: { vault: "KHO BÁU", connectBtn: "🔐 Kết Nối Tài Khoản", pay1Btn: "💰 Thanh Toán 1.0 Pi", pay10Btn: "🔥 Thanh Toán 5 Pi", security: "🔒 THÔNG BÁO BẢO MẬT: MB Legacy Store sẽ KHÔNG BAO GIỜ yêu cầu cụm mật khẩu ví của bạn.", footer: "© 2026 MB Legacy Store. Đã đăng ký Bản quyền.", freeBanner: "🆓 PHIÊN BẢN MIỄN PHÍ", closeBtn: "ĐÓNG" },
+                tl: { vault: "ANG KABAN", connectBtn: "🔐 Ikonekta ang Account", pay1Btn: "💰 Magbayad ng 1.0 Pi", pay10Btn: "🔥 Magbayad ng 5 Pi", security: "🔒 PAUNAWA SA SEGURIDAD: HINDI kailanman hihingin ng MB Legacy Store ang iyong wallet passphrase.", footer: "© 2026 MB Legacy Store. Lahat ng Karapatan ay Nakalaan.", freeBanner: "🆓 LIBRENG EDISYON", closeBtn: "SARADO" },
+                ar: { vault: "الخزنة", connectBtn: "🔐 ربط الحساب", pay1Btn: "💰 ادفع 1.0 Pi", pay10Btn: "🔥 ادفع 5 Pi", security: "🔒 إشعار أمان: لن يطلب منك متجر MB Legacy Store أبداً عبارة مرور محفظتك.", footer: "© 2026 MB Legacy Store. جميع الحقوق محفوظة.", freeBanner: "🆓 نسخة مجانية", closeBtn: "إغلاق" }
             }[lang] || {};
-
             if (!t.vault) return;
-            
             document.querySelector('.treasury-section h2').innerText = "✦ " + t.vault + " ✦";
             document.getElementById('btn-login').innerText = t.connectBtn;
             document.getElementById('btn-pay1').innerText = t.pay1Btn;
@@ -320,37 +222,23 @@
             document.querySelector('.footer-frame p').innerText = t.security;
             document.querySelector('footer').innerText = t.footer;
             document.querySelector('.free-banner').innerText = t.freeBanner;
-
-            const productCards = document.querySelectorAll('.product-card');
-            const content = vaultContent[lang] || vaultContent.en;
-            if (productCards[0]) { productCards[0].querySelector('.product-title').innerText = content.sentinel.title; productCards[0].querySelector('.product-desc').innerText = content.sentinel.body.replace(/<[^>]*>/g, '').substring(0, 80) + '...'; }
-            if (productCards[1]) { productCards[1].querySelector('.product-title').innerText = content.echelon.title; productCards[1].querySelector('.product-desc').innerText = content.echelon.body.replace(/<[^>]*>/g, '').substring(0, 80) + '...'; }
-            if (productCards[2]) { productCards[2].querySelector('.product-title').innerText = content.command.title; productCards[2].querySelector('.product-desc').innerText = content.command.body.replace(/<[^>]*>/g, '').substring(0, 80) + '...'; }
         }
 
         function showVaultView(productKey, isPaidContent = false) {
             const content = vaultContent[currentLang]?.[productKey] || vaultContent.en[productKey];
             if (!content) return;
             const closeText = { en: 'CLOSE', ms: 'TUTUP', id: 'TUTUP', zh: '关闭', ko: '닫기', vi: 'ĐÓNG', tl: 'SARADO', ar: 'إغلاق' }[currentLang] || 'CLOSE';
-            
             let html = '';
-
             if (productKey === 'sentinel') {
-                html = `<h3 style="text-align:center; color:#FFD700; font-size:1.4rem; letter-spacing:2px; margin-bottom:15px;">${content.title}</h3>`;
-                html += `<div style="text-align:left; max-height:350px; overflow-y:auto; padding-right:5px;">` + (freeContent[currentLang] || freeContent.en) + `</div>`;
-                html += `<p class="modal-price" style="text-align:center;">Price: ${content.price}</p>`;
+                html = `<h3 style="text-align:center; color:#FFD700; font-size:1.4rem; letter-spacing:2px; margin-bottom:15px;">${content.title}</h3><div style="text-align:left; max-height:350px; overflow-y:auto; padding-right:5px;">` + (freeContent[currentLang] || freeContent.en) + `</div><p class="modal-price" style="text-align:center;">Price: ${content.price}</p>`;
             } else {
                 html = `<h3>${content.title}</h3><div style="text-align: left; word-break: break-word; overflow-wrap: break-word;">${content.body}</div><p class="modal-price">Price: ${content.price}</p>`;
-                
                 if (isPaidContent && content.url) {
                     const keyText = { en: "YOUR GOLDEN KEY", ms: "KUNCI EMAS ANDA", id: "KUNCI EMAS ANDA", zh: "您的金钥匙", ko: "당신의 황금 열쇠", vi: "CHÌA KHÓA VÀNG CỦA BẠN", tl: "ANG IYONG GINTONG SUSI", ar: "مفتاحك الذهبي" }[currentLang] || "YOUR GOLDEN KEY";
                     const linkText = { en: "ACCESS YOUR CONTENT", ms: "AKSES KANDUNGAN ANDA", id: "AKSES KONTEN ANDA", zh: "访问您的内容", ko: "콘텐츠에 접속하기", vi: "TRUY CẬP NỘI DUNG CỦA BẠN", tl: "I-ACCESS ANG IYONG NILALAMAN", ar: "الوصول إلى المحتوى الخاص بك" }[currentLang] || "ACCESS YOUR CONTENT";
-                    html += `<div class="golden-key">🔑 ${keyText}: MBL-${Date.now().toString(36).toUpperCase()}-PI</div>`;
-                    html += `<a href="${content.url}" target="_blank" style="display: block; margin-top: 15px; padding: 15px; background: #FFD700; color: #000; text-align: center; font-weight: bold; text-decoration: none; letter-spacing: 2px; word-break: break-word;">${linkText}</a>`;
-                    html += `<p style="text-align: center; font-size: 0.7rem; margin-top: 10px; color: #999;">Copy your Golden Key. This is your proof of purchase.</p>`;
+                    html += `<div class="golden-key">🔑 ${keyText}: MBL-${Date.now().toString(36).toUpperCase()}-PI</div><a href="${content.url}" target="_blank" style="display: block; margin-top: 15px; padding: 15px; background: #FFD700; color: #000; text-align: center; font-weight: bold; text-decoration: none; letter-spacing: 2px; word-break: break-word;">${linkText}</a><p style="text-align: center; font-size: 0.7rem; margin-top: 10px; color: #999;">Copy your Golden Key. This is your proof of purchase.</p>`;
                 }
             }
-            
             html += `<button class="modal-close-btn" onclick="closeModal()">${closeText}</button>`;
             document.getElementById('modalBody').innerHTML = html;
             document.getElementById('productModal').style.display = "flex";
@@ -358,38 +246,15 @@
         function closeModal() { document.getElementById('productModal').style.display = "none"; }
 
         let isPaymentPending = false;
-        function onIncompletePaymentFound(payment) {
-            isPaymentPending = true;
-            document.getElementById('stSticky').innerText = "⚠️ Pending Payment: " + payment.identifier;
-            document.getElementById('stickyStatus').style.display = 'block';
-        }
-
+        function onIncompletePaymentFound(payment) { isPaymentPending = true; document.getElementById('stSticky').innerText = "⚠️ Pending Payment: " + payment.identifier; document.getElementById('stickyStatus').style.display = 'block'; }
         function createPayment(amount, memo, btnId) {
-            document.getElementById('stSticky').innerText = "💰 Processing " + amount + " Pi...";
-            document.getElementById('stickyStatus').style.display = 'block';
+            document.getElementById('stSticky').innerText = "💰 Processing " + amount + " Pi..."; document.getElementById('stickyStatus').style.display = 'block';
             document.getElementById(btnId).disabled = true;
             Pi.createPayment({ amount: amount, memo: memo, metadata: { id: Date.now().toString() } }, {
-                onReadyForServerApproval: function(paymentId) {
-                    document.getElementById('stSticky').innerText = "⏳ Approving...";
-                    fetch('/api/finalize', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:paymentId}) });
-                },
-                onReadyForServerCompletion: function(paymentId, txid) {
-                    isPaymentPending = false;
-                    document.getElementById('stSticky').innerText = "✅ Payment " + amount + " Pi Successful!";
-                    document.getElementById(btnId).disabled = false;
-                    // Delivery Gate ditangguhkan sehingga bug Payment Expired selesai
-                    // if (amount === 1.0) showVaultView('echelon', true);
-                    // if (amount === 5.0) showVaultView('command', true);
-                    alert("✅ Payment recorded. Full access will be granted after Mainnet launch. Thank you for testing!");
-                },
-                onCancel: function() {
-                    document.getElementById('stSticky').innerText = "❌ Cancelled.";
-                    document.getElementById(btnId).disabled = false;
-                },
-                onError: function() {
-                    document.getElementById('stSticky').innerText = "❌ Error.";
-                    document.getElementById(btnId).disabled = false;
-                },
+                onReadyForServerApproval: function(paymentId) { document.getElementById('stSticky').innerText = "⏳ Approving..."; fetch('/api/finalize', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:paymentId}) }); },
+                onReadyForServerCompletion: function(paymentId, txid) { isPaymentPending = false; document.getElementById('stSticky').innerText = "✅ Payment " + amount + " Pi Successful!"; document.getElementById(btnId).disabled = false; alert("✅ Payment recorded. Full access will be granted after Mainnet launch. Thank you for testing!"); },
+                onCancel: function() { document.getElementById('stSticky').innerText = "❌ Cancelled."; document.getElementById(btnId).disabled = false; },
+                onError: function() { document.getElementById('stSticky').innerText = "❌ Error."; document.getElementById(btnId).disabled = false; },
                 onIncompletePaymentFound: onIncompletePaymentFound
             });
         }
@@ -397,33 +262,27 @@
         window.onload = function() {
             if (typeof Pi === 'undefined') { document.getElementById('stSticky').innerText = "❌ Pi SDK not loaded."; document.getElementById('stickyStatus').style.display = 'block'; return; }
             Pi.init({ version: "2.0", sandbox: true });
-            document.getElementById('stSticky').innerText = "✅ Vault Secured. System Ready.";
-            document.getElementById('stickyStatus').style.display = 'block';
+            document.getElementById('stSticky').innerText = "✅ Vault Secured. System Ready."; document.getElementById('stickyStatus').style.display = 'block';
             document.getElementById('btn-login').disabled = false;
         };
 
         document.getElementById('btn-login').addEventListener('click', function() {
             document.getElementById('stSticky').innerText = "🔄 Connecting..."; this.disabled = true;
             Pi.authenticate(['username', 'payments'], onIncompletePaymentFound)
-                .then(function(auth) { if (!isPaymentPending) { document.getElementById('stSticky').innerText = "👤 User: " + auth.user.username; } document.getElementById('btn-login').disabled = false; document.getElementById('btn-pay1').disabled = false; document.getElementById('btn-pay10').disabled = false; document.getElementById('btn-cancel').disabled = false; })
+                .then(function(auth) { if (!isPaymentPending) document.getElementById('stSticky').innerText = "👤 User: " + auth.user.username; document.getElementById('btn-login').disabled = false; document.getElementById('btn-pay1').disabled = false; document.getElementById('btn-pay10').disabled = false; document.getElementById('btn-cancel').disabled = false; })
                 .catch(function() { document.getElementById('stSticky').innerText = "❌ Connection Failed."; document.getElementById('btn-login').disabled = false; });
         });
-        document.getElementById('btn-pay1').addEventListener('click', function() { createPayment(1.0, "MBL Store - 1 Pi (Kit)", 'btn-pay1'); });
-        document.getElementById('btn-pay10').addEventListener('click', function() { createPayment(5.0, "MBL Store - 5 Pi (Kit)", 'btn-pay10'); });
+        document.getElementById('btn-pay1').addEventListener('click', function() { createPayment(1.0, "MBL Store - 1 Pi", 'btn-pay1'); });
+        document.getElementById('btn-pay10').addEventListener('click', function() { createPayment(5.0, "MBL Store - 5 Pi", 'btn-pay10'); });
         document.getElementById('btn-cancel').addEventListener('click', function() {
-            var pid = prompt("Enter Payment ID to cancel:");
-            if (!pid) return;
-            document.getElementById('stSticky').innerText = "🗑️ Cancelling...";
-            document.getElementById('stickyStatus').style.display = 'block';
-            this.disabled = true;
+            var pid = prompt("Enter Payment ID to cancel:"); if (!pid) return;
+            document.getElementById('stSticky').innerText = "🗑️ Cancelling..."; document.getElementById('stickyStatus').style.display = 'block'; this.disabled = true;
             fetch('/api/finalize', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:pid}) })
-                .then(r => r.json())
-                .then(d => {
+                .then(r => r.json()).then(d => {
                     if (d.success) { document.getElementById('stSticky').innerText = "✅ Cancelled!"; alert("✅ Success!"); }
-                    else { document.getElementById('stSticky').innerText = "❌ Failed."; alert("❌ Failed: " + JSON.stringify(d)); }
+                    else { document.getElementById('stSticky').innerText = "❌ Failed."; alert("❌ Failed!"); }
                     document.getElementById('btn-cancel').disabled = false;
-                })
-                .catch(function() { document.getElementById('stSticky').innerText = "❌ Error."; document.getElementById('btn-cancel').disabled = false; });
+                }).catch(function() { document.getElementById('stSticky').innerText = "❌ Error."; document.getElementById('btn-cancel').disabled = false; });
         });
 
         function switchTab(tab) {
@@ -436,22 +295,17 @@
             const btnCancel = document.getElementById('btn-cancel');
             const digitalBtn = document.getElementById('tab-digital');
             const merchantBtn = document.getElementById('tab-merchant');
-
             if (tab === 'digital') {
-                digitalContent.style.display = 'block';
-                merchantContent.style.display = 'none';
+                digitalContent.style.display = 'block'; merchantContent.style.display = 'none';
                 digitalBtn.style.background = '#FFD700'; digitalBtn.style.color = '#000'; digitalBtn.style.border = '1px solid #FFD700';
                 merchantBtn.style.background = 'transparent'; merchantBtn.style.color = '#666'; merchantBtn.style.border = '1px solid #666';
-                stickyStatus.style.display = 'block';
-                btnLogin.style.display = 'block'; btnPay1.style.display = 'block'; btnPay10.style.display = 'block';
+                stickyStatus.style.display = 'block'; btnLogin.style.display = 'block'; btnPay1.style.display = 'block'; btnPay10.style.display = 'block';
                 if (btnCancel) btnCancel.style.display = 'block';
             } else {
-                digitalContent.style.display = 'none';
-                merchantContent.style.display = 'block';
+                digitalContent.style.display = 'none'; merchantContent.style.display = 'block';
                 merchantBtn.style.background = '#FFD700'; merchantBtn.style.color = '#000'; merchantBtn.style.border = '1px solid #FFD700';
                 digitalBtn.style.background = 'transparent'; digitalBtn.style.color = '#666'; digitalBtn.style.border = '1px solid #666';
-                stickyStatus.style.display = 'none';
-                btnLogin.style.display = 'none'; btnPay1.style.display = 'none'; btnPay10.style.display = 'none';
+                stickyStatus.style.display = 'none'; btnLogin.style.display = 'none'; btnPay1.style.display = 'none'; btnPay10.style.display = 'none';
                 if (btnCancel) btnCancel.style.display = 'none';
             }
         }
