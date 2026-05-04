@@ -637,8 +637,8 @@
                 stickyStatus.style.display = 'block';
                 btnLogin.style.display = 'block'; btnPay1.style.display = 'block'; btnPay10.style.display = 'block';
                 if (btnCancel) btnCancel.style.display = 'block';
-                if (btnSeller) btnSeller.style.display = 'block';
-                if (btnBuyer) btnBuyer.style.display = 'block';
+if (btnSeller) btnSeller.style.display = 'none';    // ✅ sembunyi
+if (btnBuyer) btnBuyer.style.display = 'none';      // ✅ sembunyi
             } else {
                 digitalContent.style.display = 'none';
                 merchantContent.style.display = 'block';
@@ -647,8 +647,8 @@
                 stickyStatus.style.display = 'none';
                 btnLogin.style.display = 'none'; btnPay1.style.display = 'none'; btnPay10.style.display = 'none';
                 if (btnCancel) btnCancel.style.display = 'none';
-                if (btnSeller) btnSeller.style.display = 'none';
-                if (btnBuyer) btnBuyer.style.display = 'none';
+if (btnSeller) btnSeller.style.display = 'block';   // ✅ tunjuk
+if (btnBuyer) btnBuyer.style.display = 'block';     // ✅ tunjuk
             }
         }
     </script>
