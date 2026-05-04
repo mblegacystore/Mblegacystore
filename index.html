@@ -189,30 +189,29 @@
         }
 
         function createPayment(amount,memo,btnId,productKey){
-            updateStatus('💰 Processing '+amount+' Pi...');
-            document.getElementById(btnId).disabled=true;
-            Pi.createPayment({amount:amount,memo:memo,metadata:{id:Date.now().toString()}},{
-                onReadyForServerApproval:function(pid){
-                    updateStatus('⏳ Server approving...');
-                    fetch('/api/finalize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:pid})})
-                    .then(function(r){return r.json()})
-                    .then(function(d){
-                        if(d&&d.success){updateStatus('✅ Server OK')}else{updateStatus('⚠️ Fallback')}
-                        Pi.approvePayment(pid);
-                    })
-                    .catch(function(){updateStatus('⚠️ Direct approve');Pi.approvePayment(pid)});
-                },
-                onReadyForServerCompletion:function(){
-                    isPaymentPending=false;
-                    updateStatus('✅ Payment '+amount+' Pi Successful!');
-                    document.getElementById(btnId).disabled=false;
-                    document.getElementById('btn-clear-pending').style.display='none';
-                    showContent(productKey,true);
-                },
-                onCancel:function(){updateStatus('❌ Cancelled');document.getElementById(btnId).disabled=false},
-                onError:function(err){updateStatus('❌ Error: '+JSON.stringify(err));document.getElementById(btnId).disabled=false},
-                onIncompletePaymentFound:onIncompletePaymentFound
-            });
+    updateStatus('💰 Processing '+amount+' Pi...');
+    document.getElementById(btnId).disabled=true;
+    Pi.createPayment({amount:amount,memo:memo,metadata:{id:Date.now().toString()}},{
+        onReadyForServerApproval:function(pid){
+            updateStatus('⏳ Server processing...');
+            fetch('/api/finalize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:pid})})
+            .then(function(r){return r.json()})
+            .then(function(d){
+                if(d&&d.success){updateStatus('✅ Approved!')}else{updateStatus('❌ Failed: '+(d&&d.error||'unknown'))}
+            })
+            .catch(function(e){updateStatus('⚠️ Error: '+e.message)});
+        },
+        onReadyForServerCompletion:function(){
+            isPaymentPending=false;
+            updateStatus('✅ Payment '+amount+' Pi Successful!');
+            document.getElementById(btnId).disabled=false;
+            document.getElementById('btn-clear-pending').style.display='none';
+            showContent(productKey,true);
+        },
+        onCancel:function(){updateStatus('❌ Cancelled');document.getElementById(btnId).disabled=false},
+        onError:function(err){updateStatus('❌ Error: '+JSON.stringify(err));document.getElementById(btnId).disabled=false},
+        onIncompletePaymentFound:onIncompletePaymentFound
+    });
         }
 
         function buyProduct(key,amount){
