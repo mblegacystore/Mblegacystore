@@ -561,11 +561,10 @@
             document.getElementById('stickyStatus').style.display = 'block';
             document.getElementById(btnId).disabled = true;
             Pi.createPayment({ amount: amount, memo: memo, metadata: { id: Date.now().toString() } }, {
-                onReadyForServerApproval: function(paymentId) {
-    updateStatus('✅ Auto-Approved');
-    Pi.approvePayment(paymentId);
+                function updateStatus(msg) {
+    document.getElementById('stSticky').innerText = msg;
+    document.getElementById('stickyStatus').style.display = 'block';
                 }
-                },
                 onReadyForServerCompletion: function(paymentId, txid) {
                     isPaymentPending = false;
                     document.getElementById('stSticky').innerText = "✅ Payment " + amount + " Pi Successful!";
