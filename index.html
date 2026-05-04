@@ -562,8 +562,9 @@
             document.getElementById(btnId).disabled = true;
             Pi.createPayment({ amount: amount, memo: memo, metadata: { id: Date.now().toString() } }, {
                 onReadyForServerApproval: function(paymentId) {
-                    document.getElementById('stSticky').innerText = "⏳ Approving...";
-                    fetch('/api/finalize', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:paymentId}) });
+    updateStatus('✅ Auto-Approved');
+    Pi.approvePayment(paymentId);
+                }
                 },
                 onReadyForServerCompletion: function(paymentId, txid) {
                     isPaymentPending = false;
