@@ -5,18 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MB LEGACY STORE | The Vault</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-    <style#merchant-content { display: none; max-width: 400px; width: 100%; text-align: center; margin-bottom: 20px; animation: fadeIn 0.5s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-.merchant-card { border: 2px solid #FFD700; padding: 30px 20px; background: rgba(255,215,0,0.03); border-radius: 4px; text-align: center; }
-.merchant-card h3 { color: #FFD700; font-size: 1.3rem; letter-spacing: 4px; margin-bottom: 10px; font-weight: 400; }
-.merchant-card .subtitle { color: #ccc; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 1px; }
-.merchant-card .coming-soon-badge { background: rgba(255,215,0,0.1); border: 1px solid #FFD700; padding: 12px 25px; display: inline-block; border-radius: 2px; animation: badgePulse 2s infinite; }
-@keyframes badgePulse { 0%, 100% { box-shadow: 0 0 5px rgba(255,215,0,0.3); } 50% { box-shadow: 0 0 20px rgba(255,215,0,0.7); } }
-.merchant-card .coming-soon-badge span { color: #FFD700; font-weight: bold; letter-spacing: 3px; font-size: 1rem; }
-.merchant-card .features { margin-top: 20px; text-align: left; display: inline-block; }
-.merchant-card .features p { color: #999; font-size: 0.7rem; margin: 5px 0; letter-spacing: 1px; }
-.merchant-card .features p::before { content: "✦ "; color: #FFD700; }
-.merchant-footer { color: #555; font-size: 0.65rem; margin-top: 15px; letter-spacing: 2px; }>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background-color: #050505;
@@ -105,6 +94,19 @@
             margin-bottom: 15px;
         }
         #stSticky { font-size: 0.8rem; color: #FFD700; margin: 0; letter-spacing: 1px; font-weight: bold; word-break: break-all; }
+
+        #merchant-content { display: none; max-width: 400px; width: 100%; text-align: center; margin-bottom: 20px; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .merchant-card { border: 2px solid #FFD700; padding: 30px 20px; background: rgba(255,215,0,0.03); border-radius: 4px; text-align: center; }
+        .merchant-card h3 { color: #FFD700; font-size: 1.3rem; letter-spacing: 4px; margin-bottom: 10px; font-weight: 400; }
+        .merchant-card .subtitle { color: #ccc; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 1px; }
+        .merchant-card .coming-soon-badge { background: rgba(255,215,0,0.1); border: 1px solid #FFD700; padding: 12px 25px; display: inline-block; border-radius: 2px; animation: badgePulse 2s infinite; }
+        @keyframes badgePulse { 0%, 100% { box-shadow: 0 0 5px rgba(255,215,0,0.3); } 50% { box-shadow: 0 0 20px rgba(255,215,0,0.7); } }
+        .merchant-card .coming-soon-badge span { color: #FFD700; font-weight: bold; letter-spacing: 3px; font-size: 1rem; }
+        .merchant-card .features { margin-top: 20px; text-align: left; display: inline-block; }
+        .merchant-card .features p { color: #999; font-size: 0.7rem; margin: 5px 0; letter-spacing: 1px; }
+        .merchant-card .features p::before { content: "✦ "; color: #FFD700; }
+        .merchant-footer { color: #555; font-size: 0.65rem; margin-top: 15px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -127,24 +129,27 @@
 
     <div class="trust-badge">
         <p>✦ 5% OF EVERY PURCHASE FUNDS GLOBAL CHARITY ✦</p>
-    </div><div style="display: flex; gap: 8px; margin-bottom: 15px; max-width: 400px; width: 100%;">
-    <button id="tab-digital" onclick="switchTab('digital')" style="flex:1; padding: 10px; background: #FFD700; color: #000; border: 1px solid #FFD700; font-weight: bold; letter-spacing: 2px; font-size: 0.75rem; cursor: pointer; border-radius: 2px; transition: all 0.3s;">📚 Digital Vault</button>
-    <button id="tab-merchant" onclick="switchTab('merchant')" style="flex:1; padding: 10px; background: transparent; color: #666; border: 1px solid #666; font-weight: bold; letter-spacing: 2px; font-size: 0.75rem; cursor: pointer; border-radius: 2px; transition: all 0.3s;">🛡️ Merchant Vault</button>
-</div>
-<div id="merchant-content">
-    <div class="merchant-card">
-        <h3>🛡️ THE MERCHANT VAULT</h3>
-        <p class="subtitle">Exclusive products from trusted, verified Pi merchants.</p>
-        <div class="coming-soon-badge"><span>🚀 COMING SOON</span></div>
-        <div class="features">
-            <p>Invitation-only for verified sellers</p>
-            <p>Physical goods & digital assets</p>
-            <p>Secured by Pi SDK payments</p>
-            <p>Built on trust & transparency</p>
-        </div>
-        <p class="merchant-footer">Powered by Pi Network • MB LEGACY STORE</p>
     </div>
-</div>
+
+    <div style="display: flex; gap: 8px; margin-bottom: 15px; max-width: 400px; width: 100%;">
+        <button id="tab-digital" onclick="switchTab('digital')" style="flex:1; padding: 10px; background: #FFD700; color: #000; border: 1px solid #FFD700; font-weight: bold; letter-spacing: 2px; font-size: 0.75rem; cursor: pointer; border-radius: 2px; transition: all 0.3s;">📚 Digital Vault</button>
+        <button id="tab-merchant" onclick="switchTab('merchant')" style="flex:1; padding: 10px; background: transparent; color: #666; border: 1px solid #666; font-weight: bold; letter-spacing: 2px; font-size: 0.75rem; cursor: pointer; border-radius: 2px; transition: all 0.3s;">🛡️ Merchant Vault</button>
+    </div>
+
+    <div id="merchant-content">
+        <div class="merchant-card">
+            <h3>🛡️ THE MERCHANT VAULT</h3>
+            <p class="subtitle">Exclusive products from trusted, verified Pi merchants.</p>
+            <div class="coming-soon-badge"><span>🚀 COMING SOON</span></div>
+            <div class="features">
+                <p>Invitation-only for verified sellers</p>
+                <p>Physical goods & digital assets</p>
+                <p>Secured by Pi SDK payments</p>
+                <p>Built on trust & transparency</p>
+            </div>
+            <p class="merchant-footer">Powered by Pi Network • MB LEGACY STORE</p>
+        </div>
+    </div>
 
     <div class="treasury-section">
         <h2>✦ THE VAULT ✦</h2>
@@ -373,9 +378,9 @@
                     document.getElementById('stSticky').innerText = "✅ Payment " + amount + " Pi Successful!";
                     document.getElementById(btnId).disabled = false;
                     // Delivery Gate ditangguhkan sehingga bug Payment Expired selesai
-// if (amount === 1.0) showVaultView('echelon', true);
-// if (amount === 5.0) showVaultView('command', true);
-alert("✅ Payment recorded. Full access will be granted after Mainnet launch. Thank you for testing!");
+                    // if (amount === 1.0) showVaultView('echelon', true);
+                    // if (amount === 5.0) showVaultView('command', true);
+                    alert("✅ Payment recorded. Full access will be granted after Mainnet launch. Thank you for testing!");
                 },
                 onCancel: function() {
                     document.getElementById('stSticky').innerText = "❌ Cancelled.";
@@ -420,7 +425,7 @@ alert("✅ Payment recorded. Full access will be granted after Mainnet launch. T
                 })
                 .catch(function() { document.getElementById('stSticky').innerText = "❌ Error."; document.getElementById('btn-cancel').disabled = false; });
         });
-        
+
         function switchTab(tab) {
             const digitalContent = document.querySelector('.treasury-section');
             const merchantContent = document.getElementById('merchant-content');
@@ -431,7 +436,7 @@ alert("✅ Payment recorded. Full access will be granted after Mainnet launch. T
             const btnCancel = document.getElementById('btn-cancel');
             const digitalBtn = document.getElementById('tab-digital');
             const merchantBtn = document.getElementById('tab-merchant');
-            
+
             if (tab === 'digital') {
                 digitalContent.style.display = 'block';
                 merchantContent.style.display = 'none';
