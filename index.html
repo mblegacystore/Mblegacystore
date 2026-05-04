@@ -419,7 +419,35 @@ alert("✅ Payment recorded. Full access will be granted after Mainnet launch. T
                     document.getElementById('btn-cancel').disabled = false;
                 })
                 .catch(function() { document.getElementById('stSticky').innerText = "❌ Error."; document.getElementById('btn-cancel').disabled = false; });
-        });
+        });function switchTab(tab) {
+    const digitalContent = document.querySelector('.treasury-section');
+    const merchantContent = document.getElementById('merchant-content');
+    const stickyStatus = document.getElementById('stickyStatus');
+    const btnLogin = document.getElementById('btn-login');
+    const btnPay1 = document.getElementById('btn-pay1');
+    const btnPay10 = document.getElementById('btn-pay10');
+    const btnCancel = document.getElementById('btn-cancel');
+    const digitalBtn = document.getElementById('tab-digital');
+    const merchantBtn = document.getElementById('tab-merchant');
+    
+    if (tab === 'digital') {
+        digitalContent.style.display = 'block';
+        merchantContent.style.display = 'none';
+        digitalBtn.style.background = '#FFD700'; digitalBtn.style.color = '#000'; digitalBtn.style.border = '1px solid #FFD700';
+        merchantBtn.style.background = 'transparent'; merchantBtn.style.color = '#666'; merchantBtn.style.border = '1px solid #666';
+        stickyStatus.style.display = 'block';
+        btnLogin.style.display = 'block'; btnPay1.style.display = 'block'; btnPay10.style.display = 'block';
+        if (btnCancel) btnCancel.style.display = 'block';
+    } else {
+        digitalContent.style.display = 'none';
+        merchantContent.style.display = 'block';
+        merchantBtn.style.background = '#FFD700'; merchantBtn.style.color = '#000'; merchantBtn.style.border = '1px solid #FFD700';
+        digitalBtn.style.background = 'transparent'; digitalBtn.style.color = '#666'; digitalBtn.style.border = '1px solid #666';
+        stickyStatus.style.display = 'none';
+        btnLogin.style.display = 'none'; btnPay1.style.display = 'none'; btnPay10.style.display = 'none';
+        if (btnCancel) btnCancel.style.display = 'none';
+    }
+        }
     </script>
 </body>
     </html>
