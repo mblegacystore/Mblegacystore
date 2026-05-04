@@ -19,7 +19,6 @@
         .treasury-section h2{color:#FFD700;font-size:1.2rem;letter-spacing:5px;font-weight:400;margin-bottom:15px;border-bottom:1px solid #333;padding-bottom:10px}
         .product-card{border:1px solid #333;margin-bottom:15px;text-align:left;background:rgba(255,255,255,0.02);cursor:pointer;transition:all .2s ease}
         .product-card:hover{border-color:#FFD700;box-shadow:0 0 15px rgba(255,215,0,0.2)}
-        .product-card.selected{border-color:#FFD700;box-shadow:0 0 20px rgba(255,215,0,0.5);background:rgba(255,215,0,0.05)}
         .free-banner{background:#27ae60;color:#fff;text-align:center;padding:5px;font-weight:700;letter-spacing:2px;font-size:.8rem}
         .product-img-placeholder{width:100%;height:120px;background:linear-gradient(45deg,#1a1a1a,#0d0d0d);border-bottom:1px solid #FFD700;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#FFD700}
         .product-info{padding:15px}
@@ -65,7 +64,7 @@
     <div class="treasury-section">
         <h2 id="vault-title">✦ THE VAULT ✦</h2>
 
-        <div class="product-card" id="card-sentinel" onclick="selectProduct('sentinel',0)">
+        <div class="product-card" onclick="showFreeContent()">
             <div class="product-img-placeholder">I</div>
             <div class="free-banner" id="free-banner">🆓 FREE</div>
             <div class="product-info">
@@ -75,7 +74,7 @@
             </div>
         </div>
 
-        <div class="product-card" id="card-echelon" onclick="selectProduct('echelon',1)">
+        <div class="product-card" onclick="showLockedContent('echelon')">
             <div class="product-img-placeholder">II</div>
             <div class="product-info">
                 <h3 id="title-echelon">THE ECHELON BRIEFING PACK</h3>
@@ -84,7 +83,7 @@
             </div>
         </div>
 
-        <div class="product-card" id="card-command" onclick="selectProduct('command',5)">
+        <div class="product-card" onclick="showLockedContent('command')">
             <div class="product-img-placeholder">III</div>
             <div class="product-info">
                 <h3 id="title-command">THE COMMAND CENTER SUITE</h3>
@@ -97,10 +96,9 @@
     <div id="stickyStatus"><p id="stSticky">⏳ Initializing Vault...</p></div>
 
     <button id="btn-login" class="golden-btn" disabled>🔐 Connect Account</button>
-    <button id="btn-pay1" class="golden-btn" disabled style="display:none">💰 Pay 1.0 Pi</button>
-    <button id="btn-pay10" class="red-btn" disabled style="display:none">🔥 Pay 5 Pi</button>
-    <button id="btn-cancel" class="golden-btn" disabled style="margin-top:5px;font-size:.8rem;letter-spacing:1px;">🗑️ Cancel Pending</button>
-    <button id="btn-clear-pending" class="red-btn" onclick="clearPendingPayment()" style="display:none;font-size:.8rem;letter-spacing:1px;">🧹 Clear Pending</button>
+    <button id="btn-pay1" class="golden-btn" disabled onclick="buyProduct('echelon',1)">💰 Pay 1.0 Pi</button>
+    <button id="btn-pay10" class="red-btn" disabled onclick="buyProduct('command',5)">🔥 Pay 5 Pi</button>
+    <button id="btn-cancel" class="golden-btn" disabled style="margin-top:5px;font-size:.8rem;letter-spacing:1px;" onclick="cancelPendingPayment()">🗑️ Cancel Pending</button>
 
     <div id="productModal" class="modal"><div class="modal-content" id="modalBody"></div></div>
 
@@ -113,8 +111,8 @@
     <script>
         // ========== TRANSLATIONS ==========
         const L = {
-            en:{vault:"✦ THE VAULT ✦",login:"🔐 Connect Account",pay1:"💰 Pay 1.0 Pi",pay10:"🔥 Pay 5 Pi",cancel:"🗑️ Cancel Pending",clear:"🧹 Clear Pending",security:"🔒 MB Legacy Store will NEVER ask for your wallet passphrase.",freeBanner:"🆓 FREE",close:"CLOSE",unlocked:"✅ Unlocked — Full Access Granted",locked:"🔒 Complete payment to unlock full content",sentinelTitle:"THE PI SENTINEL DOSSIER",sentinelDesc:"A FREE strategic market intelligence primer for the modern Pioneer.",echelonTitle:"THE ECHELON BRIEFING PACK",echelonDesc:"An advanced education module on Pi, AI, RWA, and global shifts.",commandTitle:"THE COMMAND CENTER SUITE",commandDesc:"A professional toolset for building a global brand.",selectPrompt:"📦 Select a product above, then press the Pay button",selected:"📦 Selected: {product} — Press {btn}",sentinelFree:"✅ Claim your FREE Sentinel Dossier below"},
-            ms:{vault:"✦ BILIK KEBAL ✦",login:"🔐 Sambung Akaun",pay1:"💰 Bayar 1.0 Pi",pay10:"🔥 Bayar 5 Pi",cancel:"🗑️ Batal Tertunda",clear:"🧹 Kosongkan Tertunda",security:"🔒 MB Legacy Store TIDAK AKAN PERNAH meminta frasa laluan dompet anda.",freeBanner:"🆓 PERCUMA",close:"TUTUP",unlocked:"✅ Dibuka — Akses Penuh",locked:"🔒 Lengkapkan bayaran untuk buka kandungan",sentinelTitle:"DOSSIER PI SENTINEL",sentinelDesc:"Primer risikan pasaran strategik PERCUMA untuk Pioneer moden.",echelonTitle:"PEK TAKLIMAT ECHELON",echelonDesc:"Modul pendidikan lanjutan tentang Pi, AI, RWA, dan perubahan global.",commandTitle:"SUIT PUSAT KAWALAN",commandDesc:"Set alat profesional untuk membina jenama global.",selectPrompt:"📦 Pilih produk di atas, kemudian tekan butang Bayar",selected:"📦 Dipilih: {product} — Tekan {btn}",sentinelFree:"✅ Tuntut Dossier Sentinel PERCUMA anda di bawah"}
+            en:{vault:"✦ THE VAULT ✦",login:"🔐 Connect Account",pay1:"💰 Pay 1.0 Pi",pay10:"🔥 Pay 5 Pi",cancel:"🗑️ Cancel Pending",security:"🔒 MB Legacy Store will NEVER ask for your wallet passphrase.",freeBanner:"🆓 FREE",close:"CLOSE",unlocked:"✅ Unlocked — Full Access Granted",locked:"🔒 Complete payment with Pay button below",sentinelTitle:"THE PI SENTINEL DOSSIER",sentinelDesc:"A FREE strategic market intelligence primer for the modern Pioneer.",echelonTitle:"THE ECHELON BRIEFING PACK",echelonDesc:"An advanced education module on Pi, AI, RWA, and global shifts.",commandTitle:"THE COMMAND CENTER SUITE",commandDesc:"A professional toolset for building a global brand."},
+            ms:{vault:"✦ BILIK KEBAL ✦",login:"🔐 Sambung Akaun",pay1:"💰 Bayar 1.0 Pi",pay10:"🔥 Bayar 5 Pi",cancel:"🗑️ Batal Tertunda",security:"🔒 MB Legacy Store TIDAK AKAN PERNAH meminta frasa laluan dompet anda.",freeBanner:"🆓 PERCUMA",close:"TUTUP",unlocked:"✅ Dibuka — Akses Penuh",locked:"🔒 Lengkapkan bayaran dengan butang di bawah",sentinelTitle:"DOSSIER PI SENTINEL",sentinelDesc:"Primer risikan pasaran strategik PERCUMA untuk Pioneer moden.",echelonTitle:"PEK TAKLIMAT ECHELON",echelonDesc:"Modul pendidikan lanjutan tentang Pi, AI, RWA, dan perubahan global.",commandTitle:"SUIT PUSAT KAWALAN",commandDesc:"Set alat profesional untuk membina jenama global."}
         };
 
         const freeContent = {
@@ -135,8 +133,7 @@
 
         let currentLang = 'en';
         let isPaymentPending = false;
-        let selectedKey = null;
-        let selectedAmount = 0;
+        let currentPaymentKey = null;
 
         function t(key){return L[currentLang][key]||L.en[key];}
 
@@ -144,51 +141,38 @@
             currentLang=lang;
             document.getElementById('lang-en').classList.toggle('active',lang==='en');
             document.getElementById('lang-ms').classList.toggle('active',lang==='ms');
-            ['vault-title','btn-login','btn-pay1','btn-pay10','btn-cancel','btn-clear-pending','free-banner'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerText=L[lang][id==='vault-title'?'vault':id==='btn-login'?'login':id==='btn-pay1'?'pay1':id==='btn-pay10'?'pay10':id==='btn-cancel'?'cancel':id==='btn-clear-pending'?'clear':'freeBanner'];});
-            ['title-sentinel','title-echelon','title-command'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.innerText=L[lang][['sentinelTitle','echelonTitle','commandTitle'][i]];});
-            ['desc-sentinel','desc-echelon','desc-command'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.innerText=L[lang][['sentinelDesc','echelonDesc','commandDesc'][i]];});
-            const sec=document.getElementById('security-notice');if(sec)sec.querySelector('p').innerText=L[lang].security;
-            if(selectedKey)updateSelectionStatus();
+            document.getElementById('vault-title').innerText=L[lang].vault;
+            document.getElementById('btn-login').innerText=L[lang].login;
+            document.getElementById('btn-pay1').innerText=L[lang].pay1;
+            document.getElementById('btn-pay10').innerText=L[lang].pay10;
+            document.getElementById('btn-cancel').innerText=L[lang].cancel;
+            document.getElementById('free-banner').innerText=L[lang].freeBanner;
+            document.getElementById('security-notice').querySelector('p').innerText=L[lang].security;
+            document.getElementById('title-sentinel').innerText=L[lang].sentinelTitle;
+            document.getElementById('desc-sentinel').innerText=L[lang].sentinelDesc;
+            document.getElementById('title-echelon').innerText=L[lang].echelonTitle;
+            document.getElementById('desc-echelon').innerText=L[lang].echelonDesc;
+            document.getElementById('title-command').innerText=L[lang].commandTitle;
+            document.getElementById('desc-command').innerText=L[lang].commandDesc;
         }
 
-        function selectProduct(key,amount){
-            document.querySelectorAll('.product-card').forEach(c=>c.classList.remove('selected'));
-            selectedKey=key;
-            selectedAmount=amount;
-            document.getElementById('card-'+key).classList.add('selected');
-            
-            document.getElementById('btn-pay1').style.display='none';
-            document.getElementById('btn-pay10').style.display='none';
-            document.getElementById('btn-pay1').disabled=true;
-            document.getElementById('btn-pay10').disabled=true;
-            
-            if(key==='sentinel'){
-                updateStatus(t('sentinelFree'));
-                showContent('sentinel');
-            }else{
-                updateSelectionStatus();
-                const btnId=amount===1?'btn-pay1':'btn-pay10';
-                document.getElementById(btnId).style.display='block';
-                document.getElementById(btnId).disabled=false;
-            }
+        function showFreeContent(){
+            let h=`<div style="max-height:350px;overflow-y:auto">${freeContent[currentLang]}</div><p class="modal-price">Price: FREE</p>`;
+            h+=`<button class="modal-close-btn" onclick="closeModal()">${t('close')}</button>`;
+            document.getElementById('modalBody').innerHTML=h;
+            document.getElementById('productModal').style.display='flex';
         }
 
-        function updateSelectionStatus(){
-            if(!selectedKey||selectedKey==='sentinel')return;
-            const pName=currentLang==='en'?(selectedKey==='echelon'?'Echelon Pack':'Command Suite'):(selectedKey==='echelon'?'Pek Echelon':'Suit Kawalan');
-            const btnName=selectedAmount===1?'Pay 1.0 Pi':'Pay 5 Pi';
-            updateStatus(L[currentLang].selected.replace('{product}',pName).replace('{btn}',btnName));
+        function showLockedContent(key){
+            currentPaymentKey = key;
+            let h=`<h3>${t(key+'Title')}</h3><p style="text-align:center;color:#999;">${t('locked')}</p><p class="modal-price">Price: ${key==='echelon'?'1 Pi':'5 Pi'}</p>`;
+            h+=`<button class="modal-close-btn" onclick="closeModal()">${t('close')}</button>`;
+            document.getElementById('modalBody').innerHTML=h;
+            document.getElementById('productModal').style.display='flex';
         }
 
-        function showContent(key,isPaid){
-            let h='';
-            if(key==='sentinel'){
-                h=`<div style="max-height:350px;overflow-y:auto">${freeContent[currentLang]}</div><p class="modal-price">Price: FREE</p>`;
-            }else if(isPaid){
-                h=`<div style="max-height:350px;overflow-y:auto">${paidContent[key][currentLang]}</div><p class="modal-price">Price: ${key==='echelon'?'1 Pi':'5 Pi'}</p><p style="text-align:center;color:#27ae60;font-weight:700">${t('unlocked')}</p>`;
-            }else{
-                h=`<h3>${t(key+'Title')}</h3><p style="color:#999">${t('locked')}</p><p class="modal-price">Price: ${key==='echelon'?'1 Pi':'5 Pi'}</p>`;
-            }
+        function showUnlockedContent(key){
+            let h=`<div style="max-height:350px;overflow-y:auto">${paidContent[key][currentLang]}</div><p class="modal-price">Price: ${key==='echelon'?'1 Pi':'5 Pi'}</p><p style="text-align:center;color:#27ae60;font-weight:700">${t('unlocked')}</p>`;
             h+=`<button class="modal-close-btn" onclick="closeModal()">${t('close')}</button>`;
             document.getElementById('modalBody').innerHTML=h;
             document.getElementById('productModal').style.display='flex';
@@ -201,18 +185,6 @@
         function onIncompletePaymentFound(payment){
             isPaymentPending=true;
             updateStatus('⚠️ Pending: '+payment.identifier);
-            document.getElementById('btn-clear-pending').style.display='block';
-        }
-
-        function clearPendingPayment(){
-            updateStatus('🗑️ Clearing...');
-            Pi.getIncompletePayment().then(function(p){
-                if(p)Pi.cancelPayment(p.identifier).then(function(){
-                    isPaymentPending=false;updateStatus('✅ Cleared!');
-                    document.getElementById('btn-clear-pending').style.display='none';
-                }).catch(function(){updateStatus('❌ Cancel failed');});
-                else{updateStatus('✅ No pending');document.getElementById('btn-clear-pending').style.display='none';}
-            }).catch(function(){updateStatus('❌ Error');});
         }
 
         function createPayment(amount,memo,btnId,productKey){
@@ -222,9 +194,9 @@
                 onReadyForServerApproval:function(pid){
                     updateStatus('⏳ Server approving...');
                     fetch('/api/finalize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:pid})})
-                    .then(function(r){return r.json();})
+                    .then(function(r){return r.json()})
                     .then(function(d){
-                        if(d&&d.success){updateStatus('✅ Approved!');}else{updateStatus('❌ Failed: '+(d&&d.error||'unknown'));document.getElementById(btnId).disabled=false;}
+                        if(d&&d.success){updateStatus('✅ Approved!')}else{updateStatus('❌ Failed: '+(d&&d.error||'unknown'));document.getElementById(btnId).disabled=false;}
                     })
                     .catch(function(e){updateStatus('⚠️ Error: '+e.message);document.getElementById(btnId).disabled=false;});
                 },
@@ -232,11 +204,7 @@
                     isPaymentPending=false;
                     updateStatus('✅ Payment '+amount+' Pi Successful!');
                     document.getElementById(btnId).disabled=false;
-                    document.getElementById(btnId).style.display='none';
-                    document.getElementById('btn-clear-pending').style.display='none';
-                    showContent(productKey,true);
-                    selectedKey=null;selectedAmount=0;
-                    document.querySelectorAll('.product-card').forEach(c=>c.classList.remove('selected'));
+                    showUnlockedContent(productKey);
                 },
                 onCancel:function(){updateStatus('❌ Cancelled');document.getElementById(btnId).disabled=false;},
                 onError:function(err){updateStatus('❌ Error: '+JSON.stringify(err));document.getElementById(btnId).disabled=false;},
@@ -249,10 +217,21 @@
             createPayment(amount,'MBL Store - '+amount+' Pi',btnId,key);
         }
 
+        function cancelPendingPayment(){
+            var pid=prompt("Payment ID to cancel:");
+            if(!pid)return;
+            updateStatus('🗑️ Cancelling...');
+            document.getElementById('btn-cancel').disabled=true;
+            fetch('/api/cancel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:pid})})
+            .then(function(r){return r.json()})
+            .then(function(d){updateStatus(d&&d.success?'✅ Cancelled!':'❌ Failed');document.getElementById('btn-cancel').disabled=false;})
+            .catch(function(){updateStatus('❌ Error');document.getElementById('btn-cancel').disabled=false;});
+        }
+
         window.onload=function(){
             if(typeof Pi==='undefined'){updateStatus('❌ Pi SDK not loaded. Use Pi Browser.');return;}
             Pi.init({version:"2.0",sandbox:true});
-            updateStatus('✅ Vault Secured. System Ready. '+t('selectPrompt'));
+            updateStatus('✅ Vault Secured. System Ready.');
             document.getElementById('btn-login').disabled=false;
         };
 
@@ -260,24 +239,13 @@
             updateStatus('🔄 Connecting...');this.disabled=true;
             Pi.authenticate(['username','payments'],onIncompletePaymentFound)
             .then(function(auth){
-                if(!isPaymentPending)updateStatus('👤 User: '+auth.user.username+' — '+t('selectPrompt'));
+                if(!isPaymentPending)updateStatus('👤 User: '+auth.user.username);
                 document.getElementById('btn-login').disabled=false;
+                document.getElementById('btn-pay1').disabled=false;
+                document.getElementById('btn-pay10').disabled=false;
                 document.getElementById('btn-cancel').disabled=false;
             })
             .catch(function(){updateStatus('❌ Connection Failed');document.getElementById('btn-login').disabled=false;});
-        });
-
-        document.getElementById('btn-pay1').addEventListener('click',function(){if(selectedKey&&selectedAmount===1)buyProduct(selectedKey,1);});
-        document.getElementById('btn-pay10').addEventListener('click',function(){if(selectedKey&&selectedAmount===5)buyProduct(selectedKey,5);});
-
-        document.getElementById('btn-cancel').addEventListener('click',function(){
-            var pid=prompt("Payment ID to cancel:");
-            if(!pid)return;
-            updateStatus('🗑️ Cancelling...');this.disabled=true;
-            fetch('/api/finalize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:pid})})
-            .then(function(r){return r.json();})
-            .then(function(d){updateStatus(d&&d.success?'✅ Cancelled!':'❌ Failed');document.getElementById('btn-cancel').disabled=false;})
-            .catch(function(){updateStatus('❌ Error');document.getElementById('btn-cancel').disabled=false;});
         });
     </script>
 </body>
