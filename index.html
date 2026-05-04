@@ -133,7 +133,6 @@
 
         let currentLang = 'en';
         let isPaymentPending = false;
-        let currentPaymentKey = null;
 
         function t(key){return L[currentLang][key]||L.en[key];}
 
@@ -164,7 +163,6 @@
         }
 
         function showLockedContent(key){
-            currentPaymentKey = key;
             let h=`<h3>${t(key+'Title')}</h3><p style="text-align:center;color:#999;">${t('locked')}</p><p class="modal-price">Price: ${key==='echelon'?'1 Pi':'5 Pi'}</p>`;
             h+=`<button class="modal-close-btn" onclick="closeModal()">${t('close')}</button>`;
             document.getElementById('modalBody').innerHTML=h;
@@ -182,33 +180,63 @@
 
         function updateStatus(msg){document.getElementById('stSticky').innerText=msg;document.getElementById('stickyStatus').style.display='block';}
 
-        function onIncompletePaymentFound(payment){
-            isPaymentPending=true;
-            updateStatus('⚠️ Pending: '+payment.identifier);
+        // --- FUNGSI AUTO-FINALIZE (KEMASKINI BARU) ---
+        async function onIncompletePaymentFound(payment) {
+            isPaymentPending = true;
+            updateStatus('🔍 Menjumpai transaksi tertunda: ' + payment.identifier);
+            
+            try {
+                const response = await fetch('/api/finalize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ paymentId: payment.identifier })
+                });
+                const d = await response.json();
+                if(d && d.success) {
+                    updateStatus('✅ Transaksi tertunda diselesaikan secara automatik!');
+                    setTimeout(() => { location.reload(); }, 2000);
+                }
+            } catch (e) {
+                updateStatus('⚠️ Pending: ' + payment.identifier);
+            }
         }
 
-        function createPayment(amount,memo,btnId,productKey){
-            updateStatus('💰 Processing '+amount+' Pi...');
-            document.getElementById(btnId).disabled=true;
-            Pi.createPayment({amount:amount,memo:memo,metadata:{id:Date.now().toString()}},{
-                onReadyForServerApproval:function(pid){
-                    updateStatus('⏳ Server approving...');
-                    fetch('/api/finalize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:pid})})
-                    .then(function(r){return r.json()})
-                    .then(function(d){
-                        if(d&&d.success){updateStatus('✅ Approved!')}else{updateStatus('❌ Failed: '+(d&&d.error||'unknown'));document.getElementById(btnId).disabled=false;}
-                    })
-                    .catch(function(e){updateStatus('⚠️ Error: '+e.message);document.getElementById(btnId).disabled=false;});
+        function createPayment(amount, memo, btnId, productKey) {
+            updateStatus('💰 Memulakan bayaran ' + amount + ' Pi...');
+            document.getElementById(btnId).disabled = true;
+
+            Pi.createPayment({
+                amount: amount,
+                memo: memo,
+                metadata: { id: Date.now().toString() }
+            }, {
+                onReadyForServerApproval: function(pid) {
+                    updateStatus('⏳ Mengesahkan bayaran...');
+                    return fetch('/api/finalize', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ paymentId: pid })
+                    });
                 },
-                onReadyForServerCompletion:function(){
-                    isPaymentPending=false;
-                    updateStatus('✅ Payment '+amount+' Pi Successful!');
-                    document.getElementById(btnId).disabled=false;
+                onReadyForServerCompletion: function(pid, txid) {
+                    updateStatus('✅ Transaksi Berjaya!');
+                    isPaymentPending = false;
+                    document.getElementById(btnId).disabled = false;
                     showUnlockedContent(productKey);
+                    return fetch('/api/finalize', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ paymentId: pid, txid: txid })
+                    });
                 },
-                onCancel:function(){updateStatus('❌ Cancelled');document.getElementById(btnId).disabled=false;},
-                onError:function(err){updateStatus('❌ Error: '+JSON.stringify(err));document.getElementById(btnId).disabled=false;},
-                onIncompletePaymentFound:onIncompletePaymentFound
+                onCancel: function(pid) {
+                    updateStatus('❌ Bayaran dibatalkan.');
+                    document.getElementById(btnId).disabled = false;
+                },
+                onError: function(err, pid) {
+                    updateStatus('❌ Ralat SDK.');
+                    document.getElementById(btnId).disabled = false;
+                }
             });
         }
 
@@ -237,7 +265,7 @@
 
         document.getElementById('btn-login').addEventListener('click',function(){
             updateStatus('🔄 Connecting...');this.disabled=true;
-            Pi.authenticate(['username','payments'],onIncompletePaymentFound)
+            Pi.authenticate(['username','payments'], onIncompletePaymentFound)
             .then(function(auth){
                 if(!isPaymentPending)updateStatus('👤 User: '+auth.user.username);
                 document.getElementById('btn-login').disabled=false;
