@@ -212,12 +212,12 @@
         onError:function(err){updateStatus('❌ Error: '+JSON.stringify(err));document.getElementById(btnId).disabled=false},
         onIncompletePaymentFound:onIncompletePaymentFound
     });
-        }
+}
 
-        function buyProduct(key,amount){
-            var btnId=amount===1?'btn-pay1':'btn-pay10';
-            createPayment(amount,'MBL Store - '+amount+' Pi',btnId,key);
-        }
+function buyProduct(key,amount){
+    var btnId=amount===1?'btn-pay1':'btn-pay10';
+    createPayment(amount,'MBL Store - '+amount+' Pi',btnId,key);
+}
 
         window.onload=function(){
             if(typeof Pi==='undefined'){updateStatus('❌ Pi SDK not loaded. Use Pi Browser.');return}
