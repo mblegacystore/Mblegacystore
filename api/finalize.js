@@ -1,56 +1,50 @@
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed. Use POST only.' });
+        return res.status(405).json({ error: 'Method not allowed.' });
     }
 
     const { paymentId } = req.body;
-
-    if (!paymentId) {
-        return res.status(400).json({ error: 'Payment ID is required.' });
-    }
-
     const headers = {
         'Authorization': 'Key ' + process.env.PI_API_KEY,
         'Content-Type': 'application/json'
     };
 
     try {
-        // Langkah 1: Dapatkan maklumat pembayaran
-        console.log('[FINALIZE] Mendapatkan maklumat pembayaran:', paymentId);
-        
-        const getRes = await fetch(
-            `https://api.minepi.com/v2/payments/${paymentId}`,
-            { method: 'GET', headers: headers }
+        // --- LANGKAH 1: APPROVE (Sangat Penting!) ---
+        // Ini memberitahu Pi Network bahawa MB Legacy Store setuju dengan bayaran ini.
+        console.log('[FINALIZE] Melakukan Approval:', paymentId);
+        const approveRes = await fetch(
+            `https://api.minepi.com/v2/payments/${paymentId}/approve`,
+            { method: 'POST', headers: headers }
         );
-
-        const paymentData = await getRes.json();
-
-        if (!getRes.ok) {
-            console.error('[FINALIZE] Gagal dapatkan maklumat:', paymentData);
-            return res.status(500).json({ 
-                error: 'Gagal mendapatkan maklumat pembayaran.', 
-                detail: paymentData 
-            });
+        
+        if (!approveRes.ok) {
+            const errData = await approveRes.json();
+            console.error('[FINALIZE] Gagal Approve:', errData);
+            return res.status(500).json({ error: 'Gagal Approve bayaran.', detail: errData });
         }
 
-        // Dapatkan txid dari respons
-        const txid = paymentData?.transaction?.txid;
+        // --- LANGKAH 2: TUNGGU TXID ---
+        // Kita perlu GET maklumat bayaran untuk dapatkan txid selepas pengguna sign di wallet.
+        // Kadangkala perlu tunggu sekejap supaya blockchain update.
+        let txid = null;
+        let attempts = 0;
         
+        while (!txid && attempts < 5) {
+            await new Promise(r => setTimeout(r, 2000)); // Tunggu 2 saat setiap cubaan
+            const getRes = await fetch(`https://api.minepi.com/v2/payments/${paymentId}`, { headers });
+            const paymentData = await getRes.json();
+            txid = paymentData?.transaction?.txid;
+            attempts++;
+            console.log(`[FINALIZE] Cubaan dapatkan txid (${attempts}):`, txid || 'Belum ada');
+        }
+
         if (!txid) {
-            return res.status(500).json({ 
-                error: 'txid tidak ditemui dalam pembayaran.',
-                paymentData: paymentData
-            });
+            return res.status(500).json({ error: 'Bayaran luput (txid tidak ditemui).' });
         }
 
-        console.log('[FINALIZE] txid ditemui:', txid);
-
-        // Langkah 2: Tunggu 3 saat
-        await new Promise(resolve => setTimeout(resolve, 3000));
-
-        // Langkah 3: Complete dengan txid yang betul
-        console.log('[FINALIZE] Menyelesaikan pembayaran dengan txid:', txid);
-        
+        // --- LANGKAH 3: COMPLETE ---
+        console.log('[FINALIZE] Menyelesaikan pembayaran (Complete):', txid);
         const completeRes = await fetch(
             `https://api.minepi.com/v2/payments/${paymentId}/complete`,
             { 
@@ -63,20 +57,13 @@ export default async function handler(req, res) {
         const completeData = await completeRes.json();
 
         if (!completeRes.ok) {
-            console.error('[FINALIZE] Gagal complete:', completeData);
-            return res.status(500).json({ error: 'Gagal menyelesaikan pembayaran.', detail: completeData });
+            return res.status(500).json({ error: 'Gagal Complete.', detail: completeData });
         }
 
-        console.log('[FINALIZE] Pembayaran selesai sepenuhnya:', paymentId);
-        return res.status(200).json({ 
-            success: true, 
-            message: 'Payment completed successfully.',
-            txid: txid,
-            completed: completeData 
-        });
+        return res.status(200).json({ success: true, txid: txid });
 
     } catch (error) {
         console.error('[FINALIZE] Ralat:', error);
-        return res.status(500).json({ error: 'Internal server error.', detail: error.message });
+        return res.status(500).json({ error: 'Ralat dalaman server.' });
     }
 }
