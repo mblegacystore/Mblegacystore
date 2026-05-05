@@ -270,7 +270,14 @@
 
         
         function showTestRewardInfo(){var h='<h3>🎁 UJIAN APP TO USER</h3>';h+='<p>Anda akan menerima <strong>0.0001 Pi</strong> dari dompet aplikasi.</p>';h+='<button class="modal-close-btn" onclick="closeModal()">TUTUP</button>';document.getElementById('modalBody').innerHTML=h;document.getElementById('productModal').style.display='flex';}
-function requestTestReward(){var b=document.getElementById('btn-refund');b.disabled=true;updateStatus('🔄 Memproses...');fetch('/api/refund',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:(typeof Pi!=='undefined'&&Pi.currentUser)?Pi.currentUser.uid:'test'})}).then(function(r){return r.json();}).then(function(d){if(d&&d.success){updateStatus('✅ Berjaya! ID: '+d.paymentId);}else{updateStatus('❌ Gagal: '+(d.error||'Ralat'));}b.disabled=false;}).catch(function(){updateStatus('❌ Ralat rangkaian');b.disabled=false;});}window.onload=function(){
+function requestTestReward(){
+    var uid = Pi.currentUser.uid;
+    var username = Pi.currentUser.username;
+    updateStatus('UID: ' + uid + ' | User: ' + username);
+    
+    // Jangan hantar ke API dulu, cuma papar UID
+    return;
+}{var b=document.getElementById('btn-refund');b.disabled=true;updateStatus('🔄 Memproses...');fetch('/api/refund',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:(typeof Pi!=='undefined'&&Pi.currentUser)?Pi.currentUser.uid:'test'})}).then(function(r){return r.json();}).then(function(d){if(d&&d.success){updateStatus('✅ Berjaya! ID: '+d.paymentId);}else{updateStatus('❌ Gagal: '+(d.error||'Ralat'));}b.disabled=false;}).catch(function(){updateStatus('❌ Ralat rangkaian');b.disabled=false;});}window.onload=function(){
             if(typeof Pi==='undefined'){updateStatus('❌ Pi SDK not loaded. Use Pi Browser.');return;}
             Pi.init({version:"2.0",sandbox:true});
             updateStatus('✅ Vault Secured. System Ready.');
