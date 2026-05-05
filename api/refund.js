@@ -1,8 +1,6 @@
 export default async function handler(req, res) {
-    // CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     
-    // Handle OPTIONS (preflight)
     if (req.method === 'OPTIONS') {
         res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -20,18 +18,19 @@ export default async function handler(req, res) {
         if (!apiKey) {
             return res.status(200).json({ 
                 success: false, 
-                error: 'API Key tiada' 
+                error: 'API Key tiada di server' 
             });
         }
 
         if (!uid) {
             return res.status(200).json({ 
                 success: false, 
-                error: 'UID tiada' 
+                error: 'UID pengguna tiada' 
             });
         }
 
-        // Hantar payment App-to-User
+        console.log('[REFUND] Hantar ke UID:', uid);
+
         const response = await fetch('https://api.minepi.com/v2/payments', {
             method: 'POST',
             headers: {
@@ -48,12 +47,14 @@ export default async function handler(req, res) {
         });
 
         const data = await response.json();
+        console.log('[REFUND] Response:', response.status, JSON.stringify(data));
 
         if (!response.ok) {
             return res.status(200).json({
                 success: false,
-                error: data.message || 'Pi API error',
-                data: data
+                error: data.message || data.error || 'Pi API error',
+                fullResponse: JSON.stringify(data),
+                statusCode: response.status
             });
         }
 
@@ -63,6 +64,7 @@ export default async function handler(req, res) {
         });
 
     } catch (error) {
+        console.error('[REFUND] Error:', error);
         return res.status(200).json({
             success: false,
             error: error.message
