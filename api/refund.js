@@ -5,11 +5,9 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed.' });
     }
 
-    const { uid } = req.body;
     const apiKey = process.env.PI_API_KEY;
 
     try {
-        // Guna API Create Payment (bukan server-side)
         const response = await fetch('https://api.minepi.com/v2/payments', {
             method: 'POST',
             headers: {
@@ -20,8 +18,7 @@ export default async function handler(req, res) {
                 amount: 0.0001,
                 memo: 'App-to-User Test',
                 metadata: { type: 'app_to_user_test' },
-                uid: uid,
-                direction: 'app_to_user'  // TAMBAH INI
+                uid: 'GB6PP...'  // GANTI DENGAN UID ANDA SENDIRI
             })
         });
 
