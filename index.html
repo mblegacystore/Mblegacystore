@@ -271,6 +271,8 @@
         
         function showTestRewardInfo(){var h='<h3>🎁 UJIAN APP TO USER</h3>';h+='<p>Anda akan menerima <strong>0.0001 Pi</strong> dari dompet aplikasi.</p>';h+='<button class="modal-close-btn" onclick="closeModal()">TUTUP</button>';document.getElementById('modalBody').innerHTML=h;document.getElementById('productModal').style.display='flex';}
 function requestTestReward(){
+    updateStatus('UID: ' + Pi.currentUser.uid);
+}{
     var uid = Pi.currentUser.uid;
     var username = Pi.currentUser.username;
     updateStatus('UID: ' + uid + ' | User: ' + username);
