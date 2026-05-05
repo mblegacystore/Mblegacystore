@@ -6,18 +6,21 @@ export default async function handler(req, res) {
     }
 
     try {
-        const apiKey = process.env.PI_API_KEY_TESTNET;
+        const apiKey = process.env.PI_API_KEY; // GUNA NAMA SAMA MACAM FAIL LAIN
         const uid = req.body?.uid;
 
         if (!apiKey) {
-            return res.status(500).json({ error: 'Kunci API Testnet tiada di server.' });
+            console.error('[REFUND] API Key tiada');
+            return res.status(500).json({ success: false, error: 'Kunci API tiada di server.' });
         }
 
         if (!uid) {
-            return res.status(400).json({ error: 'UID pengguna tiada dalam permintaan.' });
+            console.error('[REFUND] UID tiada');
+            return res.status(400).json({ success: false, error: 'UID pengguna tiada.' });
         }
 
-        // Panggil Pi API
+        console.log('[REFUND] Hantar pembayaran ke:', uid);
+
         const response = await fetch('https://api.minepi.com/v2/payments', {
             method: 'POST',
             headers: {
@@ -26,23 +29,34 @@ export default async function handler(req, res) {
             },
             body: JSON.stringify({
                 amount: 0.0001,
-                memo: 'App-to-User Test',
-                metadata: { type: 'test' },
+                memo: 'MB Legacy - App to User Test',
+                metadata: { type: 'app_to_user_test' },
                 uid: uid,
                 direction: 'app_to_user'
             })
         });
 
         const data = await response.json();
+        console.log('[REFUND] Response:', response.status, JSON.stringify(data));
 
-        // Hantar SEMUA butiran kembali ke pelayar
+        if (!response.ok) {
+            console.error('[REFUND] Gagal:', data);
+            return res.status(200).json({ 
+                success: false, 
+                error: data.message || data.error || 'Gagal hantar Pi',
+                detail: data
+            });
+        }
+
+        // Berjaya
         return res.status(200).json({
-            success: response.ok,
-            httpStatus: response.status,
+            success: true,
+            paymentId: data.paymentId || data.identifier,
             data: data
         });
 
     } catch (error) {
+        console.error('[REFUND] Ralat sistem:', error);
         return res.status(500).json({
             success: false,
             error: 'Ralat sistem: ' + error.message
