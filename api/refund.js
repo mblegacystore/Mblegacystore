@@ -9,8 +9,14 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'UID pengguna diperlukan.' });
     }
 
+    const apiKey = process.env.PI_API_KEY;
+    
+    if (!apiKey) {
+        return res.status(500).json({ error: 'API Key tidak diset di server.' });
+    }
+
     const headers = {
-        'Authorization': 'Key ' + process.env.PI_API_KEY,
+        'Authorization': 'Key ' + apiKey,
         'Content-Type': 'application/json'
     };
 
@@ -28,11 +34,23 @@ export default async function handler(req, res) {
 
         const paymentData = await paymentRes.json();
 
-        // HANTAR BALIK MESEJ PENUH DARI PI API
-        return res.status(paymentRes.ok ? 200 : 500).json({
-            success: paymentRes.ok,
-            paymentId: paymentData?.identifier || null,
-            pi_response: paymentData  // INI PENTING - Papar semua mesej dari Pi
+        if (!paymentRes.ok) {
+            return res.status(500).json({ 
+                error: 'Gagal menghantar bayaran.', 
+                detail: paymentData 
+            });
+        }
+
+        const paymentId = paymentData.identifier;
+        
+        await fetch(`https://api.minepi.com/v2/payments/${paymentId}/approve`, {
+            method: 'POST',
+            headers: headers
+        });
+
+        return res.status(200).json({ 
+            success: true, 
+            paymentId: paymentId 
         });
 
     } catch (error) {
