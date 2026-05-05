@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MB LEGACY STORE | Testnet</title>
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#050505;font-family:'Segoe UI',Arial,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;color:#fff;padding:20px 20px 80px}
+        .title-frame{border:2px solid #FFD700;padding:20px 40px;margin-bottom:15px;text-align:center;box-shadow:0 0 20px rgba(255,215,0,0.3);background:rgba(255,215,0,0.05)}
+        h1{color:#FFD700;font-size:2.2rem;letter-spacing:4px;font-weight:400;text-transform:uppercase;margin-bottom:5px}
+        .subtitle{color:#999;font-size:.8rem;letter-spacing:3px}
+        .gold-divider{width:100%;max-width:400px;height:1px;border:none;background:linear-gradient(to right,transparent,#FFD700,transparent);margin:15px 0;opacity:.5}
+        .lang-selector{margin-bottom:20px;text-align:center;display:flex;flex-wrap:wrap;justify-content:center;gap:3px}
+        .lang-selector button{background:transparent;border:1px solid #FFD700;color:#FFD700;padding:5px 12px;cursor:pointer;font-weight:700;letter-spacing:1px;transition:all .3s;font-size:.75rem;border-radius:2px}
+        .lang-selector button.active{background:#FFD700;color:#000}
+        .treasury-section{width:100%;max-width:400px;margin-bottom:20px;text-align:center}
+        .treasury-section h2{color:#FFD700;font-size:1.2rem;letter-spacing:5px;font-weight:400;margin-bottom:15px;border-bottom:1px solid #333;padding-bottom:10px}
+        .product-card{border:1px solid #333;margin-bottom:15px;text-align:left;background:rgba(255,255,255,0.02);cursor:pointer;transition:all .2s ease}
+        .product-card:hover{border-color:#FFD700;box-shadow:0 0 15px rgba(255,215,0,0.2)}
+        .free-banner{background:#27ae60;color:#fff;text-align:center;padding:5px;font-weight:700;letter-spacing:2px;font-size:.8rem}
+        .product-img-placeholder{width:100%;height:120px;background:linear-gradient(45deg,#1a1a1a,#0d0d0d);border-bottom:1px solid #FFD700;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#FFD700}
+        .product-info{padding:15px}
+        .product-card h3{color:#FFD700;font-size:1rem;letter-spacing:2px;font-weight:400}
+        .product-card p{color:#999;font-size:.75rem;margin:5px 0 10px;line-height:1.4}
+        .product-price{color:#fff;font-size:1.1rem;font-weight:700}
+        .modal{display:none;position:fixed;z-index:100;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.95);align-items:center;justify-content:center;overflow-y:auto}
+        .modal-content{background:#0d0d0d;border:1px solid #FFD700;padding:30px;max-width:400px;width:90%;color:#fff;text-align:left}
+        .modal-content h3{color:#FFD700;font-size:1.3rem;letter-spacing:2px;margin-bottom:15px;text-align:center}
+        .modal-content h4{color:#FFD700;margin-top:10px}
+        .modal-content p{color:#ccc;font-size:.85rem;margin-bottom:15px;line-height:1.5}
+        .modal-price{font-size:1.5rem;font-weight:700;color:#FFD700;margin-bottom:20px;text-align:center}
+        .modal-close-btn{padding:12px 25px;background:transparent;border:1px solid #E74C3C;color:#E74C3C;cursor:pointer;font-weight:700;text-transform:uppercase;transition:all .3s;display:block;margin:20px auto 0;text-align:center;border-radius:2px}
+        .modal-close-btn:hover{background:#E74C3C;color:#fff}
+        .golden-btn,.red-btn{display:block;width:85%;max-width:400px;margin:0 auto 12px;padding:14px;font-size:1rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .3s ease;border-radius:2px}
+        .golden-btn{background:rgba(255,215,0,0.05);color:#FFD700;border:1px solid #FFD700}
+        .golden-btn:hover:not(:disabled){background:#FFD700;color:#000;box-shadow:0 0 25px rgba(255,215,0,0.6)}
+        .red-btn{background:rgba(231,76,60,0.05);color:#E74C3C;border:1px solid #E74C3C}
+        .red-btn:hover:not(:disabled){background:#E74C3C;color:#fff;box-shadow:0 0 25px rgba(231,76,60,0.6)}
+        .golden-btn:disabled,.red-btn:disabled{border-color:#333;color:#333;cursor:not-allowed;box-shadow:none;background:transparent}
+        #stickyStatus{width:100%;max-width:400px;background:rgba(0,0,0,0.95);border:2px solid #FFD700;padding:12px 15px;text-align:center;z-index:50;box-shadow:0 0 15px rgba(255,215,0,0.3);margin-bottom:15px}
+        #stSticky{font-size:.8rem;color:#FFD700;margin:0;letter-spacing:1px;font-weight:700;word-break:break-all}
+        @keyframes warningBlink{0%,100%{background:rgba(200,0,0,0.8);border-color:#f00;box-shadow:0 0 25px rgba(255,0,0,0.9)}50%{background:rgba(255,50,50,0.9);border-color:#f55;box-shadow:0 0 45px rgba(255,0,0,1)}}
+        .footer-frame{margin-top:20px;border:1px solid #f00;padding:10px 15px;text-align:center;background:rgba(200,0,0,0.8);max-width:400px;border-radius:4px;animation:warningBlink .8s infinite}
+        .footer-frame p{color:#FFD700;font-size:.7rem;letter-spacing:1px;font-weight:700}
+        footer{margin-top:20px;color:#333;font-size:.6rem;letter-spacing:2px}
+    </style>
+</head>
+<body>
+
+    <div class="title-frame">
+        <h1>MB LEGACY STORE</h1>
+        <p class="subtitle">Your Pi, Your Legacy.</p>
+    </div>
+
+    <div class="lang-selector">
+        <button id="lang-en" class="active" onclick="switchLanguage('en')">🇬🇧 English</button>
+        <button id="lang-ms" onclick="switchLanguage('ms')">🇲🇾 Melayu</button>
+    </div>
+
+    <hr class="gold-divider">
+
+    <div class="treasury-section">
+        <h2 id="vault-title">✦ THE VAULT ✦</h2>
+
+        <div class="product-card" onclick="showFreeContent()">
+            <div class="product-img-placeholder">I</div>
+            <div class="free-banner" id="free-banner">🆓 FREE</div>
+            <div class="product-info">
+                <h3 id="title-sentinel">THE PI SENTINEL DOSSIER</h3>
+                <p id="desc-sentinel">A FREE strategic market intelligence primer for the modern Pioneer.</p>
+                <p class="product-price" style="color:#27ae60;">Price: FREE</p>
+            </div>
+        </div>
+
+        <div class="product-card" onclick="showLockedContent('echelon')">
+            <div class="product-img-placeholder">II</div>
+            <div class="product-info">
+                <h3 id="title-echelon">THE ECHELON BRIEFING PACK</h3>
+                <p id="desc-echelon">An advanced education module on Pi, AI, RWA, and global shifts.</p>
+                <p class="product-price">Price: 1 Pi</p>
+            </div>
+        </div>
+
+        <div class="product-card" onclick="showLockedContent('command')">
+            <div class="product-img-placeholder">III</div>
+            <div class="product-info">
+                <h3 id="title-command">THE COMMAND CENTER SUITE</h3>
+                <p id="desc-command">A professional toolset for building a global brand.</p>
+                <p class="product-price">Price: 5 Pi</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="stickyStatus"><p id="stSticky">⏳ Initializing Vault...</p></div>
+
+    <button id="btn-login" class="golden-btn" disabled>🔐 Connect Account</button>
+    <button id="btn-pay1" class="golden-btn" disabled onclick="buyProduct('echelon',1)">💰 Pay 1.0 Pi</button>
+    <button id="btn-pay10" class="red-btn" disabled onclick="buyProduct('command',5)">🔥 Pay 5 Pi</button>
+    <button id="btn-cancel" class="golden-btn" disabled style="margin-top:5px;font-size:.8rem;letter-spacing:1px;" onclick="cancelPendingPayment()">🗑️ Cancel Pending</button>
+
+    <div id="productModal" class="modal"><div class="modal-content" id="modalBody"></div></div>
+
+    <div class="footer-frame" id="security-notice">
+        <p>🔒 MB Legacy Store will NEVER ask for your wallet passphrase.</p>
+    </div>
+
+    <footer>© 2026 MB Legacy Store. Testnet</footer>
+
+    <script>
+        // ========== TRANSLATIONS ==========
+        const L = {
+            en:{vault:"✦ THE VAULT ✦",login:"🔐 Connect Account",pay1:"💰 Pay 1.0 Pi",pay10:"🔥 Pay 5 Pi",cancel:"🗑️ Cancel Pending",security:"🔒 MB Legacy Store will NEVER ask for your wallet passphrase.",freeBanner:"🆓 FREE",close:"CLOSE",unlocked:"✅ Unlocked — Full Access Granted",locked:"🔒 Complete payment with Pay button below",sentinelTitle:"THE PI SENTINEL DOSSIER",sentinelDesc:"A FREE strategic market intelligence primer for the modern Pioneer.",echelonTitle:"THE ECHELON BRIEFING PACK",echelonDesc:"An advanced education module on Pi, AI, RWA, and global shifts.",commandTitle:"THE COMMAND CENTER SUITE",commandDesc:"A professional toolset for building a global brand."},
+            ms:{vault:"✦ BILIK KEBAL ✦",login:"🔐 Sambung Akaun",pay1:"💰 Bayar 1.0 Pi",pay10:"🔥 Bayar 5 Pi",cancel:"🗑️ Batal Tertunda",security:"🔒 MB Legacy Store TIDAK AKAN PERNAH meminta frasa laluan dompet anda.",freeBanner:"🆓 PERCUMA",close:"TUTUP",unlocked:"✅ Dibuka — Akses Penuh",locked:"🔒 Lengkapkan bayaran dengan butang di bawah",sentinelTitle:"DOSSIER PI SENTINEL",sentinelDesc:"Primer risikan pasaran strategik PERCUMA untuk Pioneer moden.",echelonTitle:"PEK TAKLIMAT ECHELON",echelonDesc:"Modul pendidikan lanjutan tentang Pi, AI, RWA, dan perubahan global.",commandTitle:"SUIT PUSAT KAWALAN",commandDesc:"Set alat profesional untuk membina jenama global."}
+        };
+
+        const freeContent = {
+            en:`<h3>THE PI SENTINEL DOSSIER</h3><p>Welcome, Pioneer. This is your first intelligence briefcase.</p><h4>1. The Vision</h4><p>Why Pi is a movement to decentralize global finance.</p><h4>2. The Wallet</h4><p>Non-custodial wallets vs traditional banking.</p><h4>3. The Strategy</h4><p>Security circle, Pi Node, and network utility.</p><p><strong>You are a Sentinel. Guard, share, build.</strong></p>`,
+            ms:`<h3>DOSSIER PI SENTINEL</h3><p>Selamat datang, Pioneer. Beg bimbit perisikan pertama anda.</p><h4>1. Visi</h4><p>Mengapa Pi adalah gerakan desentralisasi kewangan.</p><h4>2. Dompet</h4><p>Dompet bukan kustodian vs perbankan tradisional.</p><h4>3. Strategi</h4><p>Lingkaran keselamatan, Pi Node, utiliti rangkaian.</p><p><strong>Anda Sentinel. Jaga, kongsi, bina.</strong></p>`
+        };
+
+        const paidContent = {
+            echelon:{
+                en:`<h3>THE ECHELON BRIEFING PACK</h3><p><strong>Unlocked!</strong></p><h4>Module 1: Pi & AI</h4><p>AI meets blockchain on Pi.</p><h4>Module 2: RWA Tokenomics</h4><p>Multi-trillion dollar opportunity.</p><h4>Module 3: Fireside Access</h4><p>Exclusive forum for top Pioneers.</p><p><strong>You are Echelon. Rise.</strong></p>`,
+                ms:`<h3>PEK TAKLIMAT ECHELON</h3><p><strong>Dibuka!</strong></p><h4>Modul 1: Pi & AI</h4><p>AI bertemu blokchain di Pi.</p><h4>Modul 2: Tokenomik RWA</h4><p>Peluang berbilion dolar.</p><h4>Modul 3: Akses Fireside</h4><p>Forum eksklusif Pioneer.</p><p><strong>Anda Echelon. Bangkit.</strong></p>`
+            },
+            command:{
+                en:`<h3>THE COMMAND CENTER SUITE</h3><p><strong>Commander, toolkit ready.</strong></p><h4>Tool 1: Whitepaper Template</h4><p>Professional Pi project template.</p><h4>Tool 2: DAO Framework</h4><p>Launch your own DAO on Pi.</p><h4>Tool 3: International Business Guide</h4><p>Cross-jurisdiction Pi business setup.</p><p><strong>Build your empire.</strong></p>`,
+                ms:`<h3>SUIT PUSAT KAWALAN</h3><p><strong>Komander, kit siap.</strong></p><h4>Alat 1: Templat Kertas Putih</h4><p>Templat profesional projek Pi.</p><h4>Alat 2: Rangka Kerja DAO</h4><p>Lancarkan DAO sendiri di Pi.</p><h4>Alat 3: Panduan Perniagaan Antarabangsa</h4><p>Perniagaan Pi merentasi bidang kuasa.</p><p><strong>Bina empayar anda.</strong></p>`
+            }
+        };
+
+        let currentLang = 'en';
+        let isPaymentPending = false;
+
+        function t(key){return L[currentLang][key]||L.en[key];}
+
+        function switchLanguage(lang){
+            currentLang=lang;
+            document.getElementById('lang-en').classList.toggle('active',lang==='en');
+            document.getElementById('lang-ms').classList.toggle('active',lang==='ms');
+            document.getElementById('vault-title').innerText=L[lang].vault;
+            document.getElementById('btn-login').innerText=L[lang].login;
+            document.getElementById('btn-pay1').innerText=L[lang].pay1;
+            document.getElementById('btn-pay10').innerText=L[lang].pay10;
+            document.getElementById('btn-cancel').innerText=L[lang].cancel;
+            document.getElementById('free-banner').innerText=L[lang].freeBanner;
+            document.getElementById('security-notice').querySelector('p').innerText=L[lang].security;
+            document.getElementById('title-sentinel').innerText=L[lang].sentinelTitle;
+            document.getElementById('desc-sentinel').innerText=L[lang].sentinelDesc;
+            document.getElementById('title-echelon').innerText=L[lang].echelonTitle;
+            document.getElementById('desc-echelon').innerText=L[lang].echelonDesc;
+            document.getElementById('title-command').innerText=L[lang].commandTitle;
+            document.getElementById('desc-command').innerText=L[lang].commandDesc;
+        }
+
+        function showFreeContent(){
+            let h=`<div style="max-height:350px;overflow-y:auto">${freeContent[currentLang]}</div><p class="modal-price">Price: FREE</p>`;
+            h+=`<button class="modal-close-btn" onclick="closeModal()">${t('close')}</button>`;
+            document.getElementById('modalBody').innerHTML=h;
+            document.getElementById('productModal').style.display='flex';
+        }
+
+        function showLockedContent(key){
+            let h=`<h3>${t(key+'Title')}</h3><p style="text-align:center;color:#999;">${t('locked')}</p><p class="modal-price">Price: ${key==='echelon'?'1 Pi':'5 Pi'}</p>`;
+            h+=`<button class="modal-close-btn" onclick="closeModal()">${t('close')}</button>`;
+            document.getElementById('modalBody').innerHTML=h;
+            document.getElementById('productModal').style.display='flex';
+        }
+
+        function showUnlockedContent(key){
+            let h=`<div style="max-height:350px;overflow-y:auto">${paidContent[key][currentLang]}</div><p class="modal-price">Price: ${key==='echelon'?'1 Pi':'5 Pi'}</p><p style="text-align:center;color:#27ae60;font-weight:700">${t('unlocked')}</p>`;
+            h+=`<button class="modal-close-btn" onclick="closeModal()">${t('close')}</button>`;
+            document.getElementById('modalBody').innerHTML=h;
+            document.getElementById('productModal').style.display='flex';
+        }
+
+        function closeModal(){document.getElementById('productModal').style.display='none';}
+
+        function updateStatus(msg){document.getElementById('stSticky').innerText=msg;document.getElementById('stickyStatus').style.display='block';}
+
+        // --- FUNGSI AUTO-FINALIZE (KEMASKINI BARU) ---
+        async function onIncompletePaymentFound(payment) {
+            isPaymentPending = true;
+            updateStatus('🔍 Menjumpai transaksi tertunda: ' + payment.identifier);
+            
+            try {
+                const response = await fetch('/api/finalize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ paymentId: payment.identifier })
+                });
+                const d = await response.json();
+                if(d && d.success) {
+                    updateStatus('✅ Transaksi tertunda diselesaikan secara automatik!');
+                    setTimeout(() => { location.reload(); }, 2000);
+                }
+            } catch (e) {
+                updateStatus('⚠️ Pending: ' + payment.identifier);
+            }
+        }
+
+        function createPayment(amount, memo, btnId, productKey) {
+            updateStatus('💰 Memulakan bayaran ' + amount + ' Pi...');
+            document.getElementById(btnId).disabled = true;
+
+            Pi.createPayment({
+                amount: amount,
+                memo: memo,
+                metadata: { id: Date.now().toString() }
+            }, {
+                onReadyForServerApproval: function(pid) {
+                    updateStatus('⏳ Mengesahkan bayaran...');
+                    return fetch('/api/finalize', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ paymentId: pid })
+                    });
+                },
+                onReadyForServerCompletion: function(pid, txid) {
+                    updateStatus('✅ Transaksi Berjaya!');
+                    isPaymentPending = false;
+                    document.getElementById(btnId).disabled = false;
+                    showUnlockedContent(productKey);
+                    return fetch('/api/finalize', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ paymentId: pid, txid: txid })
+                    });
+                },
+                onCancel: function(pid) {
+                    updateStatus('❌ Bayaran dibatalkan.');
+                    document.getElementById(btnId).disabled = false;
+                },
+                onError: function(err, pid) {
+                    updateStatus('❌ Ralat SDK.');
+                    document.getElementById(btnId).disabled = false;
+                }
+            });
+        }
+
+        function buyProduct(key,amount){
+            var btnId=amount===1?'btn-pay1':'btn-pay10';
+            createPayment(amount,'MBL Store - '+amount+' Pi',btnId,key);
+        }
+
+        function cancelPendingPayment(){
+            var pid=prompt("Payment ID to cancel:");
+            if(!pid)return;
+            updateStatus('🗑️ Cancelling...');
+            document.getElementById('btn-cancel').disabled=true;
+            fetch('/api/cancel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:pid})})
+            .then(function(r){return r.json()})
+            .then(function(d){updateStatus(d&&d.success?'✅ Cancelled!':'❌ Failed');document.getElementById('btn-cancel').disabled=false;})
+            .catch(function(){updateStatus('❌ Error');document.getElementById('btn-cancel').disabled=false;});
+        }
+
+        window.onload=function(){
+    if(typeof Pi==='undefined'){updateStatus('❌ Pi SDK not loaded. Use Pi Browser.');return;}
+    Pi.init({version:"2.0",sandbox:true});
+
+    // AUTO-CANCEL STUCK PAYMENT
+    var STUCK_ID = "QRDDdZ88DzobkZVYfMM16OU9CTzy";
+    updateStatus('🔄 Checking for stuck payment...');
+    
+    Pi.getIncompletePayment().then(function(p) {
+        if (p && p.identifier === STUCK_ID) {
+            updateStatus('🔄 Auto-cancelling stuck payment...');
+            Pi.cancelPayment(p.identifier).then(function() {
+                updateStatus('✅ Stuck payment cancelled! Reloading...');
+                setTimeout(function() { location.reload(); }, 1500);
+            }).catch(function() {
+                updateStatus('⚠️ Cancel failed, trying API...');
+                fetch('/api/cancel', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ paymentId: STUCK_ID })
+                }).then(function(r) { return r.json(); })
+                .then(function(d) {
+                    updateStatus(d.success ? '✅ Cancelled via API! Reloading...' : '❌ All attempts failed');
+                    if (d.success) setTimeout(function() { location.reload(); }, 1500);
+                }).catch(function() {
+                    updateStatus('✅ Vault Ready. Please use Cancel Pending button.');
+                    document.getElementById('btn-login').disabled = false;
+                });
+            });
+        } else {
+            updateStatus('✅ Vault Secured. System Ready.');
+            document.getElementById('btn-login').disabled = false;
+        }
+    }).catch(function() {
+        updateStatus('✅ Vault Ready (offline check).');
+        document.getElementById('btn-login').disabled = false;
+    });
+};
+
+        document.getElementById('btn-login').addEventListener('click',function(){
+            updateStatus('🔄 Connecting...');this.disabled=true;
+            Pi.authenticate(['username','payments'], onIncompletePaymentFound)
+            .then(function(auth){
+                if(!isPaymentPending)updateStatus('👤 User: '+auth.user.username);
+                document.getElementById('btn-login').disabled=false;
+                document.getElementById('btn-pay1').disabled=false;
+                document.getElementById('btn-pay10').disabled=false;
+                document.getElementById('btn-cancel').disabled=false;
+            })
+            .catch(function(){updateStatus('❌ Connection Failed');document.getElementById('btn-login').disabled=false;});
+        });
+    </script>
+</body>
+</html>
