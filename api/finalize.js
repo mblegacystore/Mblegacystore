@@ -12,9 +12,9 @@ export default async function handler(req, res) {
     console.log('[FINALIZE] Payment ID:', paymentId, '| TXID:', txid || 'N/A');
 
     try {
-        // --- JIKA TXID SUDAH ADA, CONTINUE KE COMPLETE ---
+        // JIKA TXID SUDAH ADA → COMPLETE
         if (txid) {
-            console.log('[FINALIZE] Melengkapkan pembayaran dengan TXID:', txid);
+            console.log('[FINALIZE] Complete:', paymentId);
             const completeRes = await fetch(
                 `https://api.minepi.com/v2/payments/${paymentId}/complete`,
                 { 
@@ -26,15 +26,15 @@ export default async function handler(req, res) {
             const completeData = await completeRes.json();
             
             if (!completeRes.ok) {
-                console.error('[FINALIZE] Gagal Complete:', completeData);
+                console.error('[FINALIZE] Complete gagal:', completeData);
                 return res.status(500).json({ error: 'Gagal Complete.', detail: completeData });
             }
             
             return res.status(200).json({ success: true, txid: txid });
         }
 
-        // --- JIKA TIADA TXID, CUBA APPROVE DULU ---
-        console.log('[FINALIZE] Melakukan Approval:', paymentId);
+        // TIADA TXID → APPROVE
+        console.log('[FINALIZE] Approve:', paymentId);
         const approveRes = await fetch(
             `https://api.minepi.com/v2/payments/${paymentId}/approve`,
             { method: 'POST', headers: headers }
@@ -42,55 +42,51 @@ export default async function handler(req, res) {
         
         if (!approveRes.ok) {
             const errData = await approveRes.json();
-            console.error('[FINALIZE] Gagal Approve:', errData);
+            console.error('[FINALIZE] Approve gagal:', errData);
             
-            // --- JIKA APPROVE GAGAL, CUBA BATALKAN TRANSAKSI INI ---
-            console.log('[FINALIZE] Mencuba membatalkan transaksi yang gagal...');
+            // Cuba cancel
+            console.log('[FINALIZE] Cancel:', paymentId);
             const cancelRes = await fetch(
                 `https://api.minepi.com/v2/payments/${paymentId}/cancel`,
                 { method: 'POST', headers: headers }
             );
             const cancelData = await cancelRes.json();
-            console.log('[FINALIZE] Hasil Batal:', cancelData);
+            console.log('[FINALIZE] Cancel result:', cancelData);
             
             return res.status(200).json({ 
                 success: true, 
                 cancelled: true,
-                message: 'Transaksi gagal dan telah dibatalkan secara automatik.',
+                message: 'Transaksi dibatalkan automatik.',
                 detail: cancelData 
             });
         }
 
-        // --- TUNGGU TXID ---
+        // Tunggu TXID
         let newTxid = null;
-        let attempts = 0;
-        
-        while (!newTxid && attempts < 5) {
-            await new Promise(r => setTimeout(r, 2000));
+        for (let i = 0; i < 10; i++) {
+            await new Promise(r => setTimeout(r, 3000));
             const getRes = await fetch(`https://api.minepi.com/v2/payments/${paymentId}`, { headers });
             const paymentData = await getRes.json();
             newTxid = paymentData?.transaction?.txid;
-            attempts++;
-            console.log(`[FINALIZE] Cubaan dapatkan txid (${attempts}):`, newTxid || 'Belum ada');
+            console.log(`[FINALIZE] Cubaan ${i+1}:`, newTxid || 'Belum ada');
+            if (newTxid) break;
         }
 
         if (!newTxid) {
-            // TIADA TXID SELEPAS 5 CUBAAN — BATALKAN
-            console.log('[FINALIZE] Tiada TXID selepas 5 cubaan. Membatalkan...');
-            const cancelRes = await fetch(
+            console.log('[FINALIZE] Tiada TXID, cancel:', paymentId);
+            await fetch(
                 `https://api.minepi.com/v2/payments/${paymentId}/cancel`,
                 { method: 'POST', headers: headers }
             );
-            
             return res.status(200).json({ 
                 success: true, 
                 cancelled: true,
-                message: 'Transaksi luput dan telah dibatalkan.' 
+                message: 'Transaksi luput - dibatalkan.' 
             });
         }
 
-        // --- COMPLETE ---
-        console.log('[FINALIZE] Menyelesaikan pembayaran:', newTxid);
+        // Complete
+        console.log('[FINALIZE] Complete dengan TXID:', newTxid);
         const completeRes = await fetch(
             `https://api.minepi.com/v2/payments/${paymentId}/complete`,
             { 
@@ -99,7 +95,6 @@ export default async function handler(req, res) {
                 body: JSON.stringify({ txid: newTxid })
             }
         );
-
         const completeData = await completeRes.json();
 
         if (!completeRes.ok) {
