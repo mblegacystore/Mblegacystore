@@ -6,20 +6,19 @@ export default async function handler(req, res) {
     }
 
     try {
-        const apiKey = process.env.PI_API_KEY; // GUNA NAMA SAMA MACAM FAIL LAIN
+        const apiKey = process.env.PI_API_KEY_TESTNET;
         const uid = req.body?.uid;
 
         if (!apiKey) {
-            console.error('[REFUND] API Key tiada');
-            return res.status(500).json({ success: false, error: 'Kunci API tiada di server.' });
+            return res.status(500).json({ success: false, error: 'Kunci API Testnet tiada di server.' });
         }
 
         if (!uid) {
-            console.error('[REFUND] UID tiada');
-            return res.status(400).json({ success: false, error: 'UID pengguna tiada.' });
+            return res.status(400).json({ success: false, error: 'UID pengguna tiada dalam permintaan.' });
         }
 
-        console.log('[REFUND] Hantar pembayaran ke:', uid);
+        console.log('[REFUND] Hantar ke UID:', uid);
+        console.log('[REFUND] API Key exists:', apiKey ? 'YES' : 'NO');
 
         const response = await fetch('https://api.minepi.com/v2/payments', {
             method: 'POST',
@@ -37,13 +36,14 @@ export default async function handler(req, res) {
         });
 
         const data = await response.json();
-        console.log('[REFUND] Response:', response.status, JSON.stringify(data));
+        console.log('[REFUND] Status:', response.status);
+        console.log('[REFUND] Response:', JSON.stringify(data));
 
         if (!response.ok) {
-            console.error('[REFUND] Gagal:', data);
-            return res.status(200).json({ 
-                success: false, 
-                error: data.message || data.error || 'Gagal hantar Pi',
+            // Return error dengan detail
+            return res.status(200).json({
+                success: false,
+                error: data.message || data.error || 'Pi API returned status ' + response.status,
                 detail: data
             });
         }
@@ -51,8 +51,8 @@ export default async function handler(req, res) {
         // Berjaya
         return res.status(200).json({
             success: true,
-            paymentId: data.paymentId || data.identifier,
-            data: data
+            paymentId: data.paymentId || data.identifier || 'unknown',
+            message: 'Pembayaran App-to-User berjaya dihantar'
         });
 
     } catch (error) {
