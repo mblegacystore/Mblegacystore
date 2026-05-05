@@ -1,39 +1,13 @@
 export default async function handler(req, res) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    const apiKey = process.env.PI_API_KEY_TESTNET;
     
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed.' });
+    if (!apiKey) {
+        return res.status(200).json({ error: 'API Key Testnet TIADA di server.' });
     }
 
-    const apiKey = process.env.PI_API_KEY;
-
-    try {
-        const response = await fetch('https://api.minepi.com/v2/payments', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Key ' + apiKey,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                amount: 0.0001,
-                memo: 'App-to-User Test',
-                metadata: { type: 'app_to_user_test' },
-                uid: 'GB6PP...'  // GANTI DENGAN UID ANDA SENDIRI
-            })
-        });
-
-        const data = await response.json();
-
-        return res.status(200).json({
-            ok: response.ok,
-            status: response.status,
-            data: data
-        });
-
-    } catch (error) {
-        return res.status(200).json({ 
-            ok: false,
-            error: error.message 
-        });
-    }
+    return res.status(200).json({ 
+        success: true, 
+        message: 'API Key Testnet DITEMUI.',
+        key_prefix: apiKey.substring(0, 15) + '...'
+    });
 }
