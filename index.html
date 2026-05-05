@@ -182,23 +182,25 @@
 
         // --- FUNGSI AUTO-FINALIZE (KEMASKINI BARU) ---
         async function onIncompletePaymentFound(payment) {
-            isPaymentPending = true;
-            updateStatus('🔍 Menjumpai transaksi tertunda: ' + payment.identifier);
-            
-            try {
-                const response = await fetch('/api/finalize', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ paymentId: payment.identifier })
-                });
-                const d = await response.json();
-                if(d && d.success) {
-                    updateStatus('✅ Transaksi tertunda diselesaikan secara automatik!');
-                    setTimeout(() => { location.reload(); }, 2000);
-                }
-            } catch (e) {
-                updateStatus('⚠️ Pending: ' + payment.identifier);
-            }
+    console.log('[INCOMPLETE FOUND]', payment.identifier);
+    
+    try {
+        const response = await fetch('/api/finalize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentId: payment.identifier })
+        });
+        const d = await response.json();
+        
+        if (d && d.success) {
+            console.log('[INCOMPLETE] Diselesaikan:', payment.identifier);
+        }
+    } catch (e) {
+        console.error('[INCOMPLETE] Ralat:', e);
+    }
+    
+    // JANGAN tetapkan isPaymentPending = true
+    // JANGAN updateStatus
         }
 
         function createPayment(amount, memo, btnId, productKey) {
