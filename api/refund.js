@@ -6,11 +6,6 @@ export default async function handler(req, res) {
     }
 
     const apiKey = process.env.PI_API_KEY_TESTNET;
-    
-    if (!apiKey) {
-        return res.status(500).json({ error: 'API Key Testnet TIADA.' });
-    }
-
     const { uid } = req.body;
 
     try {
@@ -30,14 +25,21 @@ export default async function handler(req, res) {
         });
 
         const data = await response.json();
+        const statusCode = response.status;
 
+        // Hantar SEMUA butiran balik ke browser
         return res.status(200).json({
+            httpStatus: statusCode,
             success: response.ok,
             paymentId: data?.identifier || null,
-            data: data
+            errorMessage: data?.error || null,
+            fullResponse: data
         });
 
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(200).json({ 
+            success: false,
+            errorMessage: error.message 
+        });
     }
 }
