@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const apiKey = process.env.PI_API_KEY_MAINNET;
+        const apiKey = process.env.PI_API_KEY_TESTNET;
         const uid = req.body?.uid;
 
         if (!apiKey) {
