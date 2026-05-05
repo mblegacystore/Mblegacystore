@@ -16,21 +16,16 @@ export default async function handler(req, res) {
         const uid = req.body?.uid;
 
         if (!apiKey) {
-            return res.status(200).json({ 
-                success: false, 
-                error: 'API Key tiada di server' 
-            });
+            return res.status(200).json({ success: false, error: 'API Key tiada' });
         }
 
         if (!uid) {
-            return res.status(200).json({ 
-                success: false, 
-                error: 'UID pengguna tiada' 
-            });
+            return res.status(200).json({ success: false, error: 'UID tiada' });
         }
 
-        console.log('[REFUND] Hantar ke UID:', uid);
+        console.log('[REFUND] UID:', uid);
 
+        // Tukar amount ke 1 Pi
         const response = await fetch('https://api.minepi.com/v2/payments', {
             method: 'POST',
             headers: {
@@ -38,8 +33,8 @@ export default async function handler(req, res) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                amount: 0.0001,
-                memo: 'MB Legacy Test',
+                amount: 1,
+                memo: 'MB Legacy Test - App to User',
                 metadata: { type: 'app_to_user' },
                 uid: uid,
                 direction: 'app_to_user'
@@ -47,7 +42,7 @@ export default async function handler(req, res) {
         });
 
         const data = await response.json();
-        console.log('[REFUND] Response:', response.status, JSON.stringify(data));
+        console.log('[REFUND] Status:', response.status, JSON.stringify(data));
 
         if (!response.ok) {
             return res.status(200).json({
@@ -64,10 +59,6 @@ export default async function handler(req, res) {
         });
 
     } catch (error) {
-        console.error('[REFUND] Error:', error);
-        return res.status(200).json({
-            success: false,
-            error: error.message
-        });
+        return res.status(200).json({ success: false, error: error.message });
     }
 }
