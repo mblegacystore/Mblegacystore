@@ -269,44 +269,47 @@
 
         // --- CLAIM (GUNA API BACKEND) ---
         function requestTestReward(){
-            if(!savedUser){
-                updateStatus('❌ Sila login dahulu!');
-                return;
+        function requestTestReward(){
+    if(!savedUser){
+        updateStatus('❌ Sila login dahulu!');
+        return;
+    }
+    
+    var uid = savedUser.uid;
+    var username = savedUser.username;
+    updateStatus('UID: ' + uid + ' | User: ' + username);
+    
+    var b = document.getElementById('btn-refund');
+    b.disabled = true;
+    updateStatus('🔄 Hantar permintaan ke server...');
+    
+    // Hantar UID ke backend - backend yang urus Pi API
+    fetch('/api/refund', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({uid: uid})
+    })
+    .then(function(r){return r.json();})
+    .then(function(d){
+        if(d && d.success){
+            updateStatus('✅ BERJAYA! Pi dihantar!');
+            alert('Berjaya! Payment ID: ' + d.paymentId);
+        } else {
+            updateStatus('❌ Gagal: ' + (d.error || 'Ralat unknown'));
+            // Papar detail error dalam alert
+            if(d.userData){
+                alert('User Data: ' + JSON.stringify(d.userData, null, 2));
             }
-            
-            var uid = savedUser.uid;
-            var username = savedUser.username;
-            updateStatus('UID: ' + uid + ' | User: ' + username);
-            
-            var b=document.getElementById('btn-refund');
-            b.disabled=true;
-            updateStatus('🔄 Memproses...');
-            
-            fetch('/api/refund',{
-                method:'POST',
-                headers:{'Content-Type':'application/json'},
-                body:JSON.stringify({uid:uid})
-            })
-            .then(function(r){return r.json();})
-            .then(function(d){
-                if(d && d.success){
-                    updateStatus('✅ Berjaya! ID: '+d.paymentId);
-                } else {
-                    // Gantikan dengan ini:
-if (d.userData) {
-    // Paparkan data mentah dalam popup alert untuk anda lihat
-    alert('DEBUG USER DATA:\n' + JSON.stringify(d.userData, null, 2));
-    updateStatus('❌ Debug: Data dipaparkan dalam popup.');
-} else {
-    updateStatus('❌ Gagal: '+(d.error||'Ralat'));
-}
-                }
-                b.disabled=false;
-            })
-            .catch(function(){
-                updateStatus('❌ Ralat rangkaian');
-                b.disabled=false;
-            });
+            if(d.detail){
+                alert('Detail: ' + JSON.stringify(d.detail, null, 2));
+            }
+        }
+        b.disabled = false;
+    })
+    .catch(function(e){
+        updateStatus('❌ Ralat rangkaian: ' + e.message);
+        b.disabled = false;
+    });
         }
 
         window.onload=function(){
