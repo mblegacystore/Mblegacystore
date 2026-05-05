@@ -292,7 +292,14 @@
                 if(d && d.success){
                     updateStatus('✅ Berjaya! ID: '+d.paymentId);
                 } else {
-                    updateStatus('❌ Gagal: '+(d.error||'Ralat'));
+                    // Gantikan dengan ini:
+if (d.userData) {
+    // Paparkan data mentah dalam popup alert untuk anda lihat
+    alert('DEBUG USER DATA:\n' + JSON.stringify(d.userData, null, 2));
+    updateStatus('❌ Debug: Data dipaparkan dalam popup.');
+} else {
+    updateStatus('❌ Gagal: '+(d.error||'Ralat'));
+}
                 }
                 b.disabled=false;
             })
