@@ -283,8 +283,8 @@ function requestTestReward(){var b=document.getElementById('btn-refund');b.disab
             .then(function(auth){
                 if(!isPaymentPending)updateStatus('👤 User: '+auth.user.username);
                 document.getElementById('btn-login').disabled=false;
-                document.getElementById('btn-pay1').disabled=false;
-                document.getElementById('btn-pay10').disabled=false;
+                //document.getElementById('btn-pay1').disabled=false;
+                //document.getElementById('btn-pay10').disabled=false;
                 document.getElementById('btn-cancel').disabled=false;
                 document.getElementById('btn-refund').disabled=false;
             })
