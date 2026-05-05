@@ -12,11 +12,11 @@ export default async function handler(req, res) {
     }
 
     try {
-        const apiKey = process.env.PI_API_KEY_TESTNET;
+        const apiKey = process.env.PI_API_KEY_MAINNET;
         const uid = req.body?.uid;
 
         if (!apiKey) {
-            return res.status(200).json({ success: false, error: 'API Key tiada' });
+            return res.status(200).json({ success: false, error: 'API Key Mainnet tiada' });
         }
 
         if (!uid) {
@@ -25,7 +25,6 @@ export default async function handler(req, res) {
 
         console.log('[REFUND] UID:', uid);
 
-        // Tukar amount ke 1 Pi
         const response = await fetch('https://api.minepi.com/v2/payments', {
             method: 'POST',
             headers: {
@@ -34,7 +33,7 @@ export default async function handler(req, res) {
             },
             body: JSON.stringify({
                 amount: 1,
-                memo: 'MB Legacy Test - App to User',
+                memo: 'MB Legacy - App to User',
                 metadata: { type: 'app_to_user' },
                 uid: uid,
                 direction: 'app_to_user'
@@ -42,14 +41,12 @@ export default async function handler(req, res) {
         });
 
         const data = await response.json();
-        console.log('[REFUND] Status:', response.status, JSON.stringify(data));
 
         if (!response.ok) {
             return res.status(200).json({
                 success: false,
-                error: data.message || data.error || 'Pi API error',
-                fullResponse: JSON.stringify(data),
-                statusCode: response.status
+                error: data.error || data.message || 'Pi API error',
+                fullResponse: JSON.stringify(data)
             });
         }
 
