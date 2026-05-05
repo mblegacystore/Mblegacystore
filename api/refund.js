@@ -15,7 +15,6 @@ export default async function handler(req, res) {
     };
 
     try {
-        // Hantar bayaran kepada pengguna
         const paymentRes = await fetch('https://api.minepi.com/v2/payments', {
             method: 'POST',
             headers: headers,
@@ -29,29 +28,14 @@ export default async function handler(req, res) {
 
         const paymentData = await paymentRes.json();
 
-        console.log('PI API RESPONSE:', JSON.stringify(paymentData));
-
-        if (!paymentRes.ok) {
-            return res.status(500).json({ 
-                error: 'Gagal menghantar bayaran.', 
-                detail: paymentData 
-            });
-        }
-
-        // Approve pembayaran
-        const paymentId = paymentData.identifier;
-        await fetch(`https://api.minepi.com/v2/payments/${paymentId}/approve`, {
-            method: 'POST',
-            headers: headers
-        });
-
-        return res.status(200).json({ 
-            success: true, 
-            paymentId: paymentId
+        // HANTAR BALIK MESEJ PENUH DARI PI API
+        return res.status(paymentRes.ok ? 200 : 500).json({
+            success: paymentRes.ok,
+            paymentId: paymentData?.identifier || null,
+            pi_response: paymentData  // INI PENTING - Papar semua mesej dari Pi
         });
 
     } catch (error) {
-        console.error('REFUND ERROR:', error);
         return res.status(500).json({ error: error.message });
     }
 }
