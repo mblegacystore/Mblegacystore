@@ -82,6 +82,15 @@
                 <p class="product-price">Price: 1 Pi</p>
             </div>
         </div>
+        <div class="product-card" onclick="showTestRewardInfo()">
+    <div class="product-img-placeholder">IV</div>
+    <div class="free-banner" style="background:#FFD700; color:#000;">🔄 APP TO USER TEST</div>
+    <div class="product-info">
+        <h3 id="title-reward">DAPATKAN 0.0001 PI (UJIAN)</h3>
+        <p id="desc-reward">Klik untuk terima Pi dari Dompet Aplikasi MB Legacy.</p>
+        <p class="product-price" style="color:#FFD700;">Anda Terima: 0.0001 Pi</p>
+    </div>
+        </div>
 
         <div class="product-card" onclick="showLockedContent('command')">
             <div class="product-img-placeholder">III</div>
@@ -98,6 +107,7 @@
     <button id="btn-login" class="golden-btn" disabled>🔐 Connect Account</button>
     <button id="btn-pay1" class="golden-btn" disabled onclick="buyProduct('echelon',1)">💰 Pay 1.0 Pi</button>
     <button id="btn-pay10" class="red-btn" disabled onclick="buyProduct('command',5)">🔥 Pay 5 Pi</button>
+    <button id="btn-refund" class="golden-btn" disabled style="border-color:#FFD700; color:#FFD700;" onclick="requestTestReward()">🎁 DAPATKAN 0.0001 PI (UJIAN)</button>
     <button id="btn-cancel" class="golden-btn" disabled style="margin-top:5px;font-size:.8rem;letter-spacing:1px;" onclick="cancelPendingPayment()">🗑️ Cancel Pending</button>
 
     <div id="productModal" class="modal"><div class="modal-content" id="modalBody"></div></div>
@@ -258,7 +268,9 @@
             .catch(function(){updateStatus('❌ Error');document.getElementById('btn-cancel').disabled=false;});
         }
 
-        window.onload=function(){
+        
+        function showTestRewardInfo(){var h='<h3>🎁 UJIAN APP TO USER</h3>';h+='<p>Anda akan menerima <strong>0.0001 Pi</strong> dari dompet aplikasi.</p>';h+='<button class="modal-close-btn" onclick="closeModal()">TUTUP</button>';document.getElementById('modalBody').innerHTML=h;document.getElementById('productModal').style.display='flex';}
+function requestTestReward(){var b=document.getElementById('btn-refund');b.disabled=true;updateStatus('🔄 Memproses...');fetch('/api/refund',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:(typeof Pi!=='undefined'&&Pi.currentUser)?Pi.currentUser.uid:'test'})}).then(function(r){return r.json();}).then(function(d){if(d&&d.success){updateStatus('✅ Berjaya! ID: '+d.paymentId);}else{updateStatus('❌ Gagal: '+(d.error||'Ralat'));}b.disabled=false;}).catch(function(){updateStatus('❌ Ralat rangkaian');b.disabled=false;});}window.onload=function(){
             if(typeof Pi==='undefined'){updateStatus('❌ Pi SDK not loaded. Use Pi Browser.');return;}
             Pi.init({version:"2.0",sandbox:true});
             updateStatus('✅ Vault Secured. System Ready.');
@@ -274,6 +286,7 @@
                 document.getElementById('btn-pay1').disabled=false;
                 document.getElementById('btn-pay10').disabled=false;
                 document.getElementById('btn-cancel').disabled=false;
+                document.getElementById('btn-refund').disabled=false;
             })
             .catch(function(){updateStatus('❌ Connection Failed');document.getElementById('btn-login').disabled=false;});
         });
