@@ -256,35 +256,36 @@
             .catch(function(){updateStatus('❌ Error');document.getElementById('btn-cancel').disabled=false;});
         }
 
-        window.onload=function(){
-    if(typeof Pi==='undefined'){updateStatus('❌ Pi SDK not loaded. Use Pi Browser.');return;}
-    Pi.init({version:"2.0",sandbox:true});
-
-    // AUTO-CANCEL STUCK PAYMENT
+        window.onload = function() {
+    if (typeof Pi === 'undefined') {
+        updateStatus('❌ Pi SDK not loaded. Use Pi Browser.');
+        return;
+    }
+    
+    Pi.init({ version: "2.0", sandbox: true });
+    
+    // Enable login button immediately
+    document.getElementById('btn-login').disabled = false;
+    
+    // Check for stuck payment in background - jangan block UI
     var STUCK_ID = "QRDDdZ88DzobkZVYfMM16OU9CTzy";
-    updateStatus('🔄 Checking for stuck payment...');
     
     Pi.getIncompletePayment().then(function(p) {
         if (p && p.identifier === STUCK_ID) {
-            updateStatus('🔄 Auto-cancelling stuck payment...');
-            Pi.cancelPayment(p.identifier).then(function() {
-                updateStatus('✅ Stuck payment cancelled! Reloading...');
-                setTimeout(function() { location.reload(); }, 1500);
-            }).catch(function() {
-                updateStatus('⚠️ Cancel failed, trying API...');
-                fetch('/api/cancel', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ paymentId: STUCK_ID })
-                }).then(function(r) { return r.json(); })
-                .then(function(d) {
-                    updateStatus(d.success ? '✅ Cancelled via API! Reloading...' : '❌ All attempts failed');
-                    if (d.success) setTimeout(function() { location.reload(); }, 1500);
-                }).catch(function() {
-                    updateStatus('✅ Vault Ready. Please use Cancel Pending button.');
-                    document.getElementById('btn-login').disabled = false;
-                });
-            });
+            updateStatus('🔍 Found stuck payment. Click Cancel Pending to clear it.');
+            document.getElementById('btn-cancel').disabled = false;
+        } else if (p) {
+            updateStatus('⚠️ Pending payment found: ' + p.identifier);
+            document.getElementById('btn-cancel').disabled = false;
+        } else {
+            updateStatus('✅ Vault Secured. System Ready.');
+            document.getElementById('btn-cancel').disabled = false;
+        }
+    }).catch(function() {
+        updateStatus('✅ Vault Secured. System Ready.');
+        document.getElementById('btn-cancel').disabled = false;
+    });
+};);
         } else {
             updateStatus('✅ Vault Secured. System Ready.');
             document.getElementById('btn-login').disabled = false;
