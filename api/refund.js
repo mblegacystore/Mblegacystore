@@ -11,7 +11,7 @@ export default async function handler(req, res) {
             amount: 0.0001,
             memo: 'Test',
             metadata: {},
-            uid: 'G' + 'B6PP'.toLowerCase() + '...'  // Guna UID sebenar anda
+            uid: req.body.uid  // Guna UID sebenar anda
         })
     });
     
