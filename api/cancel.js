@@ -1,43 +1,14 @@
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     
     if (req.method === 'OPTIONS') return res.status(200).end();
-    
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed. Use POST only.' });
-    }
 
-    let paymentId = null;
+    // ⚠️ HARDCODED STUCK PAYMENT ID
+    const STUCK_PAYMENT_ID = "QRDDdZ88DzobkZVYfMM16OU9CTzy";
     
-    // Cuba dapatkan dari body JSON
-    try {
-        if (req.body) {
-            paymentId = req.body.paymentId || req.body.payment_id || null;
-        }
-    } catch(e) {}
-    
-    // Cuba dapatkan dari query parameter
-    if (!paymentId && req.query) {
-        paymentId = req.query.paymentId || req.query.payment_id || null;
-    }
-    
-    // Cuba parse body mentah
-    if (!paymentId && typeof req.body === 'string') {
-        try {
-            const parsed = JSON.parse(req.body);
-            paymentId = parsed.paymentId || parsed.payment_id || null;
-        } catch(e) {}
-    }
-
-    if (!paymentId) {
-        return res.status(400).json({ 
-            error: 'Payment ID is required.',
-            receivedBody: req.body,
-            receivedQuery: req.query
-        });
-    }
+    let paymentId = STUCK_PAYMENT_ID;
 
     const headers = {
         'Authorization': 'Key ' + (process.env.PI_API_KEY || ''),
@@ -45,8 +16,6 @@ export default async function handler(req, res) {
     };
 
     try {
-        console.log('[CANCEL] Membatalkan:', paymentId);
-        
         const cancelRes = await fetch(
             `https://api.minepi.com/v2/payments/${paymentId}/cancel`,
             { method: 'POST', headers: headers }
