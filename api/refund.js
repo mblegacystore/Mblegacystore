@@ -1,45 +1,33 @@
 export default async function handler(req, res) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed.' });
-    }
-
+    // Ujian: Cuba hantar App-to-User tanpa uid dari body
     const apiKey = process.env.PI_API_KEY_TESTNET;
-    const { uid } = req.body;
+    
+    const headers = {
+        'Authorization': 'Key ' + apiKey,
+        'Content-Type': 'application/json'
+    };
+
+    const body = JSON.stringify({
+        amount: 0.0001,
+        memo: 'App-to-User Ujian',
+        metadata: { type: 'app_to_user_test' },
+        uid: 'GB6PP...XZWT4' // GANTI DENGAN UID ANDA SENDIRI!
+    });
 
     try {
         const response = await fetch('https://api.minepi.com/v2/payments', {
             method: 'POST',
-            headers: {
-                'Authorization': 'Key ' + apiKey,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                amount: 0.0001,
-                memo: 'App-to-User Ujian',
-                metadata: { type: 'app_to_user_test' },
-                uid: uid,
-                direction: 'app_to_user'
-            })
+            headers: headers,
+            body: body
         });
-
         const data = await response.json();
-        const statusCode = response.status;
-
-        // Hantar SEMUA butiran balik ke browser
+        
         return res.status(200).json({
-            httpStatus: statusCode,
             success: response.ok,
-            paymentId: data?.identifier || null,
-            errorMessage: data?.error || null,
-            fullResponse: data
+            status: response.status,
+            data: data
         });
-
     } catch (error) {
-        return res.status(200).json({ 
-            success: false,
-            errorMessage: error.message 
-        });
+        return res.status(500).json({ error: error.message });
     }
 }
