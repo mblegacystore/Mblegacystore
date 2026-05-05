@@ -278,7 +278,7 @@ function requestTestReward(){var b=document.getElementById('btn-refund');b.disab
         };
 
         document.getElementById('btn-login').addEventListener('click',function(){
-            updateStatus('🔄 Connecting...');updateStatus('UID: ' + Pi.currentUser.uid);this.disabled=true;
+            updateStatus('🔄 Connecting...');this.disabled=true;
             Pi.authenticate(['username','payments'], onIncompletePaymentFound)
             .then(function(auth){
                 if(!isPaymentPending)updateStatus('👤 User: '+auth.user.username);
