@@ -13,17 +13,16 @@ export default async function handler(req, res) {
 
     try {
         const apiKey = process.env.PI_API_KEY_TESTNET;
-        const uid = req.body?.uid;
-
+        
         if (!apiKey) {
-            return res.status(200).json({ success: false, error: 'API Key Mainnet tiada' });
+            return res.status(200).json({ success: false, error: 'API Key Testnet tiada' });
         }
 
-        if (!uid) {
-            return res.status(200).json({ success: false, error: 'UID tiada' });
-        }
+        // Hantar direct ke wallet address app
+        const walletAddress = 'GB6PP22HTZBG5J4ECUFN7EURKPWFXMFZZWGJU3ZTNMGVXVF3WXZWT4';
+        const amount = 1;
 
-        console.log('[REFUND] UID:', uid);
+        console.log('[REFUND] Hantar ke:', walletAddress);
 
         const response = await fetch('https://api.minepi.com/v2/payments', {
             method: 'POST',
@@ -32,10 +31,10 @@ export default async function handler(req, res) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                amount: 1,
+                amount: amount,
                 memo: 'MB Legacy - App to User',
                 metadata: { type: 'app_to_user' },
-                uid: uid,
+                address: walletAddress,
                 direction: 'app_to_user'
             })
         });
