@@ -180,13 +180,13 @@
 
         // AUTO-CANCEL PENDING BILA LOGIN
         async function onIncompletePaymentFound(payment) {
-            updateStatus('🔄 Membatalkan pending: ' + payment.identifier.slice(0,10) + '...');
-            try {
-                await Pi.cancelPayment(payment.identifier);
-                updateStatus('✅ Pending dibatalkan');
-            } catch(e) {
-                updateStatus('⚠️ Gagal cancel, cuba lain...');
-            }
+    updateStatus('🔄 Cancel: ' + payment.identifier.slice(0,8) + '...');
+    try {
+        await Pi.cancelPayment(payment.identifier);
+        updateStatus('✅ Cancelled!');
+    } catch(e) {
+        updateStatus('⚠️ Skip: ' + e.message);
+    }
         }
 
         function doLogin(){
@@ -250,9 +250,16 @@
         }
 
         function cancelAllPending(){
-    updateStatus('🗑️ Membatalkan pending...');
+    updateStatus('🗑️ Cuba cancel pending...');
     var btn = document.getElementById('btn-cancel');
     btn.disabled = true;
+    
+    // Direct cancel — tak perlu login semula
+    updateStatus('⚠️ Tekan Cancel bila popup payment keluar');
+    alert('Jika ada popup pembayaran tertunda, tekan Cancel pada popup tersebut.');
+    
+    btn.disabled = false;
+        }
     
     if (typeof Pi !== 'undefined') {
         Pi.authenticate(['username','payments'], onIncompletePaymentFound)
