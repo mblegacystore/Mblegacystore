@@ -1,48 +1,60 @@
 export default async function handler(req, res) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    
-    if (req.method === 'OPTIONS') return res.status(200).end();
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method not allowed.' });
+    }
 
-    // ⚠️ HARDCODED STUCK PAYMENT ID
-    const STUCK_PAYMENT_ID = "QRDDdZ88DzobkZVYfMM16OU9CTzy";
-    
-    let paymentId = STUCK_PAYMENT_ID;
-
+    const { paymentId } = req.body;
     const headers = {
-        'Authorization': 'Key ' + (process.env.PI_API_KEY || ''),
+        'Authorization': 'Key ' + process.env.PI_API_KEY_TESTNET,
         'Content-Type': 'application/json'
     };
 
     try {
-        const cancelRes = await fetch(
-            `https://api.minepi.com/v2/payments/${paymentId}/cancel`,
-            { method: 'POST', headers: headers }
-        );
-
-        const cancelData = await cancelRes.json();
-
-        if (!cancelRes.ok) {
-            return res.status(cancelRes.status).json({ 
-                error: 'Gagal membatalkan.', 
-                detail: cancelData,
-                paymentId: paymentId
+        // Kalau ada paymentId specific
+        if (paymentId) {
+            const cancelRes = await fetch(
+                `https://api.minepi.com/v2/payments/${paymentId}/cancel`,
+                { method: 'POST', headers: headers }
+            );
+            const cancelData = await cancelRes.json();
+            
+            return res.status(200).json({ 
+                success: cancelRes.ok, 
+                message: cancelRes.ok ? 'Cancelled' : cancelData.message 
             });
+        }
+
+        // Kalau takde paymentId → cancel SEMUA pending
+        const listRes = await fetch(
+            'https://api.minepi.com/v2/payments?status=pending',
+            { headers: headers }
+        );
+        const listData = await listRes.json();
+        
+        if (!listRes.ok) {
+            return res.status(200).json({ success: false, error: listData.message || 'Gagal dapat senarai' });
+        }
+
+        const pendingPayments = listData.payments || [];
+        
+        if (pendingPayments.length === 0) {
+            return res.status(200).json({ success: true, message: 'Tiada pending payment' });
+        }
+
+        // Cancel semua
+        for (const payment of pendingPayments) {
+            await fetch(
+                `https://api.minepi.com/v2/payments/${payment.identifier}/cancel`,
+                { method: 'POST', headers: headers }
+            );
         }
 
         return res.status(200).json({ 
             success: true, 
-            message: 'Payment cancelled successfully.',
-            paymentId: paymentId,
-            data: cancelData 
+            message: pendingPayments.length + ' pending dibatalkan' 
         });
 
     } catch (error) {
-        return res.status(500).json({ 
-            error: 'Internal server error.', 
-            detail: error.message,
-            paymentId: paymentId
-        });
+        return res.status(200).json({ success: false, error: error.message });
     }
 }
