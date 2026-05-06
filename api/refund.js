@@ -1,5 +1,3 @@
-const StellarSdk = require('stellar-sdk');
-
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     
@@ -14,47 +12,51 @@ export default async function handler(req, res) {
     }
 
     try {
-        const secretKey = process.env.APP_WALLET_SECRET;
-        const destinationAddress = 'GBVN7...45V67'; // GANTI DENGAN PENUH
+        const apiKey = process.env.PI_API_KEY_TESTNET;
+        const uid = req.body?.uid;
         
-        if (!secretKey) {
-            return res.status(200).json({ success: false, error: 'Secret Key tiada di server' });
+        if (!apiKey) {
+            return res.status(200).json({ success: false, error: 'API Key Testnet tiada' });
         }
 
-        const { Horizon, Keypair, TransactionBuilder, Operation, BASE_FEE, Networks } = StellarSdk;
+        if (!uid) {
+            return res.status(200).json({ success: false, error: 'UID tiada' });
+        }
 
-        const server = new Horizon.Server('https://horizon-testnet.stellar.org');
-        const sourceKeypair = Keypair.fromSecret(secretKey);
-        
-        const sourceAccount = await server.loadAccount(sourceKeypair.publicKey());
-        
-        const transaction = new TransactionBuilder(sourceAccount, {
-            fee: BASE_FEE,
-            networkPassphrase: Networks.TESTNET
-        })
-        .addOperation(Operation.payment({
-            destination: destinationAddress,
-            asset: StellarSdk.Asset.native(),
-            amount: '1'
-        }))
-        .setTimeout(30)
-        .build();
-        
-        transaction.sign(sourceKeypair);
-        
-        const result = await server.submitTransaction(transaction);
-        
+        console.log('[REFUND] UID:', uid);
+
+        const response = await fetch('https://api.minepi.com/v2/payments', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Key ' + apiKey,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                amount: 1,
+                memo: 'MB Legacy Test',
+                metadata: { type: 'app_to_user' },
+                user_uid: uid,
+                direction: 'app_to_user'
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            return res.status(200).json({
+                success: false,
+                error: data.error || data.message || 'Pi API error',
+                fullResponse: JSON.stringify(data),
+                statusCode: response.status
+            });
+        }
+
         return res.status(200).json({
             success: true,
-            hash: result.hash,
-            message: '1 Pi Testnet dihantar!'
+            paymentId: data.paymentId || data.identifier
         });
 
     } catch (error) {
-        return res.status(200).json({
-            success: false,
-            error: error.message || 'Ralat Stellar',
-            detail: JSON.stringify(error)
-        });
+        return res.status(200).json({ success: false, error: error.message });
     }
 }
