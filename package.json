@@ -1,4 +1,7 @@
 {
-    "name": "mbl-store",
-    "version": "1.0.0"
+  "name": "mblegacystore",
+  "version": "1.0.0",
+  "dependencies": {
+    "stellar-sdk": "^11.3.0"
+  }
 }
