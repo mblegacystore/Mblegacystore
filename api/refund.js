@@ -15,22 +15,24 @@ export default async function handler(req, res) {
 
     try {
         const secretKey = process.env.APP_WALLET_SECRET;
-        const destinationAddress = 'GBVN7...45V67'; // GANTI DENGAN ADDRESS PENUH
+        const destinationAddress = 'GBVN7...45V67'; // GANTI DENGAN PENUH
         
         if (!secretKey) {
             return res.status(200).json({ success: false, error: 'Secret Key tiada di server' });
         }
 
-        const server = new StellarSdk.Server('https://horizon-testnet.stellar.org');
-        const sourceKeypair = StellarSdk.Keypair.fromSecret(secretKey);
+        const { Horizon, Keypair, TransactionBuilder, Operation, BASE_FEE, Networks } = StellarSdk;
+
+        const server = new Horizon.Server('https://horizon-testnet.stellar.org');
+        const sourceKeypair = Keypair.fromSecret(secretKey);
         
         const sourceAccount = await server.loadAccount(sourceKeypair.publicKey());
         
-        const transaction = new StellarSdk.TransactionBuilder(sourceAccount, {
-            fee: StellarSdk.BASE_FEE,
-            networkPassphrase: StellarSdk.Networks.TESTNET
+        const transaction = new TransactionBuilder(sourceAccount, {
+            fee: BASE_FEE,
+            networkPassphrase: Networks.TESTNET
         })
-        .addOperation(StellarSdk.Operation.payment({
+        .addOperation(Operation.payment({
             destination: destinationAddress,
             asset: StellarSdk.Asset.native(),
             amount: '1'
