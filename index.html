@@ -250,37 +250,28 @@
         }
 
         function cancelAllPending(){
-            updateStatus('🗑️ Membatalkan semua pending...');
-            var btn = document.getElementById('btn-cancel');
-            btn.disabled = true;
-            
-            fetch('/api/cancel', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({})
-            })
-            .then(function(r){return r.json();})
-            .then(function(d){
-                if(d && d.success){
-                    updateStatus('✅ Semua pending dibatalkan!');
-                } else {
-                    updateStatus('❌ Gagal: ' + (d.error || 'Unknown'));
-                }
-                btn.disabled = false;
-            })
-            .catch(function(){
-                updateStatus('❌ Ralat rangkaian');
-                btn.disabled = false;
-            });
-        }
-
-        function initApp(){
-            if(typeof Pi === 'undefined'){
-                updateStatus('❌ Pi SDK not loaded. Use Pi Browser.');
-                return;
-            }
-            Pi.init({version:"2.0", sandbox:true});
-            updateStatus('✅ Ready. Sila Connect Account.');
+    updateStatus('🗑️ Membatalkan pending...');
+    var btn = document.getElementById('btn-cancel');
+    btn.disabled = true;
+    
+    if (typeof Pi !== 'undefined') {
+        Pi.authenticate(['username','payments'], onIncompletePaymentFound)
+        .then(function(auth){
+            updateStatus('✅ Selesai. Sila cuba Pay.');
+            btn.disabled = false;
+            document.getElementById('btn-pay1').disabled = false;
+            document.getElementById('btn-pay10').disabled = false;
+        })
+        .catch(function(){
+            updateStatus('⚠️ Gagal. Cuba Pay terus.');
+            btn.disabled = false;
+            document.getElementById('btn-pay1').disabled = false;
+            document.getElementById('btn-pay10').disabled = false;
+        });
+    } else {
+        updateStatus('❌ Pi SDK not loaded');
+        btn.disabled = false;
+    }
         }
 
         initApp();
