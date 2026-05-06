@@ -1,52 +1,16 @@
 export default async function handler(req, res) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed.' });
-    }
-
-    const { paymentId } = req.body;
-    
-    if (!paymentId) {
-        return res.status(400).json({ error: 'Payment ID required.' });
-    }
-
-    const headers = {
-        'Authorization': 'Key ' + process.env.PI_API_KEY_TESTNET,
-        'Content-Type': 'application/json'
-    };
+    const { paymentId, network } = req.body;
+    // Mengambil API_KEY_TESTNET secara automatik dari Vercel
+    const PI_API_KEY = network === 'mainnet' 
+        ? process.env.PI_API_KEY_MAINNET 
+        : process.env.PI_API_KEY_TESTNET; 
 
     try {
-        // Approve
-        const approveRes = await fetch(
-            `https://api.minepi.com/v2/payments/${paymentId}/approve`,
-            { method: 'POST', headers: headers }
-        );
-        const approveData = await approveRes.json();
-
-        if (!approveRes.ok) {
-            return res.status(200).json({ success: false, error: approveData.message || 'Approve failed' });
-        }
-
-        // Tunggu
-        await new Promise(resolve => setTimeout(resolve, 5000));
-
-        // Complete
-        const completeRes = await fetch(
-            `https://api.minepi.com/v2/payments/${paymentId}/complete`,
-            { 
-                method: 'POST', 
-                headers: headers,
-                body: JSON.stringify({ txid: null })
-            }
-        );
-        const completeData = await completeRes.json();
-
-        if (!completeRes.ok) {
-            return res.status(200).json({ success: false, error: completeData.message || 'Complete failed' });
-        }
-
-        return res.status(200).json({ success: true });
-
-    } catch (error) {
-        return res.status(200).json({ success: false, error: error.message });
-    }
+        const response = await fetch(`https://api.minepi.com/v2/payments/${paymentId}/approve`, {
+            method: 'POST',
+            headers: { 'Authorization': `Key ${PI_API_KEY}`, 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        res.status(200).json(data);
+    } catch (e) { res.status(500).json({ error: e.message }); }
 }
